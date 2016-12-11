@@ -18,6 +18,7 @@ class HomeController extends Controller
 
 
         return $this->render('default/home.html.twig', [
+            'test' => 12345
         ]);
     }
 }

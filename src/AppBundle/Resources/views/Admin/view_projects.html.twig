@@ -1,0 +1,49 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}AppBundle:Admin:addBundle{% endblock %}
+
+{% block body %}
+<div class="container">
+	<div class="row">
+		<br>
+		<h4>Projects</h4>
+		<br>
+		{# total items count #}
+
+			<div class="count">
+			    {#{ pagination.getTotalItemCount }#}
+			</div>
+			<table class="table table-striped table-bordered dataTable">
+			<tr>
+			{# sorting of properties based on query components #}
+			    <th>Id</th>
+			    <th>Project</th>
+			    <th>User</th>
+			    <th>Code</th>
+			    <th>Created Date</th>
+			    <th>Action</th>
+			</tr>
+
+			{# table body #}
+			{% for project in pagination %}
+			<tr {% if loop.index is odd %}class="color"{% endif %}>
+			    <td>{{ project.id }}</td>
+			    <td>{{ project.name }}</td>
+			    <td>{{ project.user }}</td>
+			    <td style="text-align:center;">
+			    <span class="well well-sm">{{ project.code }}</span>
+			    </td>
+			    <td>{{ project.created | date('Y-m-d') }}, {{ project.created | date('H:i:s') }}</td>
+			    <td>
+			    	<a style="color:blue;" class="" href="{{path('review_project', {'projectId':project.id})}}">Review</a>
+			    </td>
+			</tr>
+			{% endfor %}
+			</table>
+			{# display navigation #}
+			<div class="navigation">
+			    {{ knp_pagination_render(pagination) }}
+			</div>
+	</div>
+</div>
+{% endblock %}

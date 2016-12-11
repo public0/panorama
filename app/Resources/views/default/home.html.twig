@@ -1,10 +1,35 @@
 {% extends 'base.html.twig' %}
 {% block body %}
 
-<div class="jumbotron text-center">
-  <h1>My First Bootstrap Page</h1>
-  <p>Resize this responsive page to see the effect!</p> 
+
+
+<div class="homebody">
+    <div class="embed-responsive embed-responsive-16by9 absolute">
+      <video loop id="vid" autoplay="" class="embed-responsive-item" name="media"><source src="/panorama/web/video/villa.mp4" type="video/mp4"></video>
+
+      <div class="text-center white-text on-top">
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <h3><strong>VR tours for your property in less than 10 minutes<strong></h3>
+        <br>
+        <br>
+        <br>
+        <a href="">Sign up for beta</a>
+        <br>
+        <br>
+        <br>
+        <br>
+      </div>
+
+    </div>
 </div>
+
 <div class="container">
   <div class="row">
     <div class="col-sm-4">
@@ -24,5 +49,29 @@
     </div>
   </div>
 </div>
+
+<div class="text-center">
+  <br>
+  <br>
+  <br>
+  <br>
+  <h3><strong>VR tours for your property in less than 10 minutes<strong></h3>
+
+  <a href="">Sign up for beta</a>
+
+</div>
+
+  <div class="navbar navbar-default navbar-fixed-bottom">
+    <div class="container">
+      <p class="navbar-text pull-left">© 2016 - Site Built by My Company Co.
+           <a href="http://edgedream.com" target="_blank" >HTML 5 Validation</a>
+      </p>
+      
+      <a href="http://youtu.be/zJahlKPCL9g" class="navbar-btn btn-primary btn pull-right">
+      <span class="glyphicon glyphicon-star"></span>  Subscribe on YouTube</a>
+    </div>
+    
+    
+  </div>
 
 {% endblock %}

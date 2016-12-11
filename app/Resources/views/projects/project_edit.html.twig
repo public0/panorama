@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+{% block body %}
+<div class="container">
+<div class="row">
+
+	<div style="width:50%;  margin: 0 auto;">
+		{{ form_start(form, {'attr': {} }) }}
+		{{form_errors(form)}}
+		{{form_row(form.name)}}
+		{{form_row(form.status)}}
+		{{form_row(form.images)}}
+		{{form_row(form.exporter)}}
+		{{form_row(form.active)}}
+		<input type="submit" value="Save" class="btn btn-success pull-right" />
+		<div class="col-sm-8 label label-default">Code: {{ project.code }}</div>
+
+		{{ form_end(form) }}
+	</div>
+</div>
+	<br>
+
+	<form method ="POST" action="../../imageSave">
+	<input type="hidden" name="project_id" value="{{project.id}}">
+	<table class="table table-hover">
+	<thead>
+      <tr>
+        <th>Image</th>
+        <th>Title</th>
+        <th>Format</th>
+        <th>Order</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+	{%for image in images%}
+		<tr>
+			<td>
+				<a href="{{path('preview_project', {'id':project.user.id, 'project_id': project.id, 'image_id': image.id})}}">
+					<img src="{{download}}{{project.user.id}}/{{project.id}}/images/{{image.name}}" width="150">
+				</a>
+			</td>
+			<td>
+				<input type="hidden" name="image_id[]" value="{{image.id}}">
+				<input type="text" name="title[]" id="exampleInputName3" class="form-control" placeholder="Title" value="{{image.title}}">
+			</td>
+			<td>
+				<select class="form-control" name="exporter[]">
+					{% for format in formats %}
+						<option value="{{format.id}}" {%if image.exporter.id == format.id%} selected {% endif %}>{{format.name}}</option>
+					{% endfor %}
+				</select>
+			</td>
+			<td>
+				<select class="form-control plan" id="{{image.id}}" name="plan[]">
+					{% for i in 1..imageCount %}
+						<option {%if image.plan == i%} selected {% endif %} value="{{i}}">{{i}}</option>
+					{% endfor %}
+				</select>
+			</td>
+			<td>
+				<input type="hidden" name="delete[]" class="delete" value="0">
+				<button class="delete-row btn btn-danger">Delete</button>
+			</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+	</table>
+		<button class="axaj-sub btn btn-success">Save</button>
+	</form>
+</div>
+
+{% endblock %}

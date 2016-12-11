@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				position: absolute;
+				top: 0px; width: 100%;
+				color: #ffffff;
+				padding: 5px;
+				font-family:Monospace;
+				font-size:13px;
+				font-weight: bold;
+				text-align:center;
+			}
+
+			a {
+				color: #ffffff;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div id="container"></div>
+		<div id="info">
+
+		</div>
+
+
+        <script src="{{asset('js/three.js')}}"></script>
+        <script>
+			var camera, scene, renderer, mesh;
+
+			init();
+			animate();
+
+	        function init() {
+				container = document.getElementById( 'container' );
+				var container;
+				renderer = new THREE.WebGLRenderer();
+				scene = new THREE.Scene();
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1100 );
+				camera.position.z = 8;
+
+				var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+				directionalLight.position.set( 0, 1, 0 );
+				scene.add( directionalLight );
+
+//				var geometry = new THREE.SphereGeometry( 1, 50, 50 );
+				var geometry = new THREE.BoxGeometry( 5, 5, 5 );
+
+				geometry.scale( - 1, 1, 1 );
+				console.log(geometry.faces.length);
+/*				for ( var i = 0; i < geometry.faces.length; i += 2 ) {
+
+					var hex = Math.random() * 0xffffff;
+					geometry.faces[ i ].color.setHex( hex );
+					geometry.faces[ i + 1 ].color.setHex( hex );
+
+				}
+				var material = new THREE.MeshBasicMaterial( { vertexColors: THREE.FaceColors, overdraw: 0.5 } );
+*/				
+				var textureLoader = new THREE.TextureLoader();
+
+				texture = textureLoader.load('http://localhost/resources/test_yulio.jpg');
+				console.log(new THREE.Vector2(5, 5));
+
+				var material = new THREE.MeshBasicMaterial( {
+					// http://localhost/panorama/web/uploads/{{userId}}/{{project.id}}/images/{{image.name}} 
+					map: texture//new THREE.TextureLoader().load('http://localhost/resources/test_yulio.jpg')
+				} );
+				mesh = new THREE.Mesh( geometry, material );
+//				mesh.translateZ(-1000);
+				scene.add( mesh );
+	        }
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+				update();
+
+			}
+
+			function update() {
+				mesh.rotateY(.01);
+				renderer.render( scene, camera );
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+		</script>
+	</body>
+</html>

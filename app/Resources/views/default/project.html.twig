@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<div class="container">
+<div class="row">
+
+	{{ form_start(form, {'attr': {'class': 'form-horizontal'} }) }}
+	    {{ form_widget(form) }}
+
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+
+
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+
+		<input type="submit" value="Create" class="btn btn-default pull-right" />
+	{{ form_end(form) }}
+	{%for file in files %}
+		<img src="{{asset(file.pathname)}}" width="150px" />
+	{% endfor %}
+  </div>
+</div>
+
+{% endblock %}

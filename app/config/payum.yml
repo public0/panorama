@@ -1,0 +1,237 @@
+payum:
+    storages:
+        # the first storage is the main one
+        AppBundle\Entity\Payment: { doctrine: orm }
+        # AppBundle\Entity\Payout: { doctrine: orm }
+
+        # AppBundle\Entity\PaymentDetails: { doctrine: orm }
+        # AppBundle\Entity\AgreementDetails: { doctrine: orm }
+        # AppBundle\Entity\RecurringPaymentDetails: { doctrine: orm }
+
+        # AppBundle\Document\PaymentDetails:
+        #     doctrine: mongodb
+        #     extension:
+        #         gateways:
+        #             - paypal_express_checkout_and_doctrine_mongo_odm
+
+        # OtherExamplesBundle\Model\Cart:
+        #     extension:
+        #         gateways:
+        #             - paypal_express_checkout_plus_cart
+        #             - authorize_net_plus_cart
+        #     filesystem:
+        #         storage_dir: "%kernel.root_dir%/Resources/payments"
+        #         id_property: id
+
+        # JMS\Payment\CoreBundle\Entity\Payment:
+        #     extension:
+        #         gateways:
+        #             - paypal_express_checkout_via_jms_plugin
+        #     doctrine: orm
+
+    security:
+        token_storage:
+            AppBundle\Entity\PaymentToken: { doctrine: orm }
+
+    # dynamic_gateways:
+    #     sonata_admin: true
+    #     config_storage:
+    #         AppBundle\Entity\GatewayConfig: { doctrine: orm }
+
+    gateways:
+        core:
+            payum.template.layout: AppBundle::layout.html.twig
+
+        # paypal_masspay:
+        #     factory: paypal_masspay
+        #     username:  "%paypal.masspay.username%"
+        #     password:  "%paypal.masspay.password%"
+        #     signature: "%paypal.masspay.signature%"
+        #     sandbox: true
+
+        paypal_express_checkout_and_doctrine_orm:
+            factory: paypal_express_checkout
+            username:  "alexandru.ivan.daniel-facilitator_api1.gmail.com%"
+            password:  "VDD7EC8DWCNSXRWA"
+            signature: "AFcWxV21C7fd0v3bYYYRCpSSRl31AZ1t8yTL8K4HWorz3S5cRv6Ef0i4"
+            sandbox: true
+
+        # paypal_express_checkout_and_doctrine_mongo_odm:
+        #     factory: paypal_express_checkout
+        #     username:  "%paypal.express_checkout.username%"
+        #     password:  "%paypal.express_checkout.password%"
+        #     signature: "%paypal.express_checkout.signature%"
+        #     sandbox: true
+
+        # paypal_express_checkout_recurring_payment_and_doctrine_orm:
+        #     factory: paypal_express_checkout
+        #     username:  "alexandru.ivan.daniel-facilitator_api1.gmail.com%"
+        #     password:  "VDD7EC8DWCNSXRWA"
+        #     signature: "AFcWxV21C7fd0v3bYYYRCpSSRl31AZ1t8yTL8K4HWorz3S5cRv6Ef0i4"
+        #     sandbox: true
+
+        # paypal_express_checkout_with_ipn_enabled:
+        #     factory: paypal_express_checkout
+        #     username:  "%paypal.express_checkout.username%"
+        #     password:  "%paypal.express_checkout.password%"
+        #     signature: "%paypal.express_checkout.signature%"
+        #     sandbox: true
+        #     payum.action.store_notifications: "@acme.payment.payum.action.store_notification"
+
+        # paypal_express_checkout_and_custom_api:
+        #     factory: paypal_express_checkout
+        #     payum.api: "@acme.payment.payum.paypal_express_checkout_api"
+
+        # paypal_pro_checkout:
+        #     factory: paypal_pro_checkout
+        #     username: "%paypal.pro_checkout.username%"
+        #     password: "%paypal.pro_checkout.password%"
+        #     partner:  "%paypal.pro_checkout.partner%"
+        #     vendor:   "%paypal.pro_checkout.vendor%"
+        #     tender: "foo"
+        #     sandbox: true
+
+        # paypal_pro_hosted:
+        #     factory: paypal_pro_hosted
+        #     username:  "%paypal.pro_hosted.username%"
+        #     password:  "%paypal.pro_hosted.password%"
+        #     signature: "%paypal.pro_hosted.signature%"
+        #     business:  "%paypal.pro_hosted.business%"
+        #     sandbox: true
+        #     payum.action.store_notifications: "@acme.payex.payum.action.store_notification"
+
+        # authorize_net:
+        #     factory: authorize_net_aim
+        #     login_id: "%authorize_net.login_id%"
+        #     transaction_key: "%authorize_net.transaction_key%"
+        #     sandbox: true
+
+        # be2bill:
+        #     factory: be2bill_direct
+        #     identifier: "%be2bill.identifier%"
+        #     password: "%be2bill.password%"
+        #     sandbox: true
+
+        # be2bill_offsite:
+        #     factory: be2bill_offsite
+        #     identifier: "%be2bill.identifier%"
+        #     password: "%be2bill.password%"
+        #     sandbox: true
+        #     payum.action.store_notifications: "@acme.payex.payum.action.store_notification"
+
+        # klarna_invoice:
+        #     factory: klarna_invoice
+        #     secret: "%klarna.invoice.secret%"
+        #     eid: "%klarna.invoice.eid%"
+        #     country: SE
+        #     language: SV
+        #     currency: SEK
+        #     sandbox: true
+
+        # klarna_checkout:
+        #     factory: klarna_checkout
+        #     secret: "%klarna.checkout.secret%"
+        #     merchant_id: "%klarna.checkout.eid%"
+        #     sandbox: true
+        #     payum.extension.store_notification: "@acme.payment.payum.extension.store_notification"
+
+        # paypal_express_checkout_via_omnipay:
+        #     factory: omnipay
+        #     type: PayPal_Express
+        #     username:  "%paypal.express_checkout.username%"
+        #     password:  "%paypal.express_checkout.password%"
+        #     signature: "%paypal.express_checkout.signature%"
+        #     testMode: true
+
+        # stripe_js:
+        #     factory: stripe_js
+        #     publishable_key: "%stripe.publishable_key%"
+        #     secret_key: "%stripe.secret_key%"
+
+        # stripe_checkout:
+        #     factory: stripe_checkout
+        #     publishable_key: "%stripe.publishable_key%"
+        #     secret_key: "%stripe.secret_key%"
+
+        # stripe_via_omnipay:
+        #     factory: omnipay
+        #     type: Stripe
+        #     apiKey:  "%stripe.secret_key%"
+        #     testMode: true
+
+        # payex:
+        #     factory: payex
+        #     account_number:  "%payex.account_number%"
+        #     encryption_key:  "%payex.encryption_key%"
+        #     sandbox: true
+        #     payum.action.store_notifications: "@acme.payex.payum.action.store_notification"
+
+        # payex_agreement:
+        #     factory: payex
+        #     account_number:  "%payex.account_number%"
+        #     encryption_key:  "%payex.encryption_key%"
+        #     sandbox: true
+
+        # redsys:
+        #     factory: redsys
+        #     merchant_code:  "%redsys.merchant_code%"
+        #     terminal:  "%redsys.terminal%"
+        #     secret_key: "%redsys.secret_key%"
+        #     sandbox: true
+
+        # paypal_express_checkout_plus_cart:
+        #     factory: paypal_express_checkout
+        #     username:  "%paypal.express_checkout.username%"
+        #     password:  "%paypal.express_checkout.password%"
+        #     signature: "%paypal.express_checkout.signature%"
+        #     sandbox: true
+        #     payum.action.capture_cart_with_paypal_express_checkout: "@other_examples.payum.action.capture_cart_with_paypal_express_checkout"
+        #     payum.action.status_details_aggregated_null_model: "@other_examples.payum.action.status_details_aggregated_null_model"
+
+        # authorize_net_plus_cart:
+        #     factory: authorize_net_aim
+        #     login_id: "%authorize_net.login_id%"
+        #     transaction_key: "%authorize_net.transaction_key%"
+        #     sandbox: true
+        #     payum.action.capture_cart_with_authorize_net: "@other_examples.payum.action.capture_cart_with_authorize_net"
+        #     payum.action.status_details_aggregated_null_model: "@other_examples.payum.action.status_details_aggregated_null_model"
+
+        # paypal_express_checkout_via_jms_plugin:
+        #     factory: jms_payment
+
+        # offline:
+        #     factory: offline
+
+        # sofort:
+        #     factory: sofort
+        #     config_key: "%sofort.config_key%"
+
+        # foo_bar_gateway:
+        #     factory: core
+        #     payum.action.capture: "@acme_payment.foo_bar.capture"
+        #     payum.action.status: "@acme_payment.foo_bar.status"
+
+services:
+    acme_payment.paypal_express_checkout.gateway_factory:
+        class: Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder
+        arguments: [Payum\Paypal\ExpressCheckout\Nvp\PaypalExpressCheckoutGatewayFactory]
+        tags:
+            - { name: payum.gateway_factory_builder, factory: paypal_express_checkout }
+
+    # acme_payment.redsys.gateway_factory:
+    #     class: Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder
+    #     arguments: [Crevillo\Payum\Redsys\RedsysGatewayFactory]
+    #     tags:
+    #         - { name: payum.gateway_factory_builder, factory: redsys }
+
+    # acme_payment.jms_payment.gateway_factory:
+    #     class: Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder
+    #     arguments: [Payum\Bridge\JMSPayment\JmsGatewayFactory]
+    #     tags:
+    #         - { name: payum.gateway_factory_builder, factory: jms_payment }
+
+    acme_payment.foo_bar.capture:
+        class: OtherExamplesBundle\Payum\FooBarGateway\Action\CaptureAction
+
+    acme_payment.foo_bar.status:
+        class: OtherExamplesBundle\Payum\FooBarGateway\Action\StatusAction

@@ -1,0 +1,54 @@
+body {
+  background: linear-gradient(to right, #555, #CCC 20%, #FFF);
+}
+
+.square > a {
+    text-decoration: none;
+	color: white;
+}
+
+.square > a:hover, a:focus {
+    text-decoration: none;
+	color: white;
+}
+
+
+.white-text {
+	color: white;
+}
+
+.square {
+    float:left;
+    position: relative;
+    width: 20%;
+    padding-bottom : 1%; /* = width for a 1:1 aspect ratio */
+    margin:1.66%;
+    background-position:center center;
+    background-repeat:no-repeat;
+    background-size:cover; /* you change this to "contain" if you don't want the images to be cropped */
+    border: 3px solid gray;
+    background-color: gray;
+}
+
+.square:hover {
+    border: 3px solid darkgray;
+}
+
+.absolute > video {
+    position: absolute;
+    opacity: .8;
+}
+
+.container-table {
+    display: table;
+}
+.vertical-center-row {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.on-top {
+    position: relative;
+    opacity: 1;
+    z-index: 3;
+}

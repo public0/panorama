@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+{% block body %}
+<div class="container">
+<div class="row">
+
+	<div style="width:50%;  margin: 0 auto;">
+		{{ form_start(form, {'attr': {} }) }}
+		{{form_errors(form)}}
+		{{form_row(form.name)}}
+		{{form_row(form.status)}}
+		{{form_row(form.active)}}
+		<input type="submit" value="Save" class="btn btn-default pull-right" />
+
+		{{ form_end(form) }}
+	</div>
+
+  </div>
+</div>
+
+{% endblock %}

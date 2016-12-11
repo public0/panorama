@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+<div class="container">
+	<div class="row">
+
+	<div class="page-header">
+		<h3>Project {{project.name}}</h3>
+	</div>
+	<a style="color:blue;" href="{{download}}{{project.user.id}}/{{project.id}}/sources.zip">Download</a>
+	{{ form_start(form, {'attr': {'class': 'form-horizontal'} }) }}
+	    {{ form_widget(form) }}
+
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+
+
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+
+		<input type="submit" value="Save" class="btn btn-default pull-right" />
+	{{ form_end(form) }}
+	</div>
+	<hr>
+</div>
+{% endblock %}

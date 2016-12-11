@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<div class="container vertical-center">
+  <div class="row text-center">
+    <div class="square">
+      <a href="project/add">
+        <div>
+          <h3>New Project</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+        </div>
+      </a>
+    </div>
+    {% for project in projects %}
+    <div class="square">
+      <a href="{{path('edit_project', {'id':project.id})}}">
+        <div>
+          <h3>{{ project.name|capitalize }}</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+        </div>
+      </a>
+    </div>      
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
