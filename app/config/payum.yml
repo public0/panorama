@@ -51,7 +51,7 @@ payum:
 
         paypal_express_checkout_and_doctrine_orm:
             factory: paypal_express_checkout
-            username:  "alexandru.ivan.daniel-facilitator_api1.gmail.com%"
+            username:  "alexandru.ivan.daniel-facilitator_api1.gmail.com"
             password:  "VDD7EC8DWCNSXRWA"
             signature: "AFcWxV21C7fd0v3bYYYRCpSSRl31AZ1t8yTL8K4HWorz3S5cRv6Ef0i4"
             sandbox: true

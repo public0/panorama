@@ -26,9 +26,9 @@ use Payum\Core\PayumBuilder\GatewayFactory;
 use Payum\Core\Payum;
 use Payum\Core\Request\GetHumanStatus;
 
-//use Payum\Core\Bridge\Symfony\Builder;
-
-use Payum\Paypal\ExpressCheckout\Nvp\PaypalExpressCheckoutGatewayFactory;
+use Payum\Core\Bridge\Symfony\Builder;
+use Payum\Core\PayumBuilder;
+//use Payum\Paypal\ExpressCheckout\Nvp\PaypalExpressCheckoutGatewayFactory;
 
 class ProjectsController extends Controller
 {
@@ -125,7 +125,9 @@ class ProjectsController extends Controller
             $user = $this->container->get('security.token_storage')->getToken()->getUser();
             $userId = $user->getId();
         }
-/*        $payum = (new PayumBuilder())
+/*
+        PAYMENT CODE
+        $payum = (new PayumBuilder())
         ->addDefaultStorages()
 
         ->addGateway('gatewayName', [
@@ -137,20 +139,24 @@ class ProjectsController extends Controller
         ])
 
         ->getPayum();        
-*/
 
-/*        $payment = new Payment;
+
+        $payment = new Payment;
         $payment->setNumber(uniqid());
         $payment->setCurrencyCode('EUR');
         $payment->setTotalAmount(123); // 1.23 EUR
         $payment->setDescription('A description');
         $payment->setClientId('50500');
         $payment->setClientEmail('foo@example.com');
-
+        $payment->setDetails([
+                'RETURNURL' => 'http://example.com',
+                'CANCELURL' => 'http://example.com'
+            ]);
         $gateway = $this->get('payum')->getGateway('paypal_express_checkout_and_doctrine_orm');
-        $gateway->execute(new Capture($payment));
-        $captureToken = $payum->getTokenFactory()->createCaptureToken($gatewayName, $payment, 'done.php');
-        dump($captureToken);
+        $capture = new Capture($payment);
+        $gateway->execute($capture);
+//        $captureToken = $payum->getTokenFactory()->createCaptureToken($gateway, $payment, 'done.php');
+        dump($capture);
         die;
 */        $project = $this->getDoctrine()
             ->getRepository('AppBundle:Project')
@@ -254,7 +260,6 @@ class ProjectsController extends Controller
             return $this->redirectToRoute('edit_project', array('projectId' => $project->getId()));
 
         }
-
         return $this->render('projects/project_edit.html.twig', [
             'form' => $form->createView(),
             //'files' => $finder,
@@ -286,8 +291,10 @@ class ProjectsController extends Controller
         $dir = 'uploads/'.$userId;
         $finder = new Finder();
         $finder->files()->in($dir);
+        $baseurl = $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
 
-        return $this->render('projects/sample.html.twig', [
+        return $this->render('projects/sample2.html.twig', [
+            'baseurl' => $baseurl,
             'image' => $image,
             'userId' => $userId,
             'project' => $project,
