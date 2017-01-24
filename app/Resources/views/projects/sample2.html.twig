@@ -58,7 +58,7 @@
 				var light = new THREE.DirectionalLight( 0xffffbb, 1 );
 				light.position.set( - 1, 1, - 1 );
 				scene.add( light );
-				waterNormals = new THREE.TextureLoader().load( 'http://localhost/resources/test_yulio.jpg' );
+				waterNormals = new THREE.TextureLoader().load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"~image.name}}' );
 				waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
 				// load skybox
 				var cubeMap = new THREE.CubeTexture( [] );

@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
-class ProjectType extends AbstractType
+class AddProjectType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -24,7 +24,7 @@ class ProjectType extends AbstractType
 //        dump($builder);die;
         $builder
             ->add('name', TextType::class, ['required' => true])
-            ->add('active', CheckboxType::class, ['label' => 'Active'])
+//            ->add('active', CheckboxType::class, ['label' => 'Active'])
             ->add('status', ChoiceType::class, [
                 'choices'  => array(
                     'Save' => 0,

@@ -3,7 +3,6 @@
 parameters:
 #    parameter_name: value
 
-services:
 #  admin.level:
 #    class: AppBundle:Controller:AdminController
 

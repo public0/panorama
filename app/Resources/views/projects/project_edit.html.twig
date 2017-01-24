@@ -3,7 +3,12 @@
 {% block body %}
 <div class="container">
 <div class="row">
-
+	<form method="POST" action="{{path('del_project')}}" id="confirmForm">
+		<input type="hidden" name="pid" value="{{project.id}}" />
+		<input type="submit" value="Delete Project" class="btn btn-danger pull-right" />
+	</form>
+</div>		
+<div class="row">
 	<div style="width:50%;  margin: 0 auto;">
 		{{ form_start(form, {'attr': {} }) }}
 		{{form_errors(form)}}
@@ -11,7 +16,6 @@
 		{{form_row(form.status)}}
 		{{form_row(form.images)}}
 		{{form_row(form.exporter)}}
-		{{form_row(form.active)}}
 		<input type="submit" value="Save" class="btn btn-success pull-right" />
 		<div class="col-sm-8 label label-default">Code: {{ project.code }}</div>
 

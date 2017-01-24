@@ -26,8 +26,14 @@
             <li class="active"><a href="{{path('homepage')}}">Home</a></li>
             <li><a href="#about">About</a></li>
             {% if app.user %}
-            <li><a href="{{path('projects')}}">Projects</a></li>
-            {% endif %}            
+            <li><a href="{{path('projects')}}">Projects 
+            {% if app.user.details %}
+                ({{app.user.details.pcount}})
+            {%else%}
+                (0)
+            {%endif%}
+            </a></li>
+            {% endif %}
             <li><a href="#contact">Contact</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -48,7 +54,20 @@
             <li>
                 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                     {#{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }#}
-                    <li><a href="#">{{app.user.username}}</a></li>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{app.user.username}}
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{path('fos_user_profile_edit')}}"> Edit Profile  </a></li>
+
+                    {% if app.user.details %}
+                        <li><a href="{{path('profile_plans')}}"> Change Subscription  </a></li>
+                    {%else%}
+                        <li><a href="{{path('profile_plans')}}"> Subscribe  </a></li>
+                    {%endif%}
+
+                        <li><a href="{{path('fos_user_change_password')}}"> Change Password  </a></li>
+                    </ul>
                     <li><a href="#">|</a></li>
                     <li><a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
                 {% else %}
@@ -78,7 +97,7 @@
             {% endfor %}
         {% endif %}
 
-        <div>
+        <div class="container container-table">
             {% block fos_user_content %}
             {% endblock fos_user_content %}
         </div>
@@ -86,10 +105,13 @@
 
         <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script src="{{ asset('js/bootbox.min.js') }}"></script>
         <script src="{{ asset('js/js.js') }}"></script>
         <script>
             var vid = document.getElementById('vid');
-            vid.volume = .3;
+            if(vid) {
+                vid.volume = .3;
+            }
         </script>
         {% block javascripts %}{% endblock %}
     </body>

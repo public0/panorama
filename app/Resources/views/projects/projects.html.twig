@@ -2,6 +2,7 @@
 {% block body %}
 <div class="container vertical-center">
   <div class="row text-center">
+    {% if(showCreateProject) %}
     <div class="square">
       <a href="project/add">
         <div>
@@ -11,8 +12,14 @@
         </div>
       </a>
     </div>
+    {%endif%}
+    {%set i = 0%}
     {% for project in projects %}
-    <div class="square">
+    {% if images[i] %}
+      <div class="square" data-image="{{images[i].getName()}}">
+    {% else %}
+      <div class="square">
+    {%endif%}
       <a href="{{path('edit_project', {'projectId':project.id})}}">
         <div>
           <h3>{{ project.name|capitalize }}</h3>
@@ -20,7 +27,8 @@
           <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
         </div>
       </a>
-    </div>      
+    </div>
+    {% set i = i + 1 %} 
     {% endfor %}
   </div>
 </div>

@@ -9,12 +9,14 @@ use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity\Project;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Images;
+use AppBundle\Form\AddProjectType;
 use AppBundle\Form\ProjectType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Finder\Finder;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 use Payum\Core\Model\Order;
 use Payum\Core\Model\Payment;
@@ -28,6 +30,13 @@ use Payum\Core\Request\GetHumanStatus;
 
 use Payum\Core\Bridge\Symfony\Builder;
 use Payum\Core\PayumBuilder;
+
+use Payum\Stripe\Request\Api\CreateCustomer;
+use Stripe\Subscription;
+use Payum\Core\Model\PaymentInterface;
+use Stripe\Stripe;
+use Stripe\Customer;
+
 //use Payum\Paypal\ExpressCheckout\Nvp\PaypalExpressCheckoutGatewayFactory;
 
 class ProjectsController extends Controller
@@ -37,7 +46,10 @@ class ProjectsController extends Controller
      */
     public function indexAction(Request $request)
     {
+        Stripe::setApiKey($this->container->getParameter('secret_key'));
+        $user = NULL;        
         $userId = NULL;        
+        $showCreateProject = FALSE;
         if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_REMEMBERED' ) )
         {
             $user = $this->container->get('security.token_storage')->getToken()->getUser();
@@ -45,15 +57,30 @@ class ProjectsController extends Controller
         } else {
             throw $this->createNotFoundException('The product does not exist');
         }
+        $customer = Customer::retrieve($user->getDetails()->getCustomer());
+        if((int)$user->getDetails()->getPcount() < (int)$customer->subscriptions->data[0]->plan->metadata->project_count) {
+            $showCreateProject = TRUE;
+        }
 
-        // replace this example code with whatever you need
         $projects = $this->getDoctrine()
             ->getRepository('AppBundle:Project')
-            ->findBy(['user' => $userId], ['user' => 'DESC']);
-        //dump($projects);die;
+            ->findBy(['user' => $userId, 'status' => [0,1]], ['user' => 'DESC']);
+        $images = NULL;
+        foreach ($projects as $project) {
+            $images[] = $this->getDoctrine()
+                    ->getRepository('AppBundle:Images')
+                    ->findOneBy(['project' => $project->getId()], ['plan' => 'ASC']);
+
+//            dump($image);
+        }            
+        //dump($projects[0]);
+ //      dump($images[0]->getName());
+   //    die;
         return $this->render('projects/projects.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..'),
             'projects' => $projects,
+            'showCreateProject' => $showCreateProject,
+            'images' => $images
         ]);
     }
 
@@ -62,16 +89,22 @@ class ProjectsController extends Controller
      */
     public function addAction(Request $request)
     {
-        $userId = NULL;        
+        Stripe::setApiKey($this->container->getParameter('secret_key'));
+        $user = NULL;
+        $userId = NULL;
         if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_FULLY' ) )
         {
             $user = $this->container->get('security.token_storage')->getToken()->getUser();
             $userId = $user->getId();
         }
+        $customer = Customer::retrieve($user->getDetails()->getCustomer());
+        if((int)$user->getDetails()->getPcount() >= (int)$customer->subscriptions->data[0]->plan->metadata->project_count) {
+            return $this->redirectToRoute('projects', array());            
+        }
         $em = $this->getDoctrine()->getManager();
 
         $project = new Project();
-        $form = $this->createForm(ProjectType::class, $project);
+        $form = $this->createForm(AddProjectType::class, $project);
         $form->remove('images');
         $form->remove('exporter');
         $form->handleRequest($request);
@@ -86,7 +119,9 @@ class ProjectsController extends Controller
             $project->setAndroid(1);
             $project->setReviewed(0);
             $project->setCode();
+            $user->getDetails()->incPcount();
             $em->persist($project);
+            $em->persist($user);
             $em->flush();
             $dir = 'uploads/'.$userId.'/'.$project->getId().'/bundles';
             $fs = new Filesystem();
@@ -106,18 +141,12 @@ class ProjectsController extends Controller
      */
     public function editAction(Request $request, $projectId)
     {
+/*        $subscription = new \ArrayObject([
+          "customer" => 'cus_9vkHwjipijIfxq',
+          "plan" => "starter"
+        ]);
 
-/*        $txt = '';
-        $images = $this->getDoctrine()
-            ->getRepository('AppBundle:Images')
-            ->findBy(['project' => $projectId], ['id' => 'ASC']);
-
-        foreach ($images as $image) {
-
-            $txt .= $image->getName().'\n';
-        }
-
-        dump($txt);die;
+        $this->get('payum')->getGateway('stripe_checkout')->execute(Subscription::create($subscription));
 */
         $userId = NULL;        
         if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_FULLY' ) )
@@ -125,9 +154,9 @@ class ProjectsController extends Controller
             $user = $this->container->get('security.token_storage')->getToken()->getUser();
             $userId = $user->getId();
         }
-/*
-        PAYMENT CODE
-        $payum = (new PayumBuilder())
+
+//        PAYMENT CODE
+/*        $payum = (new PayumBuilder())
         ->addDefaultStorages()
 
         ->addGateway('gatewayName', [
@@ -138,27 +167,24 @@ class ProjectsController extends Controller
             'sandbox'   => true,
         ])
 
-        ->getPayum();        
+        ->getPayum();
 
 
         $payment = new Payment;
         $payment->setNumber(uniqid());
         $payment->setCurrencyCode('EUR');
-        $payment->setTotalAmount(123); // 1.23 EUR
-        $payment->setDescription('A description');
-        $payment->setClientId('50500');
-        $payment->setClientEmail('foo@example.com');
+        $payment->setTotalAmount(1230); // 1.230 EUR
+//        $payment->setDescription('A description');
+//        $payment->setClientId('50500');
+//        $payment->setClientEmail('foo@example.com');
         $payment->setDetails([
                 'RETURNURL' => 'http://example.com',
-                'CANCELURL' => 'http://example.com'
+                'CANCELURL' => 'http://example.com/1/1'
             ]);
         $gateway = $this->get('payum')->getGateway('paypal_express_checkout_and_doctrine_orm');
         $capture = new Capture($payment);
-        $gateway->execute($capture);
-//        $captureToken = $payum->getTokenFactory()->createCaptureToken($gateway, $payment, 'done.php');
-        dump($capture);
-        die;
-*/        $project = $this->getDoctrine()
+*/
+        $project = $this->getDoctrine()
             ->getRepository('AppBundle:Project')
             ->find((int)$projectId);
 
@@ -268,6 +294,34 @@ class ProjectsController extends Controller
             'formats' => $formats,
             'project' => $project
         ]);
+    }
+
+    /**
+     * @Route("/project/del/", name="del_project")
+     * @Method({"POST"})
+     */
+    public function delAction(Request $request)
+    {
+        $userId = NULL;        
+        $user = NULL;
+        if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_FULLY' ) )
+        {
+            $user = $this->container->get('security.token_storage')->getToken()->getUser();
+            $userId = $user->getId();
+        }
+        $project = $this->getDoctrine()
+            ->getRepository('AppBundle:Project')
+            ->find((int)$request->request->get('pid'));
+
+        $em = $this->getDoctrine()->getManager();
+        // status 2 == deleted
+        $project->setStatus(2);
+        $user->getDetails()->decPcount();
+
+        $em->persist($user);
+        $em->persist($project);
+        $em->flush();
+        return $this->redirectToRoute('projects');
     }
 
     /**

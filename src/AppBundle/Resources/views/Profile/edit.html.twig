@@ -1,0 +1,24 @@
+{% extends "base.html.twig" %}
+{% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+
+{% block title %}AppBundle:Profile:edit{% endblock %}
+
+{% block body %}
+
+	<div style="width:50%;  margin: 0 auto;">
+
+		{{ form_start(form, {'attr': {'class' : 'form-horizontal'} }) }}
+
+		{{form_errors(form)}}
+		<a href="#"><i class="glyphicon glyphicon-info-sign"></i></a>
+		{{form_row(form.account)}}
+		{{form_row(form.username)}}
+		{{form_row(form.email)}}
+
+		<input type="submit" value="Save" class="btn btn-default pull-right" />
+
+		{{ form_end(form) }}
+
+	</div>
+
+{% endblock %}

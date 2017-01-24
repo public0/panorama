@@ -38,6 +38,9 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
     cache: false
+    globals:
+        myTwigVariable: "AAAAAAAAAA"
+
 # Doctrine Configuration
 doctrine:
     dbal:

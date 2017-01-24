@@ -3,6 +3,9 @@ $(function() {
 	var id;
 	var val;
 
+	if (typeof Stripe !== 'undefined') {
+		Stripe.setPublishableKey('pk_test_N0X4Jek9xE7dGCLyOGbGJJ2A');
+	}
 	$(".plan").on('focus', function () {
         previous = this.value;
         id = $(this).attr('id');
@@ -47,4 +50,55 @@ $(function() {
 
 		return false;
 	})
+
+	var $form = $('#payment-form');
+		$form.submit(function(event) {
+		// Disable the submit button to prevent repeated clicks:
+		$form.find('.submit').prop('disabled', true);
+
+		// Request a token from Stripe:
+		if (typeof Stripe !== 'undefined') {
+		Stripe.card.createToken($form, stripeResponseHandler);
+		}
+		// Prevent the form from being submitted:
+		return false;
+	});
+
+
+	function stripeResponseHandler(status, response) {
+
+		// Grab the form:
+		var $form = $('#payment-form');
+		if (response.error) { // Problem!
+			$form.removeClass('alert alert-danger');
+
+			// Show the errors on the form
+			$form.find('.payment-errors').text(response.error.message).addClass('alert alert-danger');
+			$form.find('button').prop('disabled', false); // Re-enable submission
+
+		} else { // Token was created!
+
+		// Get the token ID:
+		var token = response.id;
+
+		// Insert the token into the form so it gets submitted to the server:
+		$form.append($('<input type="hidden" name="stripe-token" />').val(token));
+
+		// Submit the form:
+		$form.get(0).submit();
+
+		}
+	}
+
+	$( "#confirmForm" ).submit(function( event ) {
+		var form = this;
+//		console.log(form);
+		bootbox.confirm("<p>Delete project ?</p>", function(result){ 
+			if(result) {
+				form.submit();
+			}
+		});
+		event.preventDefault();
+	});	
+
 });

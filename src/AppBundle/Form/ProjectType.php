@@ -24,12 +24,11 @@ class ProjectType extends AbstractType
 //        dump($builder);die;
         $builder
             ->add('name', TextType::class, ['required' => true])
-            ->add('active', CheckboxType::class, ['label' => 'Active', 'required' => false])
+            //->add('active', CheckboxType::class, ['label' => 'Active', 'required' => false])
             ->add('status', ChoiceType::class, [
                 'choices'  => array(
-                    'Save' => 0,
-                    'Preview' => 1,
-                    'Publish' => 2,
+                    'Private' => 0,
+                    'Public' => 1,
                 )
                 ]
             )

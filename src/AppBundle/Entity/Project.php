@@ -54,13 +54,6 @@ class Project
     /**
      * @var bool
      *
-     * @ORM\Column(name="active", type="boolean")
-     */
-    private $active;
-
-    /**
-     * @var bool
-     *
      * @ORM\Column(name="reviewed", type="boolean")
      */
     private $reviewed;

@@ -52,3 +52,8 @@ body {
     opacity: 1;
     z-index: 3;
 }
+
+.flash-success {
+    text-align: center;
+    color: #3c763d;
+}
