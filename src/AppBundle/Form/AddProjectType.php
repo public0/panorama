@@ -27,9 +27,8 @@ class AddProjectType extends AbstractType
 //            ->add('active', CheckboxType::class, ['label' => 'Active'])
             ->add('status', ChoiceType::class, [
                 'choices'  => array(
-                    'Save' => 0,
-                    'Preview' => 1,
-                    'Publish' => 2,
+                    'Private' => 0,
+                    'Public' => 1,
                 )
                 ]
             );
