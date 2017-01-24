@@ -1,0 +1,28 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: localhost
+    database_port: null
+    database_name: panorama
+    database_user: root
+    database_password: light
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: alexandru.ivan.daniel@gmail.com
+    mailer_password: L1ghts@beroffice
+    secret: ThisTokenIsNotSoSecretChangeIt
+    publishable_key: pk_test_N0X4Jek9xE7dGCLyOGbGJJ2A
+    secret_key: sk_test_UBQe7LVzIYk3tqG6BIUCy9du
+
+knp_paginator:
+    page_range: 2
+    default_options:
+        page_name: page
+        sort_field_name: sort
+        sort_direction_name: direction
+        distinct: true
+    template:
+        pagination: 'KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig'
+        sortable: 'KnpPaginatorBundle:Pagination:sortable_link.html.twig'
+twig:
+    globals:
+        download: /panorama/web/uploads/
