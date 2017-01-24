@@ -60,11 +60,11 @@ class ProjectsController extends Controller
         }
         if($user->getDetails() && $user->getDetails()->getCustomer()) {
             $customer = Customer::retrieve($user->getDetails()->getCustomer());
+            if((int)$user->getDetails()->getPcount() < (int)$customer->subscriptions->data[0]->plan->metadata->project_count) {
+                $showCreateProject = TRUE;
+            }
         } else {
             $showCreateProject = FALSE;            
-        }
-        if((int)$user->getDetails()->getPcount() < (int)$customer->subscriptions->data[0]->plan->metadata->project_count) {
-            $showCreateProject = TRUE;
         }
 
         $projects = $this->getDoctrine()
