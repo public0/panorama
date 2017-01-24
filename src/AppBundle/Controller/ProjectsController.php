@@ -50,6 +50,7 @@ class ProjectsController extends Controller
         $user = NULL;        
         $userId = NULL;        
         $showCreateProject = FALSE;
+        $customer = NULL;
         if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_REMEMBERED' ) )
         {
             $user = $this->container->get('security.token_storage')->getToken()->getUser();
@@ -57,7 +58,11 @@ class ProjectsController extends Controller
         } else {
             throw $this->createNotFoundException('The product does not exist');
         }
-        $customer = Customer::retrieve($user->getDetails()->getCustomer());
+        if($user->getDetails() && $user->getDetails()->getCustomer()) {
+            $customer = Customer::retrieve($user->getDetails()->getCustomer());
+        } else {
+            $showCreateProject = FALSE;            
+        }
         if((int)$user->getDetails()->getPcount() < (int)$customer->subscriptions->data[0]->plan->metadata->project_count) {
             $showCreateProject = TRUE;
         }
