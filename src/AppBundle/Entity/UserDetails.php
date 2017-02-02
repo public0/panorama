@@ -29,9 +29,23 @@ class UserDetails
     private $pcount;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="cubecount", type="smallint", options={"default"=0})
+     */
+    private $cubecount = 0;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="activecubecount", type="smallint", options={"default"=0})
+     */
+    private $activecubecount = 0;
+
+    /**
      * @ORM\Column(type="string", length=32, options={}, nullable=true)
      */
-    protected $customer;
+    protected $customer = 0;
 
     /**
      * Get id
@@ -42,6 +56,113 @@ class UserDetails
     {
         return $this->id;
     }
+
+    /**
+     * Increment pcount
+     *
+     * @param integer $cubecount
+     *
+     * @return UserDetails
+     */
+    public function decCubeCount()
+    {
+        $this->cubecount = $this->cubecount-=1;
+
+        return $this;
+    }
+
+    /**
+     * Increment pcount
+     *
+     * @param integer $cubecount
+     *
+     * @return UserDetails
+     */
+    public function incCubeCount()
+    {
+        $this->cubecount = $this->cubecount+=1;
+
+        return $this;
+    }
+
+
+    /**
+     * Set cubecount
+     *
+     * @param integer $cubecount
+     *
+     * @return UserDetails
+     */
+    public function setCubeCount($cubecount)
+    {
+        $this->cubecount = $cubecount;
+
+        return $this;
+    }
+
+    /**
+     * Get cubecount
+     *
+     * @return int
+     */
+    public function getCubeCount()
+    {
+        return $this->cubecount;
+    }
+
+
+    /**
+     * Set activecubecount
+     *
+     * @param integer $activecubecount
+     *
+     * @return UserDetails
+     */
+    public function setActiveCubeCount($activecubecount)
+    {
+        $this->activecubecount = $activecubecount;
+
+        return $this;
+    }
+
+    /**
+     * Get activecubecount
+     *
+     * @return int
+     */
+    public function getActiveCubeCount()
+    {
+        return $this->activecubecount;
+    }
+
+    /**
+     * Decrement activecubecount
+     *
+     * @param integer $activecubecount
+     *
+     * @return UserDetails
+     */
+    public function decActiveCubeCount()
+    {
+        $this->activecubecount = $this->activecubecount-=1;
+
+        return $this;
+    }
+
+    /**
+     * Increment activecubecount
+     *
+     * @param integer $activecubecount
+     *
+     * @return UserDetails
+     */
+    public function incActiveCubeCount()
+    {
+        $this->activecubecount = $this->activecubecount+=1;
+
+        return $this;
+    }
+
 
     /**
      * Increment pcount

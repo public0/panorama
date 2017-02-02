@@ -34,7 +34,7 @@ $(function() {
 		var input = $(this).prev();
 
 		input.val(input.val()==1?0:1);
-		(input.val()==1)?$(this).removeClass('btn-danger').addClass('btn-success').html('Keep'):$(this).removeClass('btn-success').addClass('btn-danger').html('Delete');
+		(input.val()==1)?$(this).removeClass('btn-danger').addClass('btn-success').html('Keep'):$(this).removeClass('btn-success').addClass('btn-danger').html('Discard');
 
 		e.preventDefault();
 	})
@@ -44,7 +44,14 @@ $(function() {
 
 
 	$.post( "../../imageSave", form.serialize()).done(function( data ) {
-		$( ".result" ).html( data );
+		switch(parseInt(data)) {
+			case 0:
+				$( ".result" ).html('<span class="alert alert-success glyphicon glyphicon-check">Updated</span>' );
+			break;
+			case 1:
+				$( ".result" ).html('<span class="alert alert-warning glyphicon glyphicon-warning-sign"> Cubemap Limit</span>' );
+			break;
+		}
 		console.log(data);
 	});
 

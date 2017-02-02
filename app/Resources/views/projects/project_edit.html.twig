@@ -14,9 +14,15 @@
 		{{form_errors(form)}}
 		{{form_row(form.name)}}
 		{{form_row(form.status)}}
+		{%if(showCubemap)%}
+		<hr>
 		{{form_row(form.images)}}
 		{{form_row(form.exporter)}}
+		<hr>
+		{%endif%}
+		<br>
 		<input type="submit" value="Save" class="btn btn-success pull-right" />
+
 		<div class="col-sm-8 label label-default">Code: {{ project.code }}</div>
 
 		{{ form_end(form) }}
@@ -63,14 +69,28 @@
 				</select>
 			</td>
 			<td>
-				<input type="hidden" name="delete[]" class="delete" value="0">
-				<button class="delete-row btn btn-danger">Delete</button>
+				{%if(image.status)%}
+					<input type="hidden" name="delete[]" class="delete" value="0">
+					<button class="delete-row btn btn-danger">Discard</button>
+				{%else%}
+					<input type="hidden" name="delete[]" class="delete" value="1">
+					<button class="delete-row btn btn-success">Keep</button>
+				{%endif%}
 			</td>
 		</tr>
 	{% endfor %}
 	</tbody>
 	</table>
-		<button class="axaj-sub btn btn-success">Save</button>
+	<div class="container">
+		<div class="row">
+			<div class="col col-lg-6">
+				<button class="axaj-sub alert btn btn-success">Update Project</button>
+			</div>
+			<div class="col col-lg-6">
+				<span class="result"></span>			
+			</div>
+		</div>
+	</div>
 	</form>
 </div>
 

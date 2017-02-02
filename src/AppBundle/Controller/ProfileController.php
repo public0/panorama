@@ -24,6 +24,7 @@ use Stripe\Customer;
 
 class ProfileController extends Controller
 {
+	// NOT USED
     /**
      * @Route("profile/editz", name="profile_edit")
      */
@@ -52,8 +53,25 @@ class ProfileController extends Controller
      */
     public function plansAction(Request $request)
 	{
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+		$currentPlan = NULL;
+
+		Stripe::setApiKey($this->container->getParameter('secret_key'));
+		if($details = $user->getDetails()) {
+			// if user has a stripe customer in db
+			if($cusStr = $details->getCustomer()) {
+				// if user has a stripe customer in stripe
+				if($customer = Customer::retrieve($cusStr)) {
+					if($customer->subscriptions && $customer->subscriptions->data) {
+						$currentPlan = $customer->subscriptions->data[0]->plan->id;
+					}
+				}
+			}
+		}
+
 		$plans = Plan::all(NULL, $this->container->getParameter('secret_key'));
 		return $this->render('AppBundle:Profile:plans.html.twig', array(
+			'currentPlan' => $currentPlan,
 			'plans' => $plans
 		));
 	}    

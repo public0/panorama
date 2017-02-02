@@ -60,8 +60,10 @@ class ProjectsController extends Controller
         }
         if($user->getDetails() && $user->getDetails()->getCustomer()) {
             $customer = Customer::retrieve($user->getDetails()->getCustomer());
-            if((int)$user->getDetails()->getPcount() < (int)$customer->subscriptions->data[0]->plan->metadata->project_count) {
+            if($customer->subscriptions) {
                 $showCreateProject = TRUE;
+            } else {
+                $showCreateProject = FALSE;            
             }
         } else {
             $showCreateProject = FALSE;            
@@ -77,7 +79,7 @@ class ProjectsController extends Controller
                     ->findOneBy(['project' => $project->getId()], ['plan' => 'ASC']);
 
 //            dump($image);
-        }            
+        }
         //dump($projects[0]);
  //      dump($images[0]->getName());
    //    die;
@@ -103,7 +105,7 @@ class ProjectsController extends Controller
             $userId = $user->getId();
         }
         $customer = Customer::retrieve($user->getDetails()->getCustomer());
-        if((int)$user->getDetails()->getPcount() >= (int)$customer->subscriptions->data[0]->plan->metadata->project_count) {
+        if($customer->subscriptions) {
             return $this->redirectToRoute('projects', array());            
         }
         $em = $this->getDoctrine()->getManager();
@@ -146,18 +148,22 @@ class ProjectsController extends Controller
      */
     public function editAction(Request $request, $projectId)
     {
-/*        $subscription = new \ArrayObject([
-          "customer" => 'cus_9vkHwjipijIfxq',
-          "plan" => "starter"
-        ]);
-
-        $this->get('payum')->getGateway('stripe_checkout')->execute(Subscription::create($subscription));
-*/
+        $showCubemap = FALSE;
+        Stripe::setApiKey($this->container->getParameter('secret_key'));
         $userId = NULL;        
         if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_FULLY' ) )
         {
             $user = $this->container->get('security.token_storage')->getToken()->getUser();
             $userId = $user->getId();
+        }
+
+        if($user->getDetails() && $user->getDetails()->getCustomer()) {
+            $customer = Customer::retrieve($user->getDetails()->getCustomer());
+            if((int)$user->getDetails()->getActiveCubeCount() < (int)$customer->subscriptions->data[0]->plan->metadata->cubemap_count) {
+                $showCubemap = TRUE;
+            }
+        } else {
+            $showCubemap = FALSE;            
         }
 
 //        PAYMENT CODE
@@ -217,6 +223,7 @@ class ProjectsController extends Controller
             try {
                 if($form['images']->getData()) {
                     $fs->mkdir($dir.'/images');
+                    $fs->mkdir($dir.'/backups');
                     $newName = md5($form['images']->getData()->getClientOriginalName().time()).'.'.
                     $form['images']->getData()->getClientOriginalExtension();
 
@@ -236,10 +243,13 @@ class ProjectsController extends Controller
                 $user = $this->getDoctrine()
                 ->getRepository('AppBundle:User')
                 ->find((int)$userId);
+                $user->getDetails()->incCubeCount();
+                $user->getDetails()->incActiveCubeCount();
 
                 $project->setUser($user);
                 $project->setReviewed(0);
 
+                $em->persist($user);
                 $em->persist($project);
                 $em->flush();
 
@@ -297,7 +307,8 @@ class ProjectsController extends Controller
             'images' => $images,
             'imageCount' => $imageCount,
             'formats' => $formats,
-            'project' => $project
+            'project' => $project,
+            'showCubemap' => $showCubemap
         ]);
     }
 

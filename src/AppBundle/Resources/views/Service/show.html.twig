@@ -24,6 +24,18 @@
 		</style>
 	</head>
 	<body>
+		<ul id="images" style="display:none;">
+			{% set i = 0 %}
+			{%for image in images %}
+			{%if i == 0 %}
+				<li class="image current">{{image.name}}</li>
+			{% else %}
+				<li class="image">{{image.name}}</li>
+			{% endif %}
+				{% set i = i+1 %}
+			{%endfor%}
+		</ul>
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
         <script src="{{asset('js/three.js')}}"></script>
         <script src="{{asset('js/OrbitControls.js')}}"></script>
         <script src="{{asset('js/Detector.js')}}"></script>
@@ -36,10 +48,42 @@
 			}
 			var container, stats;
 			var camera, scene, renderer, raycaster, mouse;
-			init();
-			animate();
-			function init() {
+/*
+			document.addEventListener("keydown", function(e) {
+				switch(e.keyCode) {
+					case 37:
+						var image = $('.current');
+						if($( "li.current" ).prev()[0]) {
+							$( "li.current" ).prev().addClass('current');
+							image.removeClass('current');
+							var newImage = $('.current');
+							restart(newImage.text());
+						}
+					break
+
+					case 39:
+						var image = $('.current');
+						if($( "li.current" ).next()[0]) {
+							$( "li.current" ).next().addClass('current');
+							image.removeClass('current');
+							var newImage = $('.current');
+							restart(newImage.text());
+						}
+					break;
+				}
+			}, false);
+*/
+			function restart(val) {
+				init(val);
+				animate();
+			}
+			restart($( "li.current" ).text());
+//			init(0);
+//			animate();
+			function init(i) {
+				$('#main').remove();
 				container = document.createElement( 'div' );
+				container.setAttribute('id', 'main');
 				document.body.appendChild( container );
 				renderer = new THREE.WebGLRenderer();
 				renderer.setPixelRatio( window.devicePixelRatio );
@@ -60,13 +104,18 @@
 				var light = new THREE.DirectionalLight( 0xffffbb, 1 );
 				light.position.set( - 1, 1, - 1 );
 				scene.add( light );
-				waterNormals = new THREE.TextureLoader().load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"~image.name}}' );
+				waterNormals = new THREE.TextureLoader().load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+i );
 				waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
 				// load skybox
 				var cubeMap = new THREE.CubeTexture( [] );
 				cubeMap.format = THREE.RGBFormat;
 				var loader = new THREE.ImageLoader();
-				loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"~image.name}}', function ( image ) {
+				document.addEventListener( 'wheel', onDocumentMouseWheel, false );
+				document.addEventListener( 'mousemove', onMouseMove, false );
+
+				loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+i, function ( image ) {
+					document.addEventListener( 'wheel', onDocumentMouseWheel, false );
+					document.addEventListener( 'mousemove', onMouseMove, false );
 					var getSide = function ( x, y ) {
 						var size = 1536;
 						var canvas = document.createElement( 'canvas' );
@@ -78,8 +127,6 @@
 						return canvas;
 					};
 
-				document.addEventListener( 'wheel', onDocumentMouseWheel, false );
-				document.addEventListener( 'mousemove', onMouseMove, false );
 
 					cubeMap.images[ 0 ] = getSide( 0, 1 ); // px
 					cubeMap.images[ 1 ] = getSide( 1, 1 ); // px
@@ -88,14 +135,56 @@
 					cubeMap.images[ 4 ] = getSide( 4, 1 ); // px
 					cubeMap.images[ 5 ] = getSide( 5, 6 ); // px
 
-/*					cubeMap.images[ 0 ] = getSide( 2, 1 ); // px
-					cubeMap.images[ 1 ] = getSide( 0, 1 ); // nx
-					cubeMap.images[ 2 ] = getSide( 1, 0 ); // py
-					cubeMap.images[ 3 ] = getSide( 2, 2 ); // ny
-					cubeMap.images[ 4 ] = getSide( 1, 1 ); // pz
-					cubeMap.images[ 5 ] = getSide( 3, 1 ); // nz
-*/					cubeMap.needsUpdate = true;
+					cubeMap.needsUpdate = true;
 				} );
+
+				document.addEventListener("keydown", function(e) {
+					switch(e.keyCode) {
+						case 37:
+							var image = $('.current');
+							if($( "li.current" ).prev()[0]) {
+								$( "li.current" ).prev().addClass('current');
+								image.removeClass('current');
+								var newImage = $('.current');
+							}
+						break
+
+						case 39:
+							var image = $('.current');
+							if($( "li.current" ).next()[0]) {
+								$( "li.current" ).next().addClass('current');
+								image.removeClass('current');
+								var newImage = $('.current');
+							}
+						break;
+					}
+					loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+newImage.text(), function ( image ) {
+						document.addEventListener( 'wheel', onDocumentMouseWheel, false );
+						document.addEventListener( 'mousemove', onMouseMove, false );
+						var getSide = function ( x, y ) {
+							var size = 1536;
+							var canvas = document.createElement( 'canvas' );
+							canvas.width = size;
+							canvas.height = size;
+							var context = canvas.getContext( '2d' );
+							context.drawImage( image, - x * size, 0 );
+							return canvas;
+						};
+
+
+						cubeMap.images[ 0 ] = getSide( 0, 1 ); // px
+						cubeMap.images[ 1 ] = getSide( 1, 1 ); // px
+						cubeMap.images[ 2 ] = getSide( 2, 1 ); // px
+						cubeMap.images[ 3 ] = getSide( 3, 4 ); // px
+						cubeMap.images[ 4 ] = getSide( 4, 1 ); // px
+						cubeMap.images[ 5 ] = getSide( 5, 6 ); // px
+
+						cubeMap.needsUpdate = true;
+					} );
+					
+				}, false);
+
+
 				var cubeShader = THREE.ShaderLib[ 'cube' ];
 				cubeShader.uniforms[ 'tCube' ].value = cubeMap;
 				var skyBoxMaterial = new THREE.ShaderMaterial( {
@@ -152,5 +241,3 @@
 		</script>
 	</body>
 </html>
-Contact GitHub API Training Shop Blog About
-© 2016 GitHub, Inc. Terms Privacy Security Status Help

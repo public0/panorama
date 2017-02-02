@@ -6,7 +6,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
+use Symfony\Component\Filesystem\Filesystem;
+use Stripe\Stripe;
+use Stripe\Customer;
+	
 class AjaxController extends Controller
 {
     /**
@@ -14,7 +17,14 @@ class AjaxController extends Controller
      */
     public function imageSaveAction(Request $request)
     {
+        Stripe::setApiKey($this->container->getParameter('secret_key'));
         $userId = NULL;        
+        $fs = new Filesystem();
+        $activeCubemaps   = 0;
+        $inactiveCubemaps   = 0;
+        $totalCubemaps 	  = 0;
+        $projectActiveCubemaps = 0;
+
         if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_FULLY' ) )
         {
             $user = $this->container->get('security.token_storage')->getToken()->getUser();
@@ -32,15 +42,31 @@ class AjaxController extends Controller
 	        if(!$project) {
 	        	return new Response('Problem finding project');
 	        }
+	        $dir = 'uploads/'.$userId.'/'.$project->getId();
+
 	        // Save to DB
+	        if($_POST['image_id']) {
+        		$totalCubemaps = count($_POST['image_id']);
+	        }
 	        for ($i=0; $i < count($_POST['image_id']); $i++) {
 		        $image = $this->getDoctrine()
 		            ->getRepository('AppBundle:Images')
 		            ->find($_POST['image_id'][$i]);
 		        if($_POST['delete'][$i]) {
-		        	$image->remove();
+		        	$inactiveCubemaps++;
+		        	$image->setStatus(0);
+		        	if($fs->exists($dir.'/images/'.$image->getName())) {
+			        	$fs->copy($dir.'/images/'.$image->getName(), $dir.'/backups/'.$image->getName());
+		        	}
 		            $em->persist($image);
-		            continue;
+		        } else {
+		        	$activeCubemaps++;
+		        	$image->setStatus(1);
+		        	if($fs->exists($dir.'/backups/'.$image->getName())) {
+			        	$fs->copy($dir.'/backups/'.$image->getName(), $dir.'/images/'.$image->getName());
+			        	$fs->remove($dir.'/backups/'.$image->getName());
+			        }
+		            $em->persist($image);
 		        }
 
 		        $image->setTitle($_POST['title'][$i]);
@@ -51,27 +77,18 @@ class AjaxController extends Controller
 		        $image->setPlan($_POST['plan'][$i]);
 	            $em->persist($image);
 	        }
-	        $em->flush();
             $zip = new \ZipArchive();
 	        // Save to DB
 
             // Write to csv
-	        $dir = 'uploads/'.$userId.'/'.$project->getId();
 
 	        $images = $this->getDoctrine()
 	            ->getRepository('AppBundle:Images')
-	            ->findBy(['project' => $_POST['project_id']], ['plan' => 'ASC']);
+	            ->findBy(['project' => $_POST['project_id'], 'status' => 1], ['plan' => 'ASC']);
 
             $f = fopen($dir.'/images/data.csv', 'w');
-/*            $data = [];
-                fputcsv($f, [
-                	'',
-                	'',
-                	'',
-                	'',
-                	]
-                );
-*/            foreach ($images as $image) {
+
+            foreach ($images as $image) {
                 fputcsv($f, [
 	                	$image->getPlan(),
 	                	$image->getExporter()->getId(),
@@ -98,11 +115,21 @@ class AjaxController extends Controller
                 $zip->close();
 
 			}
+			$projectActiveCubemaps = ($user->getDetails()->getCubeCount() - $totalCubemaps) + $activeCubemaps;
+
+//			$projectActiveCubemaps = $user->getDetails()->getCubeCount() - $inactiveCubemaps + $activeCubemaps;
+			$user->getDetails()->setActiveCubeCount($projectActiveCubemaps);
+			$em->persist($user);
+            $customer = Customer::retrieve($user->getDetails()->getCustomer());
+	        if($projectActiveCubemaps > (int)$customer->subscriptions->data[0]->plan->metadata->cubemap_count) {
+				return new Response(1);
+	        }
+
+	        $em->flush();
 
 			// Archive Project
 		}
-//		var_dump($project);
-		return new Response('');
+		return new Response(0);
 /*        return $this->render('AppBundle:Ajax:image_save.html.twig', array(
         ));
 */    }
