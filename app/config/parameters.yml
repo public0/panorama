@@ -26,3 +26,4 @@ knp_paginator:
 twig:
     globals:
         download: /panorama/web/uploads/
+        video: /panorama/web/
