@@ -105,7 +105,7 @@ class ProjectsController extends Controller
             $userId = $user->getId();
         }
         $customer = Customer::retrieve($user->getDetails()->getCustomer());
-        if($customer->subscriptions) {
+        if(!$customer->subscriptions) {
             return $this->redirectToRoute('projects', array());            
         }
         $em = $this->getDoctrine()->getManager();
