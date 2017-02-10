@@ -1,17 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>three.js webgl - geometry - terrain</title>
+		<title>{{project.name}}</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css"
+          href="https://fonts.googleapis.com/css?family=Indie+Flower">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
 		<style>
 			body {
 				color: #000;
 				font-family:Monospace;
-				font-size:13px;
+				font-size:18px;
 				margin: 0px;
 				overflow: hidden;
 			}
+
+			.overlay {
+			    height: 0%;
+			    height: 100%;
+			    width: 100%;
+			    position: fixed;
+			    z-index: 1;
+			    top: 0;
+			    left: 0;
+			    background-color: rgb(0,0,0);
+			    background-color: rgba(0,0,0, 0.9);
+			    overflow-y: hidden;
+			    transition: 0.5s;
+			}
+
+			ul {
+				list-style: none;
+			}
+
+			.overlay-content {
+			    position: relative;
+			    width: 100%;
+			    margin-top: 30px;
+			    color:white;
+			    list-style: none;
+			}
+
+			.overlay a {
+			    padding: 8px;
+			    text-decoration: none;
+			    color: #818181;
+			    display: block;
+			    transition: 0.3s;
+			}
+
+
+			.overlay a:hover, .overlay a:focus {
+			    color: #FFF;
+			}
+
+			.overlay .closebtn {
+			    position: absolute;
+				font-size: 30px;
+				right: 0;
+				margin-right: 20px;
+				cursor:pointer;
+				z-index: -1;
+			}
+
+			.overlay-content li {
+				cursor: pointer;
+				font-family: 'Indie Flower', serif;
+				font-size: 32;
+
+			}
+
+			.overlay-content li:hover {
+				color: gray;
+			}
+
+			@media screen and (max-height: 450px) {
+			  .overlay {overflow-y: auto;}
+			  .overlay a {font-size: 20px}
+			  .overlay .closebtn {
+			    top: 15px;
+			    right: 35px;
+			  }
+			}
+
+			.menu {
+				position: absolute;
+				font-size: 30px;
+				right: 0;
+				margin-right: 20px;
+				cursor:pointer;
+			    color: gray;
+			}
+
+			.menu:hover {
+			    color: white;
+			}
+
 			#info {
 				position: absolute;
 				top: 0px; width: 100%;
@@ -24,23 +111,62 @@
 		</style>
 	</head>
 	<body>
+	<div id="custom-nav" class="overlay">
+		<div class="">
+			<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+		</div>
+		<br>
+		<div class="container overlay-content">
+			<div class="row">
+				<div class="col-sm-5">
+					<ul>
+						<li><h2>Gallery</h2></li>
+						{% set i = 0 %}
+						{%for image in images %}
+							{%if image.title %}
+							<li class="items" data-image="{{image.name}}">{{image.title}}</li>
+							{% else %}
+							<li class="items" data-image="{{image.name}}">{{image.name}}</li>
+							{% endif %}
+							{% set i = i+1 %}
+						{%endfor%}
+
+					</ul>
+				</div>
+			</div>
+		</div>
+
+
+
+
+	</div>
 		<ul id="images" style="display:none;">
 			{% set i = 0 %}
 			{%for image in images %}
 			{%if i == 0 %}
-				<li class="image current">{{image.name}}</li>
+				<li class="image current">{{image.name|capitalize}}</li>
 			{% else %}
-				<li class="image">{{image.name}}</li>
+				<li class="image">{{image.name|capitalize}}</li>
 			{% endif %}
 				{% set i = i+1 %}
 			{%endfor%}
 		</ul>
+	<div class="menu" onclick="openNav()">&#9776;</div>
+
         <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
         <script src="{{asset('js/three.js')}}"></script>
         <script src="{{asset('js/OrbitControls.js')}}"></script>
         <script src="{{asset('js/Detector.js')}}"></script>
         <script src="{{asset('js/stats.min.js')}}"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script>
+			function openNav() {
+			    document.getElementById("custom-nav").style.height = "100%";
+			}
+
+			function closeNav() {
+			    document.getElementById("custom-nav").style.height = "0%";
+			}
 
 			if ( ! Detector.webgl ) {
 				Detector.addGetWebGLMessage();
@@ -138,7 +264,35 @@
 					cubeMap.needsUpdate = true;
 				} );
 
+				$('.items').click(function() {
+					var val = $(this).attr('data-image');
+						loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+val, function ( image ) {
+							document.addEventListener( 'wheel', onDocumentMouseWheel, false );
+							document.addEventListener( 'mousemove', onMouseMove, false );
+							var getSide = function ( x, y ) {
+								var size = 1536;
+								var canvas = document.createElement( 'canvas' );
+								canvas.width = size;
+								canvas.height = size;
+								var context = canvas.getContext( '2d' );
+								context.drawImage( image, - x * size, 0 );
+								return canvas;
+							};
+
+
+							cubeMap.images[ 0 ] = getSide( 0, 1 ); // px
+							cubeMap.images[ 1 ] = getSide( 1, 1 ); // px
+							cubeMap.images[ 2 ] = getSide( 2, 1 ); // px
+							cubeMap.images[ 3 ] = getSide( 3, 4 ); // px
+							cubeMap.images[ 4 ] = getSide( 4, 1 ); // px
+							cubeMap.images[ 5 ] = getSide( 5, 6 ); // px
+
+							cubeMap.needsUpdate = true;
+						} );						
+				});
+
 				document.addEventListener("keydown", function(e) {
+					var reload = false;
 					switch(e.keyCode) {
 						case 37:
 							var image = $('.current');
@@ -147,6 +301,7 @@
 								image.removeClass('current');
 								var newImage = $('.current');
 							}
+							reload = true;
 						break
 
 						case 39:
@@ -156,31 +311,35 @@
 								image.removeClass('current');
 								var newImage = $('.current');
 							}
+							reload = true;
 						break;
 					}
-					loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+newImage.text(), function ( image ) {
-						document.addEventListener( 'wheel', onDocumentMouseWheel, false );
-						document.addEventListener( 'mousemove', onMouseMove, false );
-						var getSide = function ( x, y ) {
-							var size = 1536;
-							var canvas = document.createElement( 'canvas' );
-							canvas.width = size;
-							canvas.height = size;
-							var context = canvas.getContext( '2d' );
-							context.drawImage( image, - x * size, 0 );
-							return canvas;
-						};
+
+					if(reload) {
+						loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+newImage.text(), function ( image ) {
+							document.addEventListener( 'wheel', onDocumentMouseWheel, false );
+							document.addEventListener( 'mousemove', onMouseMove, false );
+							var getSide = function ( x, y ) {
+								var size = 1536;
+								var canvas = document.createElement( 'canvas' );
+								canvas.width = size;
+								canvas.height = size;
+								var context = canvas.getContext( '2d' );
+								context.drawImage( image, - x * size, 0 );
+								return canvas;
+							};
 
 
-						cubeMap.images[ 0 ] = getSide( 0, 1 ); // px
-						cubeMap.images[ 1 ] = getSide( 1, 1 ); // px
-						cubeMap.images[ 2 ] = getSide( 2, 1 ); // px
-						cubeMap.images[ 3 ] = getSide( 3, 4 ); // px
-						cubeMap.images[ 4 ] = getSide( 4, 1 ); // px
-						cubeMap.images[ 5 ] = getSide( 5, 6 ); // px
+							cubeMap.images[ 0 ] = getSide( 0, 1 ); // px
+							cubeMap.images[ 1 ] = getSide( 1, 1 ); // px
+							cubeMap.images[ 2 ] = getSide( 2, 1 ); // px
+							cubeMap.images[ 3 ] = getSide( 3, 4 ); // px
+							cubeMap.images[ 4 ] = getSide( 4, 1 ); // px
+							cubeMap.images[ 5 ] = getSide( 5, 6 ); // px
 
-						cubeMap.needsUpdate = true;
-					} );
+							cubeMap.needsUpdate = true;
+						} );						
+					}
 					
 				}, false);
 
