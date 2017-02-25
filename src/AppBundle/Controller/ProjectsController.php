@@ -229,6 +229,8 @@ class ProjectsController extends Controller
 
                     $image = new Images();
                     $image->setName($newName);
+                    $image->setWidth($form['width']->getData());
+                    $image->setHeight($form['height']->getData());
                     $image->setExporter($form['exporter']->getData());
                     $image->setProject($project);
                     $image->setCreated(new \DateTime());

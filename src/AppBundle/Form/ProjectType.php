@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class ProjectType extends AbstractType
@@ -34,6 +35,8 @@ class ProjectType extends AbstractType
             )
 //            ->add('android')
             ->add('images', FileType::class, array('mapped'=>false, 'required' => false, 'label' => 'Image'))
+            ->add('width', HiddenType::class, array('mapped'=>false, 'required' => false))
+            ->add('height', HiddenType::class, array('mapped'=>false, 'required' => false))
             ->add('exporter', EntityType::class, array(
                 'class' => 'AppBundle\Entity\Exporter',
                 'query_builder' => function(\AppBundle\Repository\ExporterRepository $er) {

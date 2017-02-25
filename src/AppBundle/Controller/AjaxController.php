@@ -93,7 +93,9 @@ class AjaxController extends Controller
 	                	$image->getPlan(),
 	                	$image->getExporter()->getId(),
 	                	$image->getName(),
-	                	$image->getTitle()
+	                	$image->getTitle(),
+	                	$image->getWidth(),
+	                	$image->getHeight()
                 	]
                 );
 /*				$stat = fstat($f);

@@ -2,6 +2,29 @@ $(function() {
 	var previous;
 	var id;
 	var val;
+	var _URL = window.URL || window.webkitURL;
+	$("#project_images").change(function(e) {
+	    var file, img;
+
+
+	    if ((file = this.files[0])) {
+	        img = new Image();
+	        img.onload = function() {
+	        	$('#project_width').val(this.width);
+	        	$('#project_height').val(this.height);
+
+//	            alert(this.width + " " + this.height);
+	        };
+	        img.onerror = function() {
+	            alert( "not a valid file: " + file.type);
+	        };
+	        img.src = _URL.createObjectURL(file);
+
+
+	    }
+
+	});
+
 
 	if (typeof Stripe !== 'undefined') {
 		Stripe.setPublishableKey('pk_test_N0X4Jek9xE7dGCLyOGbGJJ2A');

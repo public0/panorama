@@ -211,6 +211,16 @@
 				cursor: pointer;
 				-webkit-filter: grayscale(0%); filter: grayscale(0%);
 			}
+			#loading {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+  			}
+			#loading img {
+				height: 100px;
+				opacity: .5;
+			}
 		</style>
 	</head>
 	<body>
@@ -263,6 +273,7 @@
 				{% set i = i+1 %}
 			{%endfor%}
 		</ul>
+    <div id="loading" class="hidden"><img src="{{ asset('images/ellipsis.gif') }}" /></div>
 	<div id="view-nav" class="">
 		<img id="prev" class="arrows" src="{{ asset('images/left.png') }}" alt="Left" />
 		<span class="grid" id="trigger-overlay">&#9776;</span>
@@ -410,6 +421,11 @@
 				var cubeMap = new THREE.CubeTexture( [] );
 				cubeMap.format = THREE.RGBFormat;
 				cubeMap.minFilter = THREE.LinearFilter;
+
+//				cubeMap.anisotropy = 10;
+
+//				cubeMap.magFilter = THREE.NearestFilter;
+
 				var loader = new THREE.ImageLoader();
 				document.addEventListener( 'wheel', onDocumentMouseWheel, false );
 				document.addEventListener( 'mousemove', onMouseMove, false );
@@ -440,6 +456,7 @@
 				} );
 
 				$('.items').click(function() {
+					$( "#loading" ).toggleClass( "hidden" );
 					var val = $(this).attr('data-image');
 					var image = $('.current').removeClass('current');
 					var change = $('.image[data-id="'+$(this).attr('data-id')+'"');
@@ -466,7 +483,9 @@
 						cubeMap.images[ 5 ] = getSide( 5, 6 ); // px
 
 						cubeMap.needsUpdate = true;
-					} );						
+						$( "#loading" ).toggleClass( "hidden" );
+
+					} );
 				});
 
 				document.addEventListener("keydown", function(e) {
@@ -494,6 +513,8 @@
 					}
 
 					if(reload) {
+						$( "#loading" ).toggleClass( "hidden" );
+
 						loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+newImage.text(), function ( image ) {
 							document.addEventListener( 'wheel', onDocumentMouseWheel, false );
 							document.addEventListener( 'mousemove', onMouseMove, false );
@@ -516,6 +537,8 @@
 							cubeMap.images[ 5 ] = getSide( 5, 6 ); // px
 
 							cubeMap.needsUpdate = true;
+							$( "#loading" ).toggleClass( "hidden" );
+
 						} );						
 					}
 					
@@ -531,6 +554,8 @@
 						reload = true;
 					}
 					if(reload) {
+						$( "#loading" ).toggleClass( "hidden" );
+
 						loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+newImage.text(), function ( image ) {
 							document.addEventListener( 'wheel', onDocumentMouseWheel, false );
 							document.addEventListener( 'mousemove', onMouseMove, false );
@@ -553,6 +578,7 @@
 							cubeMap.images[ 5 ] = getSide( 5, 6 ); // px
 
 							cubeMap.needsUpdate = true;
+							$( "#loading" ).toggleClass( "hidden" );
 						} );						
 					}
 				})
@@ -567,6 +593,7 @@
 						reload = true;
 					}
 					if(reload) {
+						$( "#loading" ).toggleClass( "hidden" );
 						loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+newImage.text(), function ( image ) {
 							document.addEventListener( 'wheel', onDocumentMouseWheel, false );
 							document.addEventListener( 'mousemove', onMouseMove, false );
@@ -589,6 +616,8 @@
 							cubeMap.images[ 5 ] = getSide( 5, 6 ); // px
 
 							cubeMap.needsUpdate = true;
+							$( "#loading" ).toggleClass( "hidden" );
+
 						} );						
 					}
 				})

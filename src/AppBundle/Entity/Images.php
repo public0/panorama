@@ -45,6 +45,23 @@ class Images
 
     private $title;
 
+
+    /**
+     * @var smallint
+     *
+     * @ORM\Column(name="width", type="smallint")
+     */
+
+    private $width;
+
+    /**
+     * @var smallint
+     *
+     * @ORM\Column(name="height", type="smallint")
+     */
+
+    private $height;
+
     /**
      * @var \DateTime
      *
@@ -132,6 +149,55 @@ class Images
     public function getTitle()
     {
         return $this->title;
+    }
+
+
+    /**
+     * Set Width
+     *
+     * @param smallint $title
+     *
+     * @return Images
+     */
+    public function setWidth($width)
+    {
+        $this->width = $width;
+
+        return $this;
+    }
+
+    /**
+     * Get width
+     *
+     * @return width
+     */
+    public function getWidth()
+    {
+        return $this->width;
+    }
+
+    /**
+     * Set Height
+     *
+     * @param smallint $height
+     *
+     * @return Images
+     */
+    public function setHeight($height)
+    {
+        $this->height = $height;
+
+        return $this;
+    }
+
+    /**
+     * Get height
+     *
+     * @return height
+     */
+    public function getHeight()
+    {
+        return $this->height;
     }
 
     /**
