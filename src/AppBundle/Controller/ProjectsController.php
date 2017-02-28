@@ -358,7 +358,7 @@ class ProjectsController extends Controller
 
         $image = $this->getDoctrine()
                 ->getRepository('AppBundle:Images')
-                ->find($image_id);
+                ->findBy(['id' => $image_id]);
 
         $dir = 'uploads/'.$userId;
         $finder = new Finder();
@@ -367,7 +367,7 @@ class ProjectsController extends Controller
 
         return $this->render('projects/sample2.html.twig', [
             'baseurl' => $baseurl,
-            'image' => $image,
+            'images' => $image,
             'userId' => $userId,
             'project' => $project,
             'files' => $finder

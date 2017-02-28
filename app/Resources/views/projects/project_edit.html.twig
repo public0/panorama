@@ -49,7 +49,8 @@
 		<tr>
 			<td>
 				<a href="{{path('preview_project', {'id':project.user.id, 'project_id': project.id, 'image_id': image.id})}}">
-					<img src="{{download}}{{project.user.id}}/{{project.id}}/images/{{image.name}}" width="150">
+					<button type="button" class="btn btn-success">Preview</button>
+					{# <img src="{{download}}{{project.user.id}}/{{project.id}}/images/{{image.name}}" width="150"> #}
 				</a>
 			</td>
 			<td>
