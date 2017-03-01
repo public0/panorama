@@ -173,7 +173,6 @@ class ProjectsController extends Controller
 
         $message = \Swift_Message::newInstance()
                 ->setSubject('Hello Email')
-                ->setFrom('office@vrviewerpro.com')
                 ->setTo('alex.syscore@gmail.com')
                 ->setBody(
                     'aaaaaaaaaaa'                    
