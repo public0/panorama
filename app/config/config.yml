@@ -66,7 +66,8 @@ doctrine:
 # Swiftmailer Configuration
 swiftmailer:
     transport: smtp
-    username:  '%mailer_user%'
+    username:  '%asas@sssss.com'
+#    username:  '%mailer_user%'
     password:  '%mailer_password%'
     host: "smtpout.secureserver.net"
     port: "587"
