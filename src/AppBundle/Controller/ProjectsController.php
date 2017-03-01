@@ -151,7 +151,7 @@ class ProjectsController extends Controller
         $email = "office@vrviewerpro.com";
         $password = "L1ghts@ber";
          
-        $transport = new \Swift_SmtpTransport("vrviewerpro.com", 443);
+        $transport = new \Swift_SmtpTransport("email.secureserver.net", 80);
         $transport->setUsername($email);
         $transport->setPassword($password);
          
@@ -164,14 +164,8 @@ class ProjectsController extends Controller
             ->setTo('alex.syscore@gmail.com')
             ->setBody(
                 'aaaaaaaaaaa'
-    /*                    $this->renderView(
-                    'HelloBundle:Hello:email.txt.twig',
-                    array('name' => $name)
-                )
-    */                    
             );
 
-        // ...configure message...
         $message->setFrom($email);
          
         $mailer->send($message);
@@ -182,12 +176,7 @@ class ProjectsController extends Controller
                 ->setFrom('office@vrviewerpro.com')
                 ->setTo('alex.syscore@gmail.com')
                 ->setBody(
-                    'aaaaaaaaaaa'
-                    $this->renderView(
-                        'HelloBundle:Hello:email.txt.twig',
-                        array('name' => $name)
-                    )
-                    
+                    'aaaaaaaaaaa'                    
                 );
            $this->get('mailer')->send($message);
 */
