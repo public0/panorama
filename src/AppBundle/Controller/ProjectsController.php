@@ -151,15 +151,17 @@ class ProjectsController extends Controller
         $email = "office@vrviewerpro.com";
         $password = "L1ghts@ber";
          
-/*        $transport = new \Swift_SmtpTransport("smtp.office365.com", 587);
+        $transport = new \Swift_SmtpTransport("smtp.office365.com", 587);
         $transport->setUsername($email);
         $transport->setPassword($password);
+
          
         $mailer = new \Swift_Mailer($transport);
          
         $message = new \Swift_Message();
 
         $message->setSubject('Hello Email')
+            ->setEncryption('tls')
             ->setFrom('office@vrviewerpro.com')
             ->setTo('alex.syscore@gmail.com')
             ->setBody(
@@ -170,8 +172,8 @@ class ProjectsController extends Controller
          
         dump($mailer->send($message));
         die;
-*/
-        $message = \Swift_Message::newInstance()
+
+/*        $message = \Swift_Message::newInstance()
                 ->setSubject('Hello Email')
                 ->setFrom('office@vrviewerpro.com')
                 ->setTo('alex.syscore@gmail.com')
@@ -180,7 +182,7 @@ class ProjectsController extends Controller
                 );
         dump($this->get('mailer')->send($message));
         die;
-
+*/
         $showCubemap = FALSE;
         Stripe::setApiKey($this->container->getParameter('secret_key'));
         $userId = NULL;        
