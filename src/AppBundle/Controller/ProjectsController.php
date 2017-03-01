@@ -148,7 +148,7 @@ class ProjectsController extends Controller
      */
     public function editAction(Request $request, $projectId)
     {
-        $email = "office@vrviewerpro.com";
+/*        $email = "office@vrviewerpro.com";
         $password = "L1ghts@ber";
          
         $transport = new \Swift_SmtpTransport("email.vrviewerpro.com", 80);
@@ -169,9 +169,9 @@ class ProjectsController extends Controller
         $message->setFrom($email);
          
         $mailer->send($message);
+*/
 
-
-/*        $message = \Swift_Message::newInstance()
+        $message = \Swift_Message::newInstance()
                 ->setSubject('Hello Email')
                 ->setFrom('office@vrviewerpro.com')
                 ->setTo('alex.syscore@gmail.com')
@@ -179,7 +179,7 @@ class ProjectsController extends Controller
                     'aaaaaaaaaaa'                    
                 );
            $this->get('mailer')->send($message);
-*/
+
         $showCubemap = FALSE;
         Stripe::setApiKey($this->container->getParameter('secret_key'));
         $userId = NULL;        
