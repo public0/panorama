@@ -151,7 +151,7 @@ class ProjectsController extends Controller
         $email = "office@vrviewerpro.com";
         $password = "L1ghts@ber";
          
-        $transport = new \Swift_SmtpTransport("smtpout.secureserver.net", 25);
+        $transport = new \Swift_SmtpTransport("smtpout.secureserver.net", 465);
         $transport->setUsername($email);
         $transport->setPassword($password);
          
