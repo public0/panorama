@@ -154,6 +154,7 @@ class ProjectsController extends Controller
         $transport = new \Swift_SmtpTransport("smtp.office365.com", 587);
         $transport->setUsername($email);
         $transport->setPassword($password);
+        $transport->setEncryption('tls');
 
          
         $mailer = new \Swift_Mailer($transport);
@@ -161,7 +162,6 @@ class ProjectsController extends Controller
         $message = new \Swift_Message();
 
         $message->setSubject('Hello Email')
-            ->setEncryption('tls')
             ->setFrom('office@vrviewerpro.com')
             ->setTo('alex.syscore@gmail.com')
             ->setBody(
