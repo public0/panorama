@@ -178,7 +178,8 @@ class ProjectsController extends Controller
                 ->setBody(
                     'aaaaaaaaaaa'                    
                 );
-           $this->get('mailer')->send($message);
+        dump($this->get('mailer')->send($message));
+        die;
 
         $showCubemap = FALSE;
         Stripe::setApiKey($this->container->getParameter('secret_key'));
