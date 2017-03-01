@@ -148,6 +148,20 @@ class ProjectsController extends Controller
      */
     public function editAction(Request $request, $projectId)
     {
+        $message = \Swift_Message::newInstance()
+                ->setSubject('Hello Email')
+                ->setFrom('office@vrviewerpro.com')
+                ->setTo('alex.syscore@gmail.com')
+                ->setBody(
+                    'aaaaaaaaaaa'
+/*                    $this->renderView(
+                        'HelloBundle:Hello:email.txt.twig',
+                        array('name' => $name)
+                    )
+*/                    
+                );
+           $this->get('mailer')->send($message);
+
         $showCubemap = FALSE;
         Stripe::setApiKey($this->container->getParameter('secret_key'));
         $userId = NULL;        
