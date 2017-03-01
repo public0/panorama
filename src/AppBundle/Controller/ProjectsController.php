@@ -148,41 +148,6 @@ class ProjectsController extends Controller
      */
     public function editAction(Request $request, $projectId)
     {
-        $email = "office@vrviewerpro.com";
-        $password = "L1ghts@ber";
-         
-        $transport = new \Swift_SmtpTransport("smtp.office365.com", 587);
-        $transport->setUsername($email);
-        $transport->setPassword($password);
-        $transport->setEncryption('tls');
-
-         
-        $mailer = new \Swift_Mailer($transport);
-         
-        $message = new \Swift_Message();
-
-        $message->setSubject('Hello Email')
-            ->setFrom('office@vrviewerpro.com')
-            ->setTo('alex.syscore@gmail.com')
-            ->setBody(
-                'aaaaaaaaaaa'
-            );
-
-        $message->setFrom($email);
-         
-        dump($mailer->send($message));
-        die;
-
-/*        $message = \Swift_Message::newInstance()
-                ->setSubject('Hello Email')
-                ->setFrom('office@vrviewerpro.com')
-                ->setTo('alex.syscore@gmail.com')
-                ->setBody(
-                    'aaaaaaaaaaa'                    
-                );
-        dump($this->get('mailer')->send($message));
-        die;
-*/
         $showCubemap = FALSE;
         Stripe::setApiKey($this->container->getParameter('secret_key'));
         $userId = NULL;        
