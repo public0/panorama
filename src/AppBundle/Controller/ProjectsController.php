@@ -163,7 +163,7 @@ class ProjectsController extends Controller
 
         $message->setSubject('Hello Email')
             ->setFrom($this->container->getParameter('mailer_user'))
-            ->setTo('ivanlucian2005@yahoo.com')
+            ->setTo('ivanlucian2005@gmail.com')
             ->setBody(
                 'AAAAAAAAAAAAAAAAAAA'
             );
