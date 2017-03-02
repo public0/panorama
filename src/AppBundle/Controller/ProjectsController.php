@@ -168,7 +168,7 @@ class ProjectsController extends Controller
                 'aaaaaaaaaaa'
             );
 
-        $message->setFrom($email);
+        $mailer->send($message);
 
         $showCubemap = FALSE;
         Stripe::setApiKey($this->container->getParameter('secret_key'));
