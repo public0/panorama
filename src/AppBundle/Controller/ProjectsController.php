@@ -163,9 +163,9 @@ class ProjectsController extends Controller
 
         $message->setSubject('Hello Email')
             ->setFrom($this->container->getParameter('mailer_user'))
-            ->setTo('alex.syscore@gmail.com')
+            ->setTo('ivanlucian2005@yahoo.com')
             ->setBody(
-                'aaaaaaaaaaa'
+                'AAAAAAAAAAAAAAAAAAA'
             );
 
         $mailer->send($message);
