@@ -148,6 +148,28 @@ class ProjectsController extends Controller
      */
     public function editAction(Request $request, $projectId)
     {
+        $email = $this->container->getParameter('mailer_user');
+        $password = $this->container->getParameter('mailer_password');
+
+        $transport = new \Swift_SmtpTransport("smtp.office365.com", 587);
+        $transport->setUsername($email);
+        $transport->setPassword($password);
+        $transport->setEncryption('tls');
+
+         
+        $mailer = new \Swift_Mailer($transport);
+
+        $message = new \Swift_Message();
+
+        $message->setSubject('Hello Email')
+            ->setFrom($this->container->getParameter('mailer_user'))
+            ->setTo('alex.syscore@gmail.com')
+            ->setBody(
+                'aaaaaaaaaaa'
+            );
+
+        $message->setFrom($email);
+
         $showCubemap = FALSE;
         Stripe::setApiKey($this->container->getParameter('secret_key'));
         $userId = NULL;        
