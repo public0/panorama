@@ -189,12 +189,6 @@ class ProjectsController extends Controller
 
         $message = new \Swift_Message();
 
-        $message->setSubject('Hello Email')
-            ->setFrom($this->container->getParameter('mailer_user'))
-            ->setTo('sys.core@yahoo.com')
-            ->setBody(
-                'AAAAAAAAAAAAAAAAAAA'
-            );
 
         $mailer->send($message);
 
