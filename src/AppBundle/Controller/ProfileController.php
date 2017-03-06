@@ -74,7 +74,35 @@ class ProfileController extends Controller
 			'currentPlan' => $currentPlan,
 			'plans' => $plans
 		));
-	}    
+	}
+
+    /**
+     * @Route("profile/unsubscribe/", name="profile_unsubscribe")
+     */
+    public function unsubscribeAction(Request $request)
+    {
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+
+		Stripe::setApiKey($this->container->getParameter('secret_key'));
+		if($details = $user->getDetails()) {
+			$cusotmer = $details->getCustomer();
+//			$sub = \Stripe\Subscription::retrieve("sub_ADb6nr2yloPXrx");
+			if($customer = Customer::retrieve($cusotmer)) {
+				if($data = $customer->subscriptions->data) {
+			        $em = $this->getDoctrine()->getManager();
+					$data[0]->cancel();
+/*					$user->getDetails()->remove();					
+		            $em->persist($user);
+		            $em->flush();
+*/
+		            return $this->redirectToRoute('profile_plans', array());					
+				}
+			}
+//			$sub->cancel();
+		}
+        return $this->redirectToRoute('profile_plans', array());					
+
+    }
 
     /**
      * @Route("profile/subscribe/{planId}", name="profile_subscribe")
@@ -131,6 +159,7 @@ class ProfileController extends Controller
 						]);
 						$userDetails = new UserDetails();
 						$userDetails->setPcount(0);
+		                $userDetails->setType(1);
 						$userDetails->setCustomer($customer->id);
 						$user->setDetails($userDetails);
 	                    $em->persist($userDetails);
@@ -175,6 +204,7 @@ class ProfileController extends Controller
 
 			}
 			$em->flush();
+            return $this->redirectToRoute('projects');			
 		}
 		return $this->render('AppBundle:Profile:subscribe.html.twig', array(
 			'currentYear' => $start->format('Y'),

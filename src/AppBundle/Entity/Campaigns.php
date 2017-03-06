@@ -52,16 +52,32 @@ class Campaigns
     /**
      * @var int
      *
-     * @ORM\Column(name="max", type="smallint")
+     * @ORM\Column(name="days", type="smallint", options={"unsigned"=true, "default"=0})
+     */
+    private $days;
+
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="max", type="smallint", options={"comment":"Max number of users that can register to this campaign.", "unsigned"=true, "default"=0})
      */
     private $max;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="current_max", type="smallint", options={"comment":"Surrent number of users registered to one campaign.","unsigned"=true, "default"=0})
+     */
+
+    private $currentMax;
 
     /**
      * Get id
      *
      * @return int
      */
+
     public function getId()
     {
         return $this->id;
@@ -185,6 +201,34 @@ class Campaigns
     public function getMax()
     {
         return $this->max;
+    }
+
+    /**
+     * Increment currentMax
+     *
+     * @param integer $currentMax
+     *
+     * @return UserDetails
+     */
+    public function decCurrentMax()
+    {
+        $this->currentMax = $this->currentMax-=1;
+
+        return $this;
+    }
+
+    /**
+     * Increment currentMax
+     *
+     * @param integer $cubecount
+     *
+     * @return UserDetails
+     */
+    public function incCurrentMax()
+    {
+        $this->currentMax = $this->currentMax+=1;
+
+        return $this;
     }
 }
 

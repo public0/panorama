@@ -16,7 +16,7 @@
           <p>Number of Projects: {{ plan.metadata.project_count }}</p>
         {% endif %}
         {%if(currentPlan == plan.id)%}
-          <p class="navbar-btn btn-info btn disabled">Current</p>
+          <p class="navbar-btn btn-info btn"><a href="{{path('profile_unsubscribe')}}">Unsubscribe</a></p>
         {%else%}
           <p><a href="{{path('profile_subscribe', {'planId':plan.id})}}" class="navbar-btn btn-primary btn">Subscribe</a></p>
         {%endif%}

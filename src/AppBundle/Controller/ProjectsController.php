@@ -58,15 +58,22 @@ class ProjectsController extends Controller
         } else {
             throw $this->createNotFoundException('The product does not exist');
         }
-        if($user->getDetails() && $user->getDetails()->getCustomer()) {
+
+        if( $user->getDetails() && $user->getDetails()->getCustomer() && $user->getDetails()->getStatus() ) {
             $customer = Customer::retrieve($user->getDetails()->getCustomer());
-            if($customer->subscriptions) {
+            if($customer->subscriptions->data) {
+                $showCreateProject = TRUE;
+            } elseif($user->getDetails()->getStatus() && (int)$user->getDetails()->getPcount() < 1) {
                 $showCreateProject = TRUE;
             } else {
                 $showCreateProject = FALSE;            
             }
         } else {
-            $showCreateProject = FALSE;            
+            if($user->getDetails()->getStatus() && (int)$user->getDetails()->getPcount() < 1) {
+                $showCreateProject = TRUE;
+            } else{
+                $showCreateProject = FALSE;            
+            }
         }
 
         $projects = $this->getDoctrine()
@@ -99,15 +106,35 @@ class ProjectsController extends Controller
         Stripe::setApiKey($this->container->getParameter('secret_key'));
         $user = NULL;
         $userId = NULL;
+        $customer = NULL;
+        $type = 0;
+        $prepend ='sample_';
         if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_FULLY' ) )
         {
             $user = $this->container->get('security.token_storage')->getToken()->getUser();
             $userId = $user->getId();
         }
-        $customer = Customer::retrieve($user->getDetails()->getCustomer());
-        if(!$customer->subscriptions) {
+        $status = $user->getDetails()->getStatus();
+        if($status) {
+            // if user had at ony point a stripe customer id
+            if($cusStr = $user->getDetails()->getCustomer()) {
+                // if user still has a stripe cutomer id
+                if($customer = Customer::retrieve($cusStr)) {
+                    // if user has any subscriptions
+                    if(!$customer->subscriptions->data && (int)$user->getDetails()->getPcount() >= 1) {
+                        return $this->redirectToRoute('projects', array());
+                    } elseif($customer->subscriptions) {
+                        $type = 1;
+                        $prepend = '';
+                    }
+                }
+            } elseif((int)$user->getDetails()->getPcount() >= 1) {
+                return $this->redirectToRoute('projects', array());
+            }
+        } else {
             return $this->redirectToRoute('projects', array());            
         }
+
         $em = $this->getDoctrine()->getManager();
 
         $project = new Project();
@@ -125,7 +152,8 @@ class ProjectsController extends Controller
             $project->setUser($user);
             $project->setAndroid(1);
             $project->setReviewed(0);
-            $project->setCode();
+            $project->setType($type);
+            $project->setCode($prepend);
             $user->getDetails()->incPcount();
             $em->persist($project);
             $em->persist($user);
@@ -148,7 +176,7 @@ class ProjectsController extends Controller
      */
     public function editAction(Request $request, $projectId)
     {
-        $email = $this->container->getParameter('mailer_user');
+/*        $email = $this->container->getParameter('mailer_user');
         $password = $this->container->getParameter('mailer_password');
 
         $transport = new \Swift_SmtpTransport("smtp.office365.com", 587);
@@ -169,7 +197,7 @@ class ProjectsController extends Controller
             );
 
         $mailer->send($message);
-
+*/
         $showCubemap = FALSE;
         Stripe::setApiKey($this->container->getParameter('secret_key'));
         $userId = NULL;        
@@ -179,15 +207,40 @@ class ProjectsController extends Controller
             $userId = $user->getId();
         }
 
-        if($user->getDetails() && $user->getDetails()->getCustomer()) {
-            $customer = Customer::retrieve($user->getDetails()->getCustomer());
-            if((int)$user->getDetails()->getActiveCubeCount() < (int)$customer->subscriptions->data[0]->plan->metadata->cubemap_count) {
-                $showCubemap = TRUE;
-            }
-        } else {
-            $showCubemap = FALSE;            
+        if((int)$user->getDetails()->getActiveCubeCount() >= 2) {
+            $showCubemap = FALSE;
+        } elseif((int)$user->getDetails()->getActiveCubeCount() < 2) {
+            $showCubemap = TRUE;
         }
 
+        $status = $user->getDetails()->getStatus();
+        if($user->getDetails()) {
+            if($user->getDetails()->getCustomer()) {
+                if($customer = Customer::retrieve($user->getDetails()->getCustomer())) {
+                    if($customer->subscriptions->data) {
+                        if((int)$user->getDetails()->getActiveCubeCount() < (int)$customer->subscriptions->data[0]->plan->metadata->cubemap_count) {
+                            $showCubemap = TRUE;
+                        }                        
+                    }
+                }
+            }
+        }
+
+/*        if($user->getDetails() && $user->getDetails()->getCustomer()) {
+            $customer = Customer::retrieve($user->getDetails()->getCustomer());
+            if($customer->subscriptions->data) {
+                if((int)$user->getDetails()->getActiveCubeCount() < (int)$customer->subscriptions->data[0]->plan->metadata->cubemap_count) {
+                    $showCubemap = TRUE;
+                }
+            } else {
+                if((int)$user->getDetails()->getActiveCubeCount() >= 2) {
+                    $showCubemap = FALSE;            
+                }
+            }
+        } else {
+            $showCubemap = FALSE;
+        }
+*/
 //        PAYMENT CODE
 /*        $payum = (new PayumBuilder())
         ->addDefaultStorages()

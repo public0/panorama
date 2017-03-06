@@ -60,11 +60,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="{{path('fos_user_profile_edit')}}"> Edit Profile  </a></li>
 
-                    {% if app.user.details %}
-                        <li><a href="{{path('profile_plans')}}"> Change Subscription  </a></li>
-                    {%else%}
-                        <li><a href="{{path('profile_plans')}}"> Subscribe  </a></li>
-                    {%endif%}
+                        <li><a href="{{path('profile_plans')}}"> Subscriptions  </a></li>
 
                         <li><a href="{{path('fos_user_change_password')}}"> Change Password  </a></li>
                     </ul>

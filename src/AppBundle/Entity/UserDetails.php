@@ -19,28 +19,56 @@ class UserDetails
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Campaigns")
+     * @ORM\JoinColumn(name="campaign_id", referencedColumnName="id")
+     */
+    protected $campaignId;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="type", type="smallint", options={"unsigned"=true, "default"=0})
+     */
+    private $type = 0;    
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="register_date", type="datetime")
+     */
+
+    protected $registerDate;
 
     /**
      * @var int
      *
      * @ORM\Column(name="pcount", type="smallint")
      */
-    private $pcount;
+    protected $pcount;
+
+    /**
+     * @var Boolean
+     *
+     * @ORM\Column(name="status", type="boolean", options={"default"=1})
+     */
+    protected $status = 1;
 
     /**
      * @var int
      *
      * @ORM\Column(name="cubecount", type="smallint", options={"default"=0})
      */
-    private $cubecount = 0;
+    protected $cubecount = 0;
 
     /**
      * @var int
      *
      * @ORM\Column(name="activecubecount", type="smallint", options={"default"=0})
      */
-    private $activecubecount = 0;
+    protected $activecubecount = 0;
 
     /**
      * @ORM\Column(type="string", length=32, options={}, nullable=true)
@@ -56,6 +84,31 @@ class UserDetails
     {
         return $this->id;
     }
+
+    /**
+     * Set campaign
+     *
+     * @param campaign
+     *
+     * @return UserDetails
+     */
+    public function setCampaignId($campaign)
+    {
+        $this->campaignId = $campaign;
+
+        return $this;
+    }
+
+    /**
+     * Get cubecount
+     *
+     * @return int
+     */
+    public function getCampaignId()
+    {
+        return $this->campaignId;
+    }
+
 
     /**
      * Increment pcount
@@ -110,6 +163,54 @@ class UserDetails
         return $this->cubecount;
     }
 
+    /**
+     * Set type
+     *
+     * @param int $type
+     *
+     * @return User_Detail
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return int
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+
+    /**
+     * Set status
+     *
+     * @param integer $status
+     *
+     * @return Status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get activecubecount
+     *
+     * @return bool
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
 
     /**
      * Set activecubecount
@@ -216,6 +317,31 @@ class UserDetails
     {
         return $this->pcount;
     }
+
+    /**
+     * Set Register Date
+     *
+     * @param string $date
+     *
+     * @return UserDetails
+     */
+    public function setRegisterDate($date)
+    {
+        $this->registerDate = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get Register Date
+     *
+     * @return date
+     */
+    public function getRegisterDate()
+    {
+        return $this->registerDate;
+    }
+
 
     /**
      * Set customer

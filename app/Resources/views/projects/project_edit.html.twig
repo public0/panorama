@@ -14,14 +14,14 @@
 		{{form_errors(form)}}
 		{{form_row(form.name)}}
 		{{form_row(form.status)}}
-		{%if(showCubemap)%}
-		<hr>
-		{{form_row(form.images)}}
-		{{form_row(form.width)}}
-		{{form_row(form.height)}}
-		{{form_row(form.exporter)}}
-		<hr>
-		{%endif%}
+		<div class="{{showCubemap?'':'hidden'}}">
+			<hr>
+			{{form_row(form.images)}}
+			{{form_row(form.width)}}
+			{{form_row(form.height)}}
+			{{form_row(form.exporter)}}
+			<hr>
+		</div>
 		<br>
 		<input type="submit" value="Save" class="btn btn-success pull-right" />
 

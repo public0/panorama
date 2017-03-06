@@ -23,7 +23,7 @@ class Project
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=32, options={"fixed" = true})
+     * @ORM\Column(type="string", length=32, options={"fixed" = false})
      */
     protected $code;
 
@@ -33,6 +33,13 @@ class Project
     */
 
     private $user;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="type", type="smallint", options={"unsigned"=true, "default"=0})
+     */
+    private $type = 0;
 
     /**
      * @var int
@@ -97,9 +104,10 @@ class Project
      * @return User
      */
 
-    public function setCode()
+    public function setCode($prepend = '')
     {
-        $this->code = md5(uniqid(mt_rand(), true));
+        $code = (empty($prepend))?md5(uniqid(mt_rand(), true)):$prepend.md5(uniqid(mt_rand(), true));
+        $this->code = $code;
 
         return $this;
     }
@@ -129,6 +137,30 @@ class Project
         $this->user = $id;
 
         return $this;
+    }
+
+    /**
+     * Set type
+     *
+     * @param int $type
+     *
+     * @return Project
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return int
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
 

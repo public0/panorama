@@ -21,6 +21,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use FOS\UserBundle\Model\UserInterface;
+use AppBundle\Entity\User;
+use AppBundle\Entity\UserDetails;
 
 /**
  * Controller managing the registration
@@ -61,11 +63,31 @@ class RegistrationController extends Controller
             $userManager->updateUser($user);
 
             if (null === $response = $event->getResponse()) {
-                $url = $this->generateUrl('fos_user_registration_confirmed');
+                $url = $this->generateUrl('profile_plans');
                 $response = new RedirectResponse($url);
             }
 
             $dispatcher->dispatch(FOSUserEvents::REGISTRATION_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
+
+            $campaign = $this->getDoctrine()
+                ->getRepository('AppBundle:Campaigns')
+                ->findOneBy(['status' => 1]);
+
+            if($campaign) {
+
+                $em = $this->getDoctrine()->getManager();
+
+                $userDetails = new UserDetails();
+                $userDetails->setPcount(0);
+                $userDetails->setType(0);
+                $userDetails->setCampaignId($campaign);
+                $userDetails->setRegisterDate(new \DateTime());
+                $user->setDetails($userDetails);
+
+                $em->persist($userDetails);
+                $em->persist($user);
+                $em->flush();
+            }
 
             return $response;
         }
