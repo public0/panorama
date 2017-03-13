@@ -64,19 +64,19 @@ $(function() {
 
 	$('.axaj-sub').click(function() {
 		var form = $(this).closest('form');
+		$( "#loading" ).removeClass('hidden');
 
-
-	$.post( "../../imageSave", form.serialize()).done(function( data ) {
-		switch(parseInt(data)) {
-			case 0:
-				$( ".result" ).html('<span class="alert alert-success glyphicon glyphicon-check">Updated</span>' );
-			break;
-			case 1:
-				$( ".result" ).html('<span class="alert alert-warning glyphicon glyphicon-warning-sign"> Cubemap Limit</span>' );
-			break;
-		}
-		console.log(data);
-	});
+		$.post( "../../imageSave", form.serialize()).done(function( data ) {
+		$( "#loading" ).addClass('hidden');
+			switch(parseInt(data)) {
+				case 0:
+					$( ".result" ).html('<span class="alert alert-success glyphicon glyphicon-check">Updated</span>' );
+				break;
+				default:
+					$( ".result" ).html('<span class="alert alert-warning glyphicon glyphicon-warning-sign">'+data+'</span>' );
+				break;
+			}
+		});
 
 		return false;
 	})

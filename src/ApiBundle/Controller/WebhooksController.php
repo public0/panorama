@@ -22,12 +22,27 @@ class WebhooksController extends Controller
 
 		$response = new Response();
 		$response->setStatusCode(Response::HTTP_OK);
+		switch($event_json->type) {
+		        case 'customer.subscription.deleted':
+			        $em = $this->getDoctrine()->getManager();
+			        $userDetail = $this->getDoctrine()
+		                ->getRepository('AppBundle:UserDetails')
+		                ->findOneBy(['customer' => $event_json->data->object->customer]);
+		            if($userDetail) {
+			    	    $userDetail->setType(0);
+			        	$em->persist($userDetail);
+			        	$em->flush();		            	
+		            }
+
+		        break;
+		}
 
 		return $response;
-
-/*        return $this->render('ApiBundle:Webhooks:payment_bounce.html.twig', array(
+/*
+        return $this->render('ApiBundle:Webhooks:payment_bounce.html.twig', array(
             // ...
         ));
-*/    }
+*/		
+    }
 
 }

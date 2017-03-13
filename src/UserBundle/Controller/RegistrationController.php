@@ -78,6 +78,7 @@ class RegistrationController extends Controller
                 $em = $this->getDoctrine()->getManager();
 
                 $userDetails = new UserDetails();
+                $userDetails->setUser($user);
                 $userDetails->setPcount(0);
                 $userDetails->setType(0);
                 $userDetails->setCampaignId($campaign);

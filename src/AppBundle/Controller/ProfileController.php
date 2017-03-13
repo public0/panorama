@@ -91,6 +91,11 @@ class ProfileController extends Controller
 				if($data = $customer->subscriptions->data) {
 			        $em = $this->getDoctrine()->getManager();
 					$data[0]->cancel();
+			        $em = $this->getDoctrine()->getManager();
+			        $user->getDetails()->setType(0);
+			        $em->persist($user);
+					$em->flush();
+
 /*					$user->getDetails()->remove();					
 		            $em->persist($user);
 		            $em->flush();
@@ -167,21 +172,21 @@ class ProfileController extends Controller
 					}
 				// no stripe customer account in db update customer for existing entry -- manually deleted from db ?
 				} else {
-						$cus = [
-				            "email" => $user->getEmail(),
-				            "source" => $token
-						];
-						$customer = Customer::create($cus);
+					$cus = [
+			            "email" => $user->getEmail(),
+			            "source" => $token
+					];
+					$customer = Customer::create($cus);
 
-						$subscription = Subscription::create([
-							'customer' => $customer,
-							'plan' => $planId
-						]);
+					$subscription = Subscription::create([
+						'customer' => $customer,
+						'plan' => $planId
+					]);
 
-						$userDetails = $user->getDetails();
-						$userDetails->setCustomer($customer->id);
-	                    $em->persist($user);
-
+					$userDetails = $user->getDetails();
+					$userDetails->setCustomer($customer->id);
+	                $userDetails->setType(1);
+                    $em->persist($user);
 				}
 			// First time subscriber
 			} else {
@@ -197,6 +202,7 @@ class ProfileController extends Controller
 				]);
 				$userDetails = new UserDetails();
 				$userDetails->setPcount(0);
+                $userDetails->setType(1);
 				$userDetails->setCustomer($customer->id);
 				$user->setDetails($userDetails);
 	            $em->persist($userDetails);

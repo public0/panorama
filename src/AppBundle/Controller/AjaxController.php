@@ -24,6 +24,7 @@ class AjaxController extends Controller
         $inactiveCubemaps   = 0;
         $totalCubemaps 	  = 0;
         $projectActiveCubemaps = 0;
+        $customer = NULL;
 
         if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_FULLY' ) )
         {
@@ -33,6 +34,10 @@ class AjaxController extends Controller
 
 		if ($request->getMethod() == 'POST') {
 	        $em = $this->getDoctrine()->getManager();
+	        sleep(2);
+	        if($_POST['image_id']) {
+        		$totalCubemaps = count($_POST['image_id']);
+	        }
 
 	        $project = $this->getDoctrine()
 	            ->getRepository('AppBundle:Project')
@@ -42,12 +47,20 @@ class AjaxController extends Controller
 	        if(!$project) {
 	        	return new Response('Problem finding project');
 	        }
+	        $setImages = $this->getDoctrine()
+	            ->getRepository('AppBundle:Images')
+	            ->findBy(['project' => $_POST['project_id'], 'status' => 1]);
+
+/*            if($user->getDetails()->getType() == 1 && (int)$user->getDetails()->getActiveCubeCount() < (int)$customer->subscriptions->data[0]->plan->metadata->cubemap_count) {
+	            $customer = Customer::retrieve($user->getDetails()->getCustomer());
+                $showCubemap = TRUE;
+            } elseif($user->getDetails()->getType() != 1 && (int)$user->getDetails()->getActiveCubeCount() < 2) {
+                $showCubemap = TRUE;
+            }
+*/
 	        $dir = 'uploads/'.$userId.'/'.$project->getId();
 
 	        // Save to DB
-	        if($_POST['image_id']) {
-        		$totalCubemaps = count($_POST['image_id']);
-	        }
 	        for ($i=0; $i < count($_POST['image_id']); $i++) {
 		        $image = $this->getDoctrine()
 		            ->getRepository('AppBundle:Images')
@@ -77,6 +90,23 @@ class AjaxController extends Controller
 		        $image->setPlan($_POST['plan'][$i]);
 	            $em->persist($image);
 	        }
+
+	        if($user->getDetails()->getType() == 1) {
+	            $customer = Customer::retrieve($user->getDetails()->getCustomer());
+
+	            if(((int)$user->getDetails()->getActiveCubeCount() - (int)count($setImages) + (int)$activeCubemaps) > (int)$customer->subscriptions->data[0]->plan->metadata->cubemap_count) {
+	            	$response = new Response();
+	            	$response->setContent('Active cubemap count exceeded');
+	            	return $response;
+	            }
+	        } else {
+	            if(((int)$user->getDetails()->getActiveCubeCount() - (int)count($setImages) + (int)$activeCubemaps) > 2) {
+	            	$response = new Response();
+	            	$response->setContent('Active cubemap count exceeded');
+	            	return $response;
+	            }	        	
+	        }
+
             $zip = new \ZipArchive();
 	        // Save to DB
 
@@ -122,11 +152,11 @@ class AjaxController extends Controller
 //			$projectActiveCubemaps = $user->getDetails()->getCubeCount() - $inactiveCubemaps + $activeCubemaps;
 			$user->getDetails()->setActiveCubeCount($projectActiveCubemaps);
 			$em->persist($user);
-            $customer = Customer::retrieve($user->getDetails()->getCustomer());
+/*            $customer = Customer::retrieve($user->getDetails()->getCustomer());
 	        if($projectActiveCubemaps > (int)$customer->subscriptions->data[0]->plan->metadata->cubemap_count) {
 				return new Response(1);
 	        }
-
+*/
 	        $em->flush();
 
 			// Archive Project

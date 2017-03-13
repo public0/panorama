@@ -1,5 +1,8 @@
 body {
-  background: linear-gradient(to right, #555, #CCC 20%, #FFF);
+    background-color: #333;
+    line-height: normal;
+    font-family: 'Muli', serif;
+    color: white;
 }
 
 .square > a {
@@ -56,4 +59,104 @@ body {
 .flash-success {
     text-align: center;
     color: #3c763d;
+}
+
+#loading img {
+    height: 100px;
+    opacity: .5;
+    -webkit-filter: grayscale(100%); filter: grayscale(25%);
+}
+
+.glyphicon {
+        word-spacing: -0.5em;
+}
+
+.glyphicon:before {
+        padding-right: 0.5em;
+}
+.sign-up {
+    font-size: 16px;
+    color: #FFF;
+}
+.sign-up:hover {
+    text-decoration: none;
+    color: #000;
+}
+.navbar-default { 
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 13pt;
+    background-image: linear-gradient(to bottom,#000 0%,#111 100%);    
+}
+
+.navbar-default .navbar-brand {
+    color: #777;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+    color: #5E5E5E;
+}
+/* link */
+.navbar-default .navbar-nav > li > a {
+    color: #FFF;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #F00;
+}
+
+.navbar-brand, .navbar-nav>li>a {
+    text-shadow: 0 0px 0 rgba(255,255,255,.25);
+}
+
+.navbar-fixed-top {
+    border-width: 0 0 0;
+}
+
+.navbar-default .navbar-nav > .active > a, 
+.navbar-default .navbar-nav > .active > a:hover, 
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #F00;
+    background: #000000;
+}
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .open > a {
+
+}
+.navbar-default .navbar-nav > .open > a, 
+.navbar-default .navbar-nav > .open > a:hover, 
+.navbar-default .navbar-nav > .open > a:focus {
+    color: #555;
+    background-color: #D5D5D5;
+}
+/* caret */
+.navbar-default .navbar-nav > .dropdown > a .caret {
+    border-top-color: #777;
+    border-bottom-color: #777;
+}
+.navbar-default .navbar-nav > .dropdown > a:hover .caret,
+.navbar-default .navbar-nav > .dropdown > a:focus .caret {
+    border-top-color: #333;
+    border-bottom-color: #333;
+}
+.navbar-default .navbar-nav > .open > a .caret, 
+.navbar-default .navbar-nav > .open > a:hover .caret, 
+.navbar-default .navbar-nav > .open > a:focus .caret {
+    border-top-color: #555;
+    border-bottom-color: #555;
+}
+/* mobile version */
+.navbar-default .navbar-toggle {
+    border-color: #DDD;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: #DDD;
+}
+
+.dropdown-menu {
+    background-color: #000;
+}
+
+.dropdown-menu>li>a {
+    color: #FFF;
 }

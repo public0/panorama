@@ -2,6 +2,7 @@
 /phpunit.xml
 /web/uploads/
 /web/video/
+/web/images/
 /var/*
 !/var/cache
 /var/cache/*

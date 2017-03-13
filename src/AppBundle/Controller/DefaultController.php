@@ -31,4 +31,22 @@ class DefaultController extends Controller
 
         ]);
     }
+
+    /**
+     * @Route("/about", name="about")
+     */
+    public function aboutAction(Request $request)
+    {
+        return $this->render('default/about.html.twig', [
+        ]);
+    }
+
+    /**
+     * @Route("/contact", name="contact")
+     */
+    public function contactAction(Request $request)
+    {
+        return $this->render('default/contact.html.twig', [
+        ]);
+    }
 }

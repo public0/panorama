@@ -28,6 +28,14 @@ class UserDetails
     protected $campaignId;
 
     /**
+     * One User has One Account
+     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user", referencedColumnName="id", nullable=true) 
+    */
+
+    protected $user;
+
+    /**
      * @var int
      *
      * @ORM\Column(name="type", type="smallint", options={"unsigned"=true, "default"=0})
@@ -107,6 +115,25 @@ class UserDetails
     public function getCampaignId()
     {
         return $this->campaignId;
+    }
+
+
+    public function getUser()
+    {
+        return $this->user;
+    }
+    
+    /**
+     * Set about
+     *
+     * @param String $about
+     * @return User
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+    
+        return $this;
     }
 
 

@@ -58,8 +58,23 @@ class ProjectsController extends Controller
         } else {
             throw $this->createNotFoundException('The product does not exist');
         }
+        $status = $user->getDetails()->getStatus();
 
-        if( $user->getDetails() && $user->getDetails()->getCustomer() && $user->getDetails()->getStatus() ) {
+        if($status) {
+            if($user->getDetails()->getType() == 1) {
+                $showCreateProject = TRUE;            
+            } else {
+                if((int)$user->getDetails()->getPcount() < 1) {
+                    $showCreateProject = TRUE;
+                } else {
+                    $showCreateProject = FALSE;
+                }
+            }
+        } else {
+            $showCreateProject = FALSE;            
+        }
+
+/*        if( $user->getDetails() && $user->getDetails()->getCustomer() && $user->getDetails()->getStatus() ) {
             $customer = Customer::retrieve($user->getDetails()->getCustomer());
             if($customer->subscriptions->data) {
                 $showCreateProject = TRUE;
@@ -75,7 +90,7 @@ class ProjectsController extends Controller
                 $showCreateProject = FALSE;            
             }
         }
-
+*/
         $projects = $this->getDoctrine()
             ->getRepository('AppBundle:Project')
             ->findBy(['user' => $userId, 'status' => [0,1]], ['user' => 'DESC']);
@@ -116,8 +131,12 @@ class ProjectsController extends Controller
         }
         $status = $user->getDetails()->getStatus();
         if($status) {
+            if($user->getDetails()->getType() != 1 && (int)$user->getDetails()->getPcount() > 1) {
+                return $this->redirectToRoute('projects', array());            
+            }
+
             // if user had at ony point a stripe customer id
-            if($cusStr = $user->getDetails()->getCustomer()) {
+/*            if($cusStr = $user->getDetails()->getCustomer()) {
                 // if user still has a stripe cutomer id
                 if($customer = Customer::retrieve($cusStr)) {
                     // if user has any subscriptions
@@ -131,7 +150,7 @@ class ProjectsController extends Controller
             } elseif((int)$user->getDetails()->getPcount() >= 1) {
                 return $this->redirectToRoute('projects', array());
             }
-        } else {
+*/        } else {
             return $this->redirectToRoute('projects', array());            
         }
 
@@ -176,7 +195,7 @@ class ProjectsController extends Controller
      */
     public function editAction(Request $request, $projectId)
     {
-        $email = $this->container->getParameter('mailer_user');
+/*        $email = $this->container->getParameter('mailer_user');
         $password = $this->container->getParameter('mailer_password');
 
         $transport = new \Swift_SmtpTransport("smtp.office365.com", 587);
@@ -197,7 +216,7 @@ class ProjectsController extends Controller
             );
 
         $mailer->send($message);
-
+*/
         $showCubemap = FALSE;
         Stripe::setApiKey($this->container->getParameter('secret_key'));
         $userId = NULL;        
@@ -207,7 +226,24 @@ class ProjectsController extends Controller
             $userId = $user->getId();
         }
 
-        if((int)$user->getDetails()->getActiveCubeCount() >= 2) {
+        $status = $user->getDetails()->getStatus();
+        if($status) {
+            if($user->getDetails()->getType() == 1) {
+                $customer = Customer::retrieve($user->getDetails()->getCustomer());
+                if((int)$user->getDetails()->getActiveCubeCount() < (int)$customer->subscriptions->data[0]->plan->metadata->cubemap_count) {
+                    $showCubemap = TRUE;
+                } else {
+                    $showCubemap = FALSE;
+                }
+            } elseif($user->getDetails()->getType() != 1 && (int)$user->getDetails()->getActiveCubeCount() < 2) {
+//                dump((int)$user->getDetails()->getActiveCubeCount());die;
+                $showCubemap = TRUE;
+            }
+        } else {
+            return $this->redirectToRoute('projects');            
+        }
+
+/*        if((int)$user->getDetails()->getActiveCubeCount() >= 2) {
             $showCubemap = FALSE;
         } elseif((int)$user->getDetails()->getActiveCubeCount() < 2) {
             $showCubemap = TRUE;
@@ -225,7 +261,7 @@ class ProjectsController extends Controller
                 }
             }
         }
-
+*/
 /*        if($user->getDetails() && $user->getDetails()->getCustomer()) {
             $customer = Customer::retrieve($user->getDetails()->getCustomer());
             if($customer->subscriptions->data) {
@@ -272,8 +308,10 @@ class ProjectsController extends Controller
 */
         $project = $this->getDoctrine()
             ->getRepository('AppBundle:Project')
-            ->find((int)$projectId);
-
+            ->findOneBy(['id'=>$projectId, 'user'=>$user]);
+        if(!$project) {
+            return $this->redirectToRoute('projects');                        
+        }
         $em = $this->getDoctrine()->getManager();
 
         $form = $this->createForm(ProjectType::class, $project);
@@ -325,6 +363,7 @@ class ProjectsController extends Controller
 
                 $project->setUser($user);
                 $project->setReviewed(0);
+                $project->setType($user->getDetails()->getType());
 
                 $em->persist($user);
                 $em->persist($project);

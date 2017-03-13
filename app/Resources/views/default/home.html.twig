@@ -21,55 +21,73 @@
         <br>
         <br>
         <br>
-        <a href="">Sign up for beta</a>
         <br>
         <br>
         <br>
         <br>
+        <button style="border: 2px solid #000; border-radius: 25px; background:red; padding: 10px 20px 10px 20px;">
+        <a class="sign-up" href="{{ path('fos_user_registration_register') }}"><b>Sign Up</b></a>
+        </button>        
       </div>
 
     </div>
 </div>
 
 <div class="container">
+  <br>
+  <br>
+  <div class="row text-center">
+    <h3><b>About <span style="color:red;">Vrviewer</span></b></h3>
+  </div>
+  <br>
+  <br>
+  <div class="row text-center">
+    <p><span style="color:red;"><b>Vrviewer</b></span> is a platform that allows you to create VR presentations and quickly gather an audience around them. It is a very powerful tool that can be integrated in every type of realestate marketing system. You can use VRviewer to increase your sales, or you can impress your clients by offering them an immerse VR experience.</p>
+    <p><span style="color:red;"><b>Vrviewer</b></span> allows to send VR presentations directly to your client's smartphone. using our own app.</p>
+  </div>
+  <br>
+  <br>
   <div class="row">
-    {%for plan in plans.data%}
-      <div class="col-sm-4">
-        <h3><a>{{plan.name | capitalize}}</a></h3>
-        <p>{{plan.statement_descriptor | capitalize}}</p>
-        <p>Price: {{(plan.amount/100)|number_format(2, '.', ',')}}&#36;/{{plan.interval}}</p>
-        <p>Trial: {{plan.trial_period_days}} days</p>
-        {% if plan.metadata.project_count is defined %}
-          <p>Number of Projects: {{ plan.metadata.project_count }}</p>
-        {% endif %}
-
-      </div>
-    {% endfor %}
+    <div class="col-sm-3"></div>
+    <div class="col-sm-3"><b>Manage your VR<br> presentation<br><b> Edit the projects directly from your web browser interface, by adding or removing images</div>
+    <div class="col-sm-3"></div>
+    <div class="col-sm-3"><b>Incorporate and sell</b> Add our solution to the marketing campaign of your choice, and share the presentations with a broad audience<br></div>  
   </div>
-</div>
+  <hr>
+  <div class="row">
+    <div class="col-sm-3 text-center"><p class="text-center">Export Your VR images<br> Use the 3D software of your choice, create the cubemap and upload it to your platform</p></div>
+    <div class="col-sm-3"></div>
+    <div class="col-sm-3"><p>Share<br> Show your clients the presentation, send it to his device using one simple code</p></div>
+    <div class="col-sm-3"></div>  
+  </div>
 
-<div class="text-center">
-  <br>
-  <br>
-  <br>
-  <br>
-  <h3><strong>VR tours for your property in less than 10 minutes<strong></h3>
-
-  <a href="">Sign up for beta</a>
-
-</div>
-
-  <div class="navbar navbar-default navbar-fixed-bottom">
-    <div class="container">
-      <p class="navbar-text pull-left">© 2016 - Site Built by My Company Co.
-           <a href="http://edgedream.com" target="_blank" >HTML 5 Validation</a>
-      </p>
-      
-      <a href="http://youtu.be/zJahlKPCL9g" class="navbar-btn btn-primary btn pull-right">
-      <span class="glyphicon glyphicon-star"></span>  Subscribe on YouTube</a>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+  <div class="container text-center">
+    <div class="row">
+      {%for plan in plans.data%}
+        <div class="col-sm-4">
+          <h3><span style="color:red;">{{plan.name | capitalize}}</span></h3>
+          <p>{{plan.statement_descriptor | capitalize}}</p>
+          <p>Price: {{(plan.amount/100)|number_format(2, '.', ',')}}&#36;/{{plan.interval}}</p>
+          <p>Trial: {{plan.trial_period_days}} days</p>
+          {% if plan.metadata.project_count is defined %}
+            <p>Cubemaps: {{ plan.metadata.cubemap_count }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
     </div>
-    
-    
   </div>
-
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+  <p class="text-center">2017 Vrviewerpro Inc. | 3D VR Rendering</p>
 {% endblock %}
