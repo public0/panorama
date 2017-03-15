@@ -71,7 +71,7 @@ class ProjectsController extends Controller
                 }
             }
         } else {
-            $showCreateProject = FALSE;            
+            $showCreateProject = FALSE;
         }
 
 /*        if( $user->getDetails() && $user->getDetails()->getCustomer() && $user->getDetails()->getStatus() ) {

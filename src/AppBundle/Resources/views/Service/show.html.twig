@@ -359,6 +359,7 @@
 			}
 			var container, stats;
 			var camera, scene, renderer, raycaster, mouse;
+			var markTexture, markMaterial, markPlane, plane;
 /*
 			document.addEventListener("keydown", function(e) {
 				switch(e.keyCode) {
@@ -403,6 +404,28 @@
 				scene = new THREE.Scene();
 				mouse = new THREE.Vector2();
 				camera = new THREE.PerspectiveCamera( 65, window.innerWidth / window.innerHeight, 0.5, 3000000 );
+
+
+				/*Mark*/
+/*				markTexture = new THREE.TextureLoader();
+				markTexture = markTexture.load("{{baseurl~"/images/"}}"+'logo.jpg');
+*/	
+				{%if projectType == 0 %}
+					console.log('{{projectType}}');
+					markTexture = new THREE.TextureLoader();
+					markTexture = markTexture.load("{{baseurl~"/images/"}}"+'logo2.png', function(texture) {
+
+					    var material = new THREE.MeshPhongMaterial({map: texture, transparent: true, opacity: 0.3});
+
+					    plane = new THREE.Mesh(new THREE.PlaneGeometry(300, 200, 32), material);
+						plane.material.side = THREE.DoubleSide;
+						plane.position.set(0, 10, -100);
+						camera.add(plane);
+						scene.add(camera);
+					});
+				{%endif%}
+
+
 				raycaster = new THREE.Raycaster();
 				camera.position.set( 2000, 750, 2000 );
 				controls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -412,9 +435,11 @@
 //				controls.maxPolarAngle = Math.PI * 0.9;
 				controls.target.set( 0, 500, 0 );
 				scene.add( new THREE.AmbientLight( 0x444444 ) );
+
 				var light = new THREE.DirectionalLight( 0xffffbb, 1 );
 				light.position.set( - 1, 1, - 1 );
 				scene.add( light );
+//				console.log(plane);
 //				waterNormals = new THREE.TextureLoader().load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+i );
 //				waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
 				// load skybox

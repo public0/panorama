@@ -16,16 +16,17 @@ class ServiceController extends Controller
     {
 		$repository = $this->getDoctrine()->getRepository('AppBundle:Project');
 		$project = $repository->findOneByCode($code);
+
 		$images = $this->getDoctrine()->getRepository('AppBundle:Images');
 		$images = $images->findBy(['project' => $project->getId(), 'status' => 1]);
-//		dump($images);die;
         $baseurl = $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
 
         return $this->render('AppBundle:Service:show.html.twig', array(
             'baseurl' => $baseurl,
             'userId' => $project->getUser()->getId(),
             'project' => $project,
-            'images' => $images
+            'images' => $images,
+            'projectType' => $project->getType()
         ));
     }
 
