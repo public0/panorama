@@ -158,7 +158,7 @@ class AjaxController extends Controller
 				foreach ($images as $image) {
 					$zip->addFile($dir.'/images/'.$image->getName(), $image->getName());
 				}
-				$zip->addFile($dir.'/images/data.csv', 'data.csv');
+				$zip->addFile($dir.'/images/data.csv', 'sources/data.csv');
 
 //                $options = array('add_path' => 'sources/', 'remove_path' => $dir.'/images');
 //                $zip->addPattern('/\.(?:jpg|png|csv|hdr)$/', $dir.'/images', $options);
