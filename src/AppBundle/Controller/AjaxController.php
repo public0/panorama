@@ -154,15 +154,15 @@ class AjaxController extends Controller
             if ($ret !== TRUE) {
                 printf('Failed with code %d', $ret);
             } else {
-               $options = array('add_path' => 'sources/', 'remove_path' => $dir.'/images');
+/*               $options = array('add_path' => 'sources/', 'remove_path' => $dir.'/images');
 				foreach ($images as $image) {
 					$zip->addFile($dir.'/images/'.$image->getName(), $image->getName());
 				}
 				$zip->addFile($dir.'/images/data.csv', 'sources/data.csv');
-
-//                $options = array('add_path' => 'sources/', 'remove_path' => $dir.'/images');
-//                $zip->addPattern('/\.(?:jpg|png|csv|hdr)$/', $dir.'/images', $options);
-                $zip->close();
+*/
+				$options = array('add_path' => 'sources/', 'remove_path' => $dir.'/images');
+				$zip->addPattern('/\.(?:jpg|png|csv|hdr)$/', $dir.'/images', $options);
+				$zip->close();
 
 			}
 
