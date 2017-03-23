@@ -110,6 +110,18 @@ class AjaxController extends Controller
             $zip = new \ZipArchive();
 	        // Save to DB
 
+			$projectActiveCubemaps = ($user->getDetails()->getCubeCount() - $totalCubemaps) + $activeCubemaps;
+
+//			$projectActiveCubemaps = $user->getDetails()->getCubeCount() - $inactiveCubemaps + $activeCubemaps;
+			$user->getDetails()->setActiveCubeCount($projectActiveCubemaps);
+			$em->persist($user);
+/*            $customer = Customer::retrieve($user->getDetails()->getCustomer());
+	        if($projectActiveCubemaps > (int)$customer->subscriptions->data[0]->plan->metadata->cubemap_count) {
+				return new Response(1);
+	        }
+*/
+	        $em->flush();
+
             // Write to csv
 
 	        $images = $this->getDoctrine()
@@ -142,22 +154,18 @@ class AjaxController extends Controller
             if ($ret !== TRUE) {
                 printf('Failed with code %d', $ret);
             } else {
-                $options = array('add_path' => 'sources/', 'remove_path' => $dir.'/images');
-                $zip->addPattern('/\.(?:jpg|png|csv|hdr)$/', $dir.'/images', $options);
+               $options = array('add_path' => 'sources/', 'remove_path' => $dir.'/images');
+				foreach ($images as $image) {
+					$zip->addFile($dir.'/images/'.$image->getName(), $image->getName());
+				}
+				$zip->addFile($dir.'/images/data.csv', 'data.csv');
+
+//                $options = array('add_path' => 'sources/', 'remove_path' => $dir.'/images');
+//                $zip->addPattern('/\.(?:jpg|png|csv|hdr)$/', $dir.'/images', $options);
                 $zip->close();
 
 			}
-			$projectActiveCubemaps = ($user->getDetails()->getCubeCount() - $totalCubemaps) + $activeCubemaps;
 
-//			$projectActiveCubemaps = $user->getDetails()->getCubeCount() - $inactiveCubemaps + $activeCubemaps;
-			$user->getDetails()->setActiveCubeCount($projectActiveCubemaps);
-			$em->persist($user);
-/*            $customer = Customer::retrieve($user->getDetails()->getCustomer());
-	        if($projectActiveCubemaps > (int)$customer->subscriptions->data[0]->plan->metadata->cubemap_count) {
-				return new Response(1);
-	        }
-*/
-	        $em->flush();
 
 			// Archive Project
 		}
