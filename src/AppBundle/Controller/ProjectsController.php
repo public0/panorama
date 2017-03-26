@@ -136,7 +136,7 @@ class ProjectsController extends Controller
             }
 
             // if user had at ony point a stripe customer id
-/*            if($cusStr = $user->getDetails()->getCustomer()) {
+            if($cusStr = $user->getDetails()->getCustomer()) {
                 // if user still has a stripe cutomer id
                 if($customer = Customer::retrieve($cusStr)) {
                     // if user has any subscriptions
@@ -150,7 +150,7 @@ class ProjectsController extends Controller
             } elseif((int)$user->getDetails()->getPcount() >= 1) {
                 return $this->redirectToRoute('projects', array());
             }
-*/        } else {
+        } else {
             return $this->redirectToRoute('projects', array());            
         }
 
