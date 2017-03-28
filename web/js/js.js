@@ -11,8 +11,8 @@ $(function() {
 	        img = new Image();
 	        img.onload = function() {
 	        	$('#project_width').val(this.width);
-	        	$('#project_height').val(this.height);
-	        	console.log(Math.floor(this.width / 6));
+	        	$('#project_height').val(this.width / 6);
+//	        	console.log(Math.floor(this.width / 6));
 
 //	            alert(this.width + " " + this.height);
 	        };
