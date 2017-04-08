@@ -4,12 +4,12 @@ body {
     font-family: 'Muli', serif;
 }
 
-.square > a {
+.projects_links {
     text-decoration: none;
 	color: white;
 }
 
-.square > a:hover, a:focus {
+projects_links:hover, a:focus {
     text-decoration: none;
 	color: white;
 }

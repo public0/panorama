@@ -25,22 +25,22 @@
     {%endif%}
     {%set i = 0%}
     {% for project in projects %}
-    {% if project.getFace() %}
-      <div class="square" data-image="{{face_dir~project.getFace()}}">
-    {% else %}
-      <div class="square">
-    {%endif%}
-      <a href="{{path('edit_project', {'projectId':project.id})}}">
-          <h3>{{ project.name|capitalize }}</h3>
-          <br>
-          <br>
-          <br>
-          <br>
-          <br>
-          <br>
-          <br>
-      </a>
-    </div>
+    <a class="projects_links" href="{{path('edit_project', {'projectId':project.id})}}">
+      {% if project.getFace() %}
+        <div class="square" data-image="{{face_dir~project.getFace()}}">
+      {% else %}
+        <div class="square">
+      {%endif%}
+            <h3>{{ project.name|capitalize }}</h3>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+      </div>
+    </a>
     {% set i = i + 1 %} 
     {% endfor %}
   </div>
