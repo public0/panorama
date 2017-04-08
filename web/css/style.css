@@ -109,6 +109,10 @@ projects_links:hover, a:focus {
     opacity: .8;
 }
 
+label {
+    color:white;
+}
+
 .container-table {
     display: table;
 }
