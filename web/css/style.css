@@ -23,6 +23,8 @@ body {
 }
 
 .square {
+    word-wrap: break-word;
+    max-height: 195.63px;    
     float:left;
     position: relative;
     width: 20%;

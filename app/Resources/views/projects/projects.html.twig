@@ -31,7 +31,6 @@
       <div class="square">
     {%endif%}
       <a href="{{path('edit_project', {'projectId':project.id})}}">
-        <div>
           <h3>{{ project.name|capitalize }}</h3>
           <br>
           <br>
@@ -40,7 +39,6 @@
           <br>
           <br>
           <br>
-        </div>
       </a>
     </div>
     {% set i = i + 1 %} 
