@@ -9,11 +9,11 @@
     {%for plan in plans.data%}
       <div class="col-sm-4">
         <h3><a>{{plan.name | capitalize}}</a></h3>
-        <p>{{plan.statement_descriptor | capitalize}}</p>
-        <p>Price: {{(plan.amount/100)|number_format(2, '.', ',')}}&#36;/{{plan.interval}}</p>
-        <p>Trial: {{plan.trial_period_days}} days</p>
+        <p class="white-text">{{plan.statement_descriptor | capitalize}}</p>
+        <p class="white-text">Price: {{(plan.amount/100)|number_format(2, '.', ',')}}&#36;/{{plan.interval}}</p>
+        <p class="white-text">Trial: {{plan.trial_period_days}} days</p>
         {% if plan.metadata.project_count is defined %}
-          <p>Number of Projects: {{ plan.metadata.project_count }}</p>
+          <p class="white-text">Number of Projects: {{ plan.metadata.project_count }}</p>
         {% endif %}
         {%if(currentPlan == plan.id)%}
           <p class="navbar-btn btn-info btn"><a href="{{path('profile_unsubscribe')}}">Unsubscribe</a></p>
