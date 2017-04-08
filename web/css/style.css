@@ -38,6 +38,17 @@ projects_links:hover, a:focus {
     background-color: gray;
 }
 
+.square:hover > h3{
+    text-shadow: 0 0 10px #FFF,
+    0 0 10px #FFF,
+    0 0 10px #888888,
+    0 0 10px #888888,
+    0 0 10px #888888,
+    0 0 10px #888888,
+    0 0 10px #888888,
+    0 0 10px #888888;
+}
+
 .table-borderless > tbody > tr > td,
 .table-borderless > tbody > tr > th,
 .table-borderless > tfoot > tr > td,
@@ -89,6 +100,7 @@ projects_links:hover, a:focus {
 }
 
 .square:hover {
+    color:white;
     border: 1px solid darkgray;
 }
 
@@ -163,7 +175,17 @@ projects_links:hover, a:focus {
 }
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
-    color: #F00;
+    color: red;
+/*    color: #F00;*/
+    text-shadow: 0 0 12px #FFFFFF,
+    0 0 12px #FFFFFF,
+    0 0 12px #FFFFFF,
+    0 0 12px #FFFFFF,
+    0 0 12px #FFFFFF,
+    0 0 12px #FFFFFF,
+    0 0 12px #FFFFFF,
+    0 0 12px #FFFFFF;
+
 }
 
 .navbar-brand, .navbar-nav>li>a {
@@ -220,4 +242,16 @@ projects_links:hover, a:focus {
 
 .dropdown-menu>li>a {
     color: #FFF;
+}
+
+.dropdown-menu>li>a:focus,
+.dropdown-menu>li>a:hover {
+    text-shadow: 0 0 12px #FFFFFF,
+    0 0 12px #FFFFFF,
+    0 0 12px #FFFFFF,
+    0 0 12px #FFFFFF,
+    0 0 12px #FFFFFF,
+    0 0 12px #FFFFFF,
+    0 0 12px #FFFFFF,
+    0 0 12px #FFFFFF;    
 }
