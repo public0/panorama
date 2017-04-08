@@ -1,44 +1,61 @@
 {% extends 'base.html.twig' %}
 {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
 {% block body %}
-<div class="container">
+<div class="container white-text">
 <div class="row">
 	<form method="POST" action="{{path('del_project')}}" id="confirmForm">
 		<input type="hidden" name="pid" value="{{project.id}}" />
 		<input type="submit" value="Delete Project" class="btn btn-danger pull-right" />
 	</form>
-</div>		
+</div>
 <div class="row">
-	<div style="width:50%;  margin: 0 auto;">
-		{{ form_start(form, {'attr': {} }) }}
+	<div style="width:60%;  margin: 0 auto;">
+		{{form_start(form, {'attr': {'class':''} }) }}
 		{{form_errors(form)}}
-		{{form_row(form.name)}}
+		{{form_row(form.name)}} 
 		{{form_row(form.status)}}
+		<div class="form-group">
+			{{form_label(form.face)}}
+			<label class="btn btn-default btn-file">Upload{{form_widget(form.face)}}</label>
+		</div>
 		<div class="{{showCubemap?'':'hidden'}}">
 			<hr>
-			{{form_row(form.images)}}
 			{{form_row(form.width)}}
 			{{form_row(form.height)}}
 			{{form_row(form.exporter)}}
+
+			<div class="form-group">
+				{{form_label(form.images)}}
+				<label class="btn btn-default btn-file">Upload{{form_widget(form.images)}}</label>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label" for="project_code">Code</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control text-center" readonly value="{{ project.code }}">
+				</div>
+			<div>
+
 			<hr>
 		</div>
 		<br>
-		<input type="submit" value="Save" class="btn btn-success pull-right" />
+		<input id="project_save" type="submit" value="Save" class="btn btn-success pull-right" />
 
-		<div class="col-sm-8 label label-default">Code: {{ project.code }}</div>
+		<!--<div class="col-sm-8 label label-default">Code: {{ project.code }}</div>-->
 
 		{{ form_end(form) }}
 	</div>
 </div>
 	<br>
 
-	<form method ="POST" action="../../imageSave">
+	<form method="POST" id="ajax-update">
 	<input type="hidden" name="project_id" value="{{project.id}}">
-	<table class="table table-hover">
+	</div>
+	<div class="container white-text">
+	<div class="separator"></div>
+	<table class="table table-hover table-borderless">
 	<thead>
       <tr>
-        <th>Image</th>
-        <th>Title</th>
+        <th>Image Title</th>
         <th>Format</th>
         <th>Order</th>
         <th>Actions</th>
@@ -47,12 +64,6 @@
     <tbody>
 	{%for image in images%}
 		<tr>
-			<td>
-				<a href="{{path('preview_project', {'id':project.user.id, 'project_id': project.id, 'image_id': image.id})}}">
-					<button type="button" class="btn btn-success">Preview</button>
-					{# <img src="{{download}}{{project.user.id}}/{{project.id}}/images/{{image.name}}" width="150"> #}
-				</a>
-			</td>
 			<td>
 				<input type="hidden" name="image_id[]" value="{{image.id}}">
 				<input type="text" name="title[]" id="exampleInputName3" class="form-control" placeholder="Title" value="{{image.title}}">
@@ -72,6 +83,11 @@
 				</select>
 			</td>
 			<td>
+				<a href="{{path('preview_project', {'id':project.user.id, 'project_id': project.id, 'image_id': image.id})}}">
+					<button type="button" class="btn btn-success">Preview</button>
+					{# <img src="{{download}}{{project.user.id}}/{{project.id}}/images/{{image.name}}" width="150"> #}
+				</a>
+
 				{%if(image.status)%}
 					<input type="hidden" name="delete[]" class="delete" value="0">
 					<button class="delete-row btn btn-danger">Discard</button>
@@ -84,19 +100,17 @@
 	{% endfor %}
 	</tbody>
 	</table>
-	<div class="container">
 		<div class="row">
 			<div class="col col-lg-6">
 				<button class="axaj-sub alert btn btn-success">Update Project</button>
+				<a href="{{path('show_project', {'code':project.code})}}"><span class="alert btn btn-default">Preview Project</span></a>
 			</div>
 			<div class="col col-lg-6">
 				<span class="result">
 				    <span id="loading" class="hidden"><img src="{{ asset('images/ellipsis.gif') }}" /></span>
-
 				</span>			
 			</div>
 		</div>
-	</div>
 	</form>
 </div>
 

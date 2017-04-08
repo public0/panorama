@@ -23,7 +23,7 @@ class AddProjectType extends AbstractType
     {
 //        dump($builder);die;
         $builder
-            ->add('name', TextType::class, ['required' => true])
+            ->add('name', TextType::class, ['required' => true, 'attr' => ['maxlength' => 25], 'label' => 'Project name' ])
 //            ->add('active', CheckboxType::class, ['label' => 'Active'])
             ->add('status', ChoiceType::class, [
                 'choices'  => array(
@@ -31,7 +31,8 @@ class AddProjectType extends AbstractType
                     'Public' => 1,
                 )
                 ]
-            );
+            )
+            ->add('face', FileType::class, array('label' => 'Front', 'required' => false, 'attr' => ['class' => 'hidden'] ));
 //            ->add('android')
     }
     

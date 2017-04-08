@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Project
@@ -79,6 +80,29 @@ class Project
      * @ORM\Column(name="android", type="boolean")
      */
     private $android;
+
+   /**
+     * @ORM\Column(type="string")
+     *
+     * @Assert\File(
+        mimeTypes={ "image/jpeg", "image/png" },
+
+        )
+     */
+
+    private $face;
+
+    public function getFace()
+    {
+        return $this->face;
+    }
+
+    public function setFace($face)
+    {
+        $this->face = $face;
+
+        return $this;
+    }
 
     /**
      * Get id

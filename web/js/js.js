@@ -12,6 +12,7 @@ $(function() {
 	        img.onload = function() {
 	        	$('#project_width').val(this.width);
 	        	$('#project_height').val(Math.floor(this.width / 6));
+	        	$('#project_save').val('Upload');
 //	        	console.log(Math.floor(this.width / 6));
 
 //	            alert(this.width + " " + this.height);
@@ -58,15 +59,19 @@ $(function() {
 		var input = $(this).prev();
 
 		input.val(input.val()==1?0:1);
-		(input.val()==1)?$(this).removeClass('btn-danger').addClass('btn-success').html('Keep'):$(this).removeClass('btn-success').addClass('btn-danger').html('Discard');
 
+//		(input.val()==1)?$(this).removeClass('btn-danger').addClass('btn-success').html('Keep'):$(this).removeClass('btn-success').addClass('btn-danger').html('Discard');
+		if(input.val()==1) {
+			$(this).closest('tr').addClass('hidden');	
+		}
 		e.preventDefault();
 	})
 
 	$('.axaj-sub').click(function() {
-		var form = $(this).closest('form');
-		$( "#loading" ).removeClass('hidden');
+//		var form = $(this).closest('form');
+		var form = $('#ajax-update');
 
+		$( "#loading" ).removeClass('hidden');
 		$.post( "../../imageSave", form.serialize()).done(function( data ) {
 		$( "#loading" ).addClass('hidden');
 			switch(parseInt(data)) {
@@ -131,5 +136,12 @@ $(function() {
 		});
 		event.preventDefault();
 	});	
+
+	$('.square').each(function() {
+		var image;
+		if( typeof $(this).attr('data-image') !== 'undefined') {
+			$(this).css('background-image', 'url('+$(this).attr('data-image')+')');
+		}
+	});
 
 });

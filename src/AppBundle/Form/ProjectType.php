@@ -24,17 +24,19 @@ class ProjectType extends AbstractType
     {
 //        dump($builder);die;
         $builder
-            ->add('name', TextType::class, ['required' => true])
+            ->add('name', TextType::class, ['required' => true, 'label' => 'Project Name'])
             //->add('active', CheckboxType::class, ['label' => 'Active', 'required' => false])
             ->add('status', ChoiceType::class, [
                 'choices'  => array(
                     'Private' => 0,
                     'Public' => 1,
-                )
+                ),
+                'label' => ' Project Status'
                 ]
             )
+            ->add('face', FileType::class, array('label' => 'Project Image', 'required' => false, 'data_class' => null, 'attr' => ['class' => 'hidden']))
 //            ->add('android')
-            ->add('images', FileType::class, array('mapped'=>false, 'required' => false, 'label' => 'Image'))
+            ->add('images', FileType::class, array('mapped'=>false, 'required' => false, 'label' => 'Upload image', 'attr' => ['class' => 'hidden']))
             ->add('width', HiddenType::class, array('mapped'=>false, 'required' => false))
             ->add('height', HiddenType::class, array('mapped'=>false, 'required' => false))
             ->add('exporter', EntityType::class, array(
@@ -44,7 +46,8 @@ class ProjectType extends AbstractType
                         ->orderBy('e.name', 'ASC');
                 },
                 'mapped'=>false,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
+                'label' => 'Image Format'
             ));
 //            ->add('save', SubmitType::class, array('attr' => array('class' => 'btn btn-default')));
 //            ->add('file', FileType::class, array('label' => 'Image'))

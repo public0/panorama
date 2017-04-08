@@ -1,8 +1,17 @@
 {% extends 'base.html.twig' %}
 {% block body %}
 <div class="container vertical-center">
+    <br>
   <div class="row text-center">
     {% if(showCreateProject) %}
+    <a href="project/add">
+      <button type="button" class="btn btn-default">Create new project</button>
+    </a>
+    <br>
+    <br>
+    <br>
+    <br>
+<!--
     <div class="square">
       <a href="project/add">
         <div>
@@ -12,19 +21,25 @@
         </div>
       </a>
     </div>
+-->    
     {%endif%}
     {%set i = 0%}
     {% for project in projects %}
-    {% if images[i] %}
-      <div class="square" data-image="{{images[i].getName()}}">
+    {% if project.getFace() %}
+      <div class="square" data-image="{{face_dir~project.getFace()}}">
     {% else %}
       <div class="square">
     {%endif%}
       <a href="{{path('edit_project', {'projectId':project.id})}}">
         <div>
           <h3>{{ project.name|capitalize }}</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
-          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
         </div>
       </a>
     </div>

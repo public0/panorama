@@ -23,14 +23,14 @@
                     <span class="icon-bar"></span>
                   </button>
                   <a class="navbar-brand" href="{{path('homepage')}}">
-                      <img src="{{ asset('images/logo2.png') }}" style="width:70px; margin-top: -10px;" >
+                      <img src="{{ asset('images/logo2.png') }}" style="width:90px; margin-top: -10px;" >
                   </a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                   <ul class="nav navbar-nav">
                   </ul>
                   <ul class="nav navbar-nav navbar-right">
-                    <li class="active"><a href="{{path('homepage')}}">Home</a></li>
+                    <li><a href="{{path('homepage')}}">Home</a></li>
                     <li><a href="{{path('about')}}">About</a></li>
                     {% if app.user %}
                     <li><a href="{{path('projects')}}">Projects 
@@ -86,6 +86,7 @@
                 </div><!--/.nav-collapse -->
             </nav>
         </div>
+        <br>
         {% if app.request.hasPreviousSession %}
             {% for type, messages in app.session.flashbag.all() %}
                 {% for message in messages %}

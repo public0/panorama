@@ -652,7 +652,8 @@
 					vertexShader: cubeShader.vertexShader,
 					uniforms: cubeShader.uniforms,
 					depthWrite: false,
-					side: THREE.BackSide
+					side: THREE.BackSide,
+					overdraw:0
 				} );
 				var skyBox = new THREE.Mesh(
 					new THREE.BoxGeometry( 1000000, 1000000, 1000000 ),

@@ -168,6 +168,17 @@ class ProjectsController extends Controller
             ->getRepository('AppBundle:User')
             ->find((int)$userId);
 
+            $file = $project->getFace();
+            if($file) {
+                $fileName = md5(uniqid()).'.'.$file->guessExtension();
+                $file->move(
+                    $this->getParameter('face_dir'),
+                    $fileName
+                );
+
+                $project->setFace($fileName);
+            }
+
             $project->setUser($user);
             $project->setAndroid(1);
             $project->setReviewed(0);
@@ -321,7 +332,7 @@ class ProjectsController extends Controller
         $fs = new Filesystem();
         $images = $this->getDoctrine()
                 ->getRepository('AppBundle:Images')
-                ->findBy(['project' => $projectId], ['plan' => 'ASC']);
+                ->findBy(['project' => $projectId, 'status' => 1], ['plan' => 'ASC']);
 
         $formats = $this->getDoctrine()
                 ->getRepository('AppBundle:Exporter')
@@ -360,6 +371,17 @@ class ProjectsController extends Controller
                 ->find((int)$userId);
                 $user->getDetails()->incCubeCount();
                 $user->getDetails()->incActiveCubeCount();
+
+                $file = $project->getFace();
+                if($file) {
+                    $fileName = md5(uniqid()).'.'.$file->guessExtension();
+                    $file->move(
+                        $this->getParameter('face_dir'),
+                        $fileName
+                    );
+
+                    $project->setFace($fileName);
+                }
 
                 $project->setUser($user);
                 $project->setReviewed(0);
