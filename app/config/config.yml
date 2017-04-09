@@ -66,10 +66,10 @@ doctrine:
 # Swiftmailer Configuration
 swiftmailer:
     transport: smtp
+    host: "%mailer_host%"
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     encryption: tls
-    host: "%mailer_host%"
     port: "%mailer_port%"
     auth_mode: login
 #    transport: "%mailer_transport%"
