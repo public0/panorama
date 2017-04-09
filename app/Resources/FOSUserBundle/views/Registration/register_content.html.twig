@@ -7,8 +7,8 @@
 		<br>
 		<br>
 		</div>
-
 		<div class="text-center col-md-4 col-md-offset-4">
+			<a href="{{ path('fos_user_resetting_request') }}">Forgot password ?</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                 {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |
                 <a href="{{ path('fos_user_security_logout') }}">
