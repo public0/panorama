@@ -3,6 +3,20 @@ $(function() {
 	var id;
 	var val;
 	var _URL = window.URL || window.webkitURL;
+//	$('.caption-col').children().css( "visibility", "visible" );
+
+	$('.caption-col').mouseenter(function(e) {
+		$(this).children().css( "visibility", "visible" );
+		console.log('a');
+
+	});
+
+	$('.caption-col').mouseleave(function(e) {
+		$(this).children().css( "visibility", "hidden" );
+		console.log('b');
+
+	});
+
 	$("#project_images").change(function(e) {
 	    var file, img;
 

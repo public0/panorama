@@ -18,8 +18,86 @@ projects_links:hover, a:focus {
     color: white;
 }
 
+.homebody-content img{
+    width: 100%;
+}
+
 .white-text {
-	color: white;
+    color: white;
+}
+
+.black-text {
+    color: black;
+}
+
+.red-text {
+    color: red;
+}
+
+.white-bg {
+    background-color: white;
+}
+
+.black-bg {
+    background-color: #333;
+}
+
+.thumbnail {
+    position: relative;
+    padding: 0px;
+    margin: 0;
+    border: none;    
+}
+
+@media all and (max-width: 1200px) { /* screen size until 1200px */
+    body {
+        font-size: 1.5em; /* 1.5x default size */
+    }
+    h3 {
+        font-size: 1.8em; /* 1.5x default size */        
+    }
+}
+@media all and (max-width: 1000px) { /* screen size until 1000px */
+    body {
+        font-size: 1.2em; /* 1.2x default size */
+        }
+    }
+    h3 {
+        font-size: 1.8em; /* 1.5x default size */        
+    }
+
+@media all and (max-width: 500px) { /* screen size until 500px */
+    body {
+        font-size: 0.8em; /* 0.8x default size */
+        }
+    h3 {
+        font-size: 1.8em; /* 1.5x default size */        
+    }
+    }
+
+.explain-text {
+    margin-top: 15%;
+}
+.caption-col {
+    height:103%;    
+}
+.caption-col > *{
+    visibility: hidden;
+}
+
+.caption-col:hover {
+    background-color: rgba(51, 51, 51, .5);
+}
+
+.caption {
+    cursor: default;
+    height: 97%;
+    padding: 0 !important;
+    margin: 0;
+    position: absolute;
+    top: -0%;
+    left: 0%;
+    width: 100%;
 }
 
 .square {
