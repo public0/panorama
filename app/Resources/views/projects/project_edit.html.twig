@@ -28,14 +28,15 @@
 				{{form_label(form.images)}}
 				<label class="btn btn-default btn-file">Upload{{form_widget(form.images)}}</label>
 			</div>
-			<div class="form-group">
-				<label class="col-sm-2 control-label" for="project_code">Code</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control text-center" readonly value="{{ project.code }}">
-				</div>
-			<div>
-			<hr>
 		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label" for="project_code">Code</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control text-center" readonly value="{{ project.code }}">
+			</div>
+		<div>
+
+		<hr>
 		<br>
 		<input id="project_save" type="submit" value="Save" class="btn btn-success pull-right" />
 
