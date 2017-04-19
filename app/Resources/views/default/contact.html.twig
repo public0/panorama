@@ -37,6 +37,15 @@
 			    
 			{{ form_end(form) }}
 
+			<div>
+				{% for flashMessage in app.session.flashbag.get('contact') %}
+
+				    <span class="alert alert-success">{{ flashMessage }}</span>
+
+				{% endfor %}
+
+			</div>
+
 
 		</div>
 	</div>

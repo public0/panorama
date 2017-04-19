@@ -11,6 +11,7 @@ use Payum\Stripe\Request\Api\CreateCustomer;
 use AppBundle\Entity\Trial;
 use AppBundle\Form\TrialType;
 use AppBundle\Form\ContactType;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class DefaultController extends Controller
 {
@@ -57,7 +58,6 @@ class DefaultController extends Controller
      */
     public function contactAction(Request $request)
     {
-
         $form = $this->createForm(ContactType::class, array(
             // To set the action use $this->generateUrl('route_identifier')
             'action' => $this->generateUrl('contact'),
@@ -65,6 +65,7 @@ class DefaultController extends Controller
         ));
 
         if ($request->isMethod('POST')) {
+            $this->get('session')->getFlashBag()->add('contact', 'Message Sent.');
             // Refill the fields in case the form is not valid.
             $form->handleRequest($request);
 
@@ -74,10 +75,10 @@ class DefaultController extends Controller
                 if($this->sendEmail($form->getData())){
 
                     // Everything OK, redirect to wherever you want ! :
-                   return $this->redirectToRoute('contact', ['success' => true]);
+                   return $this->redirectToRoute('contact');
                 }else{
                     // An error ocurred, handle
-                   return $this->redirectToRoute('contact', ['success' => false]);
+                   return $this->redirectToRoute('contact');
                 }
             }
         }
@@ -85,9 +86,6 @@ class DefaultController extends Controller
         return $this->render('default/contact.html.twig', array(
             'form' => $form->createView()
         ));
-
-        return $this->render('default/contact.html.twig', [
-        ]);
     }
 
     /**
@@ -114,8 +112,8 @@ class DefaultController extends Controller
         $message = new \Swift_Message();
 
         $message->setSubject($data['subject'])
-            ->setFrom($this->container->getParameter('mailer_user'))
-            ->setTo($data['name'])
+            ->setFrom($data['email'])
+            ->setTo($this->container->getParameter('mailer_user'))
             ->setBody(
                 $data['message']
             );
