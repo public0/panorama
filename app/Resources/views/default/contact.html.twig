@@ -2,7 +2,43 @@
 {% block body %}
 <div class="container">
 	<div class="row">
-	Contact
+		<div class="col-md-2 col-md-offset-5">
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-3 col-md-offset-5">
+
+			{{ form_start(form) }}
+
+			    <div class="form-group">
+			        {{ form_widget(form.subject, {'attr': {'class': 'form-control'}}) }}
+			        {{ form_errors(form.subject) }}
+			    </div>
+			    <div class="form-group">
+			        {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+			        {{ form_errors(form.email) }}
+			    </div>
+			    <div class="form-group">
+			        {{ form_widget(form.message, {'attr': {'class': 'form-control', 'rows' : '10', 'cols' : '40'}}) }}
+			        {{ form_errors(form.message) }}
+			    </div>
+
+			    {# Render CSRF token etc .#}
+			    <div style="display:none">
+			        {{ form_rest(form) }}
+			    </div>
+			    
+			    <input type="submit" value="Send" class="form-control">
+			    
+			{{ form_end(form) }}
+
+
+		</div>
 	</div>
 </div>
 
