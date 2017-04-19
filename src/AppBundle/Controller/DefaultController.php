@@ -58,6 +58,9 @@ class DefaultController extends Controller
      */
     public function contactAction(Request $request)
     {
+//       $this->get('session')->getFlashBag()->add('contact', 'Message Sent.');
+
+
         $form = $this->createForm(ContactType::class, array(
             // To set the action use $this->generateUrl('route_identifier')
             'action' => $this->generateUrl('contact'),
@@ -65,7 +68,7 @@ class DefaultController extends Controller
         ));
 
         if ($request->isMethod('POST')) {
-            $this->get('session')->getFlashBag()->add('contact', 'Message Sent.');
+            $this->get('session')->getFlashBag()->add('contact', 'Thanks for contacting us, we will reply to you as soon as possible.' );
             // Refill the fields in case the form is not valid.
             $form->handleRequest($request);
 

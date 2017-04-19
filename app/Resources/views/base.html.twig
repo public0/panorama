@@ -87,15 +87,15 @@
             </nav>
         </div>
         <br>
-        {% if app.request.hasPreviousSession %}
-            {% for type, messages in app.session.flashbag.all() %}
-                {% for message in messages %}
-                    <div class="flash-{{ type }}">
-                        {{ message }}
+        {# if app.request.hasPreviousSession #}
+            {# for type, messages in app.session.flashbag.all() #}
+                {# for message in messages #}
+                    <div class="flash-{# { type } #}">
+                        {# { message } #}
                     </div>
-                {% endfor %}
-            {% endfor %}
-        {% endif %}
+                {# endfor #}
+            {# endfor #}
+        {# endif #}
 
         <div class="container container-table">
         <br>
