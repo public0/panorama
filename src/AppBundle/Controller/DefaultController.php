@@ -112,9 +112,10 @@ class DefaultController extends Controller
         $message = new \Swift_Message();
 
         $message->setSubject($data['subject'])
-            ->setFrom($data['email'])
+            ->setFrom($this->container->getParameter('mailer_user'))
             ->setTo($this->container->getParameter('mailer_user'))
             ->setBody(
+                'Message from'.$data['email'].'<br>'.
                 $data['message']
             );
 
