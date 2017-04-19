@@ -115,8 +115,9 @@ class DefaultController extends Controller
             ->setFrom($this->container->getParameter('mailer_user'))
             ->setTo($this->container->getParameter('mailer_user'))
             ->setBody(
-                'Message from'.$data['email'].'<br>'.
-                $data['message']
+                'Message from '.$data['email'].'<br>'.
+                $data['message'],
+                'text/html'
             );
 
         $mailer->send($message);
