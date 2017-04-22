@@ -3,6 +3,15 @@
 <div class="container vertical-center">
     <br>
   <div class="row text-center">
+  {% if app.session.flashBag.has('restricted') %}
+    {% for flashMessage in app.session.flashbag.get('restricted') %}
+        <span class="text-danger">{{ flashMessage }}</span>
+        <span class="text-info"><a href="{{path('contact')}}">Contact</a></span>
+    {% endfor %}
+  {% endif %}
+    <br>
+    <br>
+
     {% if(showCreateProject) %}
     <a href="project/add">
       <button type="button" class="btn btn-default">Create new project</button>

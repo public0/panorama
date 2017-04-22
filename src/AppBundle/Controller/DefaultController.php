@@ -58,9 +58,6 @@ class DefaultController extends Controller
      */
     public function contactAction(Request $request)
     {
-//       $this->get('session')->getFlashBag()->add('contact', 'Message Sent.');
-
-
         $form = $this->createForm(ContactType::class, array(
             // To set the action use $this->generateUrl('route_identifier')
             'action' => $this->generateUrl('contact'),

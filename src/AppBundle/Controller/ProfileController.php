@@ -21,6 +21,7 @@ use Stripe\Subscription;
 use Stripe\Plan;
 use Stripe\Stripe;
 use Stripe\Customer;
+use GuzzleHttp\Client;
 
 class ProfileController extends Controller
 {
@@ -114,6 +115,7 @@ class ProfileController extends Controller
      */
     public function subscribeAction(Request $request, $planId)
 	{
+//		$answer = $client->request('GET', 'https://easyofac.com/api/sdnSearch?api_key=OTU5YTNkMzM5Mzg2ZjhlMmRkNTNhNWVj&ofac_sdn_name=EMPRESA%20CUBANA&test=1');
 		Stripe::setApiKey($this->container->getParameter('secret_key'));
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
         $details = NULL;
@@ -123,14 +125,33 @@ class ProfileController extends Controller
 		$end = $end->modify('+20 year');
 
 		if($request->getMethod() == 'POST') {
-	        $em = $this->getDoctrine()->getManager();
-
 			$name   = $request->request->get('card-holder-name');
+//			dump(urldecode($name));die;
+			$client = new Client(['headers' => ['apiKey' => $this->container->getParameter('ofac_key') ]]);
+			$answer = $client->request('GET', 'http://search.ofac-api.com/api/v1?name='.urldecode($name).'&minScore=100');
+			$answer = json_decode($answer->getBody())->matches;
+			if(!empty($answer)) {
+	            $this->get('session')->getFlashBag()->add('restricted', 'You have been found on the OFAC sanctions list because of this we cannot conduct any business, feel to contact us in case your wondering what this is about.' );
+			}
+
+	        $em = $this->getDoctrine()->getManager();
+			$country = $em->getRepository('AppBundle:IpCountry')->getCountry($request->getClientIp());
+			if($country && in_array($country, $this->container->getParameter('restricted'))) {
+	            $this->get('session')->getFlashBag()->add('restricted', 'OFAC sanctions prohibit tranasctions with people located in your country, feel to contact us in case your wondering what this is about.' );
+
+	            return $this->redirectToRoute('projects');
+			}
+
 			$number = $request->request->get('card-number');
 			$expiryMonth = $request->request->get('expiry-month');
 			$expiryYear  = $request->request->get('expiry-year');
 			$cvv  = $request->request->get('cvv');
 			$token  = $request->request->get('stripe-token');
+
+			if(in_array('RE', $this->container->getParameter('restricted'))) {
+
+			}
+
 			// if user ever had a subscribtion
 			if($details = $user->getDetails()) {
 				// if user has a stripe customer in db
