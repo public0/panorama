@@ -132,6 +132,8 @@ class ProfileController extends Controller
 			$answer = json_decode($answer->getBody())->matches;
 			if(!empty($answer)) {
 	            $this->get('session')->getFlashBag()->add('restricted', 'You have been found on the OFAC sanctions list because of this we cannot conduct any business, feel to contact us in case your wondering what this is about.' );
+
+	            return $this->redirectToRoute('projects');
 			}
 
 	        $em = $this->getDoctrine()->getManager();
@@ -140,6 +142,7 @@ class ProfileController extends Controller
 	            $this->get('session')->getFlashBag()->add('restricted', 'OFAC sanctions prohibit tranasctions with people located in your country, feel to contact us in case your wondering what this is about.' );
 
 	            return $this->redirectToRoute('projects');
+
 			}
 
 			$number = $request->request->get('card-number');
@@ -147,10 +150,6 @@ class ProfileController extends Controller
 			$expiryYear  = $request->request->get('expiry-year');
 			$cvv  = $request->request->get('cvv');
 			$token  = $request->request->get('stripe-token');
-
-			if(in_array('RE', $this->container->getParameter('restricted'))) {
-
-			}
 
 			// if user ever had a subscribtion
 			if($details = $user->getDetails()) {
