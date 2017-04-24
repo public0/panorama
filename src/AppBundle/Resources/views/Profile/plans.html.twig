@@ -11,7 +11,7 @@
         <h3><a>{{plan.name | capitalize}}</a></h3>
         <p class="white-text">{{plan.statement_descriptor | capitalize}}</p>
         <p class="white-text">Price: {{(plan.amount/100)|number_format(2, '.', ',')}}&#36;/{{plan.interval}}</p>
-        <p class="white-text">Trial: {{plan.trial_period_days}} days</p>
+        <p class="white-text">Trial: Unlimited{# {plan.trial_period_days} #} </p>
         {% if plan.metadata.project_count is defined %}
           <p class="white-text">Number of Cubemaps: {{ plan.metadata.cubemap_count }}</p>
         {% endif %}
