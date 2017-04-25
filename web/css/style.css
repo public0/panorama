@@ -184,7 +184,7 @@ projects_links:hover, a:focus {
 
 .absolute > video {
     position: absolute;
-    opacity: .8;
+/*    opacity: .8;*/
 }
 
 label {
