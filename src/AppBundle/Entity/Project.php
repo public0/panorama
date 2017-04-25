@@ -128,9 +128,9 @@ class Project
      * @return User
      */
 
-    public function setCode($prepend = '')
+    public function setCode($code)
     {
-        $code = (empty($prepend))?md5(uniqid(mt_rand(), true)):$prepend.md5(uniqid(mt_rand(), true));
+//        $code = (empty($prepend))?md5(uniqid(mt_rand(), true)):$prepend.md5(uniqid(mt_rand(), true));
         $this->code = $code;
 
         return $this;

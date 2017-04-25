@@ -32,7 +32,7 @@ class AddProjectType extends AbstractType
                 )
                 ]
             )
-            ->add('face', FileType::class, array('label' => 'Front', 'required' => false, 'attr' => ['class' => 'hidden'] ));
+            ->add('face', FileType::class, array('label' => 'Project Image', 'required' => true, 'attr' => ['class' => 'hidden'] ));
 //            ->add('android')
     }
     

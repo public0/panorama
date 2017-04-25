@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity\Project;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Images;
+use AppBundle\Entity\Timebase;
 use AppBundle\Form\AddProjectType;
 use AppBundle\Form\ProjectType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -124,6 +125,7 @@ class ProjectsController extends Controller
         $customer = NULL;
         $type = 0;
         $prepend ='sample_';
+
         if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_FULLY' ) )
         {
             $user = $this->container->get('security.token_storage')->getToken()->getUser();
@@ -179,11 +181,20 @@ class ProjectsController extends Controller
                 $project->setFace($fileName);
             }
 
+            $time = $this->getDoctrine()
+            ->getRepository('AppBundle:Timebase')
+            ->findOneById(1);
+
+            $timeDiff = time() - $time->getInitstamp();
+            $timeBase36 = $time->getStamp36() + $timeDiff;
+            $base65Code = base_convert($timeBase36, 10, 36);
+
             $project->setUser($user);
             $project->setAndroid(1);
             $project->setReviewed(0);
             $project->setType($type);
-            $project->setCode($prepend);
+            $project->setCode($prepend.$base65Code);
+
             $user->getDetails()->incPcount();
             $em->persist($project);
             $em->persist($user);
