@@ -82,7 +82,7 @@ class Project
     private $android;
 
    /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      *
      * @Assert\File(
         mimeTypes={ "image/jpeg", "image/png" },

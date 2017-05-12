@@ -34,7 +34,7 @@ class ProjectType extends AbstractType
                 'label' => ' Project Status'
                 ]
             )
-            ->add('face', FileType::class, array('label' => 'Project Image', 'required' => false, 'data_class' => null, 'attr' => ['class' => 'hidden']))
+            ->add('face', FileType::class, array('label' => 'Thumbnail', 'required' => false, 'data_class' => null, 'attr' => ['class' => 'hidden']))
 //            ->add('android')
             ->add('images', FileType::class, array('mapped'=>false, 'required' => false, 'label' => 'Upload image', 'attr' => ['class' => 'hidden']))
             ->add('width', HiddenType::class, array('mapped'=>false, 'required' => false))

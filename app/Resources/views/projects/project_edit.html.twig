@@ -26,7 +26,7 @@
 
 			<div class="form-group">
 				{{form_label(form.images)}}
-				<label class="btn btn-default btn-file">Upload{{form_widget(form.images)}}</label>
+				<label class="btn btn-default btn-file">Browse{{form_widget(form.images)}}</label>
 			</div>
 		</div>
 		<div class="form-group">
@@ -90,7 +90,7 @@
 
 				{%if(image.status)%}
 					<input type="hidden" name="delete[]" class="delete" value="0">
-					<button class="delete-row btn btn-danger">Discard</button>
+					<button data-img="{{image.id}}" class="delete-row btn btn-danger">Discard</button>
 				{%else%}
 					<input type="hidden" name="delete[]" class="delete" value="1">
 					<button class="delete-row btn btn-success">Keep</button>

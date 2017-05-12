@@ -71,6 +71,11 @@ $(function() {
 
 	$('.delete-row').click(function(e) {
 		var input = $(this).prev();
+		var val = $(this).attr('data-img');
+//		console.log(val);
+		$.post( "../../imageCancel", {img : val}).done(function( data ) {
+			console.log(data);
+		});
 
 		input.val(input.val()==1?0:1);
 

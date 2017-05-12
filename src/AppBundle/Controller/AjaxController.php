@@ -13,6 +13,26 @@ use Stripe\Customer;
 class AjaxController extends Controller
 {
     /**
+     * @Route("/imageCancel")
+     */
+    public function imageCancelAction(Request $request)
+    {
+    	$id = $request->request->get('img');
+        $em = $this->getDoctrine()->getManager();
+	    $image = $this->getDoctrine()
+	        ->getRepository('AppBundle:Images')
+	        ->findOneBy(['id' => $id, 'status' => 1]);
+
+	    $image->setStatus(0);
+        $em->persist($image);
+        $em->flush();
+
+
+		return new Response(0);
+    }
+
+
+    /**
      * @Route("/imageSave")
      */
     public function imageSaveAction(Request $request)
