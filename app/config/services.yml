@@ -10,3 +10,8 @@ parameters:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+
+services:
+  braintree:
+    class: AppBundle\Services\Braintree
+    arguments: [%btree%]

@@ -9,9 +9,115 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Filesystem\Filesystem;
 use Stripe\Stripe;
 use Stripe\Customer;
+
+use Braintree\Configuration;
+use Braintree\Customer as BCustomer;
+use Braintree\ClientToken;
+use Braintree\Subscription;
+
 	
 class AjaxController extends Controller
 {
+
+    /**
+     * @Route("/subscribe")
+     */
+    public function subscribeAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $customer = NULL;
+        $result = NULL;
+        $token = NULL;
+        $success = FALSE;
+        $brain = $this->get('braintree');
+        $clientToken = $brain->setToken($user);
+
+    	$nonce = $request->request->get('data');
+    	$plan = $request->request->get('plan');
+
+	   	if($customer = $brain->subscribe($plan, $user, $nonce)) {
+	  		$userDetails = $user->getDetails();
+	  		$userDetails->setCustomer($customer);
+			$userDetails->setPcount(0);
+	        $userDetails->setType(1);
+	        $em->persist($userDetails);
+	   	}
+
+		$em->flush();
+		return new Response('');
+	}
+
+	private function toDelete() {
+    	die;
+
+  		if($user->getDetails()->getCustomer()) {
+
+			if($result = BCustomer::find($user->getDetails()->getCustomer())) {
+				$success = TRUE;
+				$token = $result->paymentMethods[0]->token;
+			} else {
+		    	$result = BCustomer::create([
+		    		'lastName' => $user->getUsername(),
+		/*		    'firstName' => '--',
+				    'lastName' => '--',
+				    'company' => '--',
+		*/		    'email' => $user->getEmail(),
+		/*		    'phone' => '281.330.8004',
+				    'fax' => '419.555.1235',
+				    'website' => 'http://example.com',
+		*/		    'paymentMethodNonce' => $nonce['nonce']
+				]);
+
+		  		$userDetails = $user->getDetails();
+		  		$userDetails->setCustomer($result->customer->id);
+	            $em->persist($userDetails);
+				$success = $result->success;
+			}
+
+  		} else {
+
+	    	$result = BCustomer::create([
+	    		'lastName' => $user->getUsername(),
+	/*		    'firstName' => '--',
+			    'lastName' => '--',
+			    'company' => '--',
+	*/		    'email' => $user->getEmail(),
+	/*		    'phone' => '281.330.8004',
+			    'fax' => '419.555.1235',
+			    'website' => 'http://example.com',
+	*/		    'paymentMethodNonce' => $nonce['nonce']
+			]);
+
+			$success = $result->success;
+
+	  		$userDetails = $user->getDetails();
+	  		$userDetails->setCustomer($result->customer->id);
+            $em->persist($userDetails);
+  		}
+
+		if ($success) {
+			$token = $result->customer->paymentMethods[0]->token;
+
+		    echo($result->customer->id).'|';
+		    echo($result->customer->paymentMethods[0]->token);
+		} else {
+		    foreach($result->errors->deepAll() AS $error) {
+		        echo($error->code . ": " . $error->message . "\n");
+		    }
+		}		
+
+		$result = Subscription::create([
+		  'paymentMethodToken' => $token,
+		  'planId' => $plan
+		]);		
+
+
+		$em->flush();
+		die;
+
+	}	
+
     /**
      * @Route("/imageCancel")
      */
@@ -37,7 +143,7 @@ class AjaxController extends Controller
      */
     public function imageSaveAction(Request $request)
     {
-        Stripe::setApiKey($this->container->getParameter('secret_key'));
+//        Stripe::setApiKey($this->container->getParameter('secret_key'));
         $userId = NULL;        
         $fs = new Filesystem();
         $activeCubemaps   = 0;
@@ -112,9 +218,15 @@ class AjaxController extends Controller
 	        }
 
 	        if($user->getDetails()->getType() == 1) {
-	            $customer = Customer::retrieve($user->getDetails()->getCustomer());
+//	            $customer = Customer::retrieve($user->getDetails()->getCustomer());
 
-	            if(((int)$user->getDetails()->getActiveCubeCount() - (int)count($setImages) + (int)$activeCubemaps) > (int)$customer->subscriptions->data[0]->plan->metadata->cubemap_count) {
+                $brain = $this->get('braintree');
+                $clientToken = $brain->setToken($user);
+                $plan = $brain->getActivePlan($user->getDetails()->getCustomer());
+
+                $cubemaps = $brain->planData($plan, 'cubemap_count');
+
+	            if(((int)$user->getDetails()->getActiveCubeCount() - (int)count($setImages) + (int)$activeCubemaps) > $cubemaps) {
 	            	$response = new Response();
 	            	$response->setContent('Active cubemap count exceeded');
 	            	return $response;

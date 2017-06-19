@@ -23,6 +23,12 @@ use Stripe\Stripe;
 use Stripe\Customer;
 use GuzzleHttp\Client;
 
+use Braintree\Configuration;
+use Braintree\ClientToken;
+use Braintree\Plan as BPlan;
+use Braintree\Customer as BCustomer;
+
+
 class ProfileController extends Controller
 {
 	// NOT USED
@@ -57,8 +63,14 @@ class ProfileController extends Controller
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
 		$currentPlan = NULL;
 
-		Stripe::setApiKey($this->container->getParameter('secret_key'));
-		if($details = $user->getDetails()) {
+        $brain = $this->get('braintree');
+        $clientToken = $brain->setToken($user);
+
+		$plans = BPlan::all();        
+		$currentPlan = $brain->getActivePlan($user->getDetails()->getCustomer());
+
+//		Stripe::setApiKey($this->container->getParameter('secret_key'));
+/*		if($details = $user->getDetails()) {
 			// if user has a stripe customer in db
 			if($cusStr = $details->getCustomer()) {
 				// if user has a stripe customer in stripe
@@ -69,10 +81,11 @@ class ProfileController extends Controller
 				}
 			}
 		}
-
-		$plans = Plan::all(NULL, $this->container->getParameter('secret_key'));
+*/
+//		$plans = Plan::all(NULL, $this->container->getParameter('secret_key'));
 		return $this->render('AppBundle:Profile:plans.html.twig', array(
-			'currentPlan' => $currentPlan,
+			'currentPlan' => $currentPlan->id,
+//			'plans' => $plans,
 			'plans' => $plans
 		));
 	}
@@ -82,7 +95,18 @@ class ProfileController extends Controller
      */
     public function unsubscribeAction(Request $request)
     {
+	    $em = $this->getDoctrine()->getManager();
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
+
+        $brain = $this->get('braintree');
+        $clientToken = $brain->setToken($user);
+        if($result = $brain->unsubscribe($user)) {
+	        $user->getDetails()->setType(0);
+	        $em->persist($user);
+			$em->flush();
+	
+        }
+
 
 		Stripe::setApiKey($this->container->getParameter('secret_key'));
 		if($details = $user->getDetails()) {
@@ -115,9 +139,16 @@ class ProfileController extends Controller
      */
     public function subscribeAction(Request $request, $planId)
 	{
-//		$answer = $client->request('GET', 'https://easyofac.com/api/sdnSearch?api_key=OTU5YTNkMzM5Mzg2ZjhlMmRkNTNhNWVj&ofac_sdn_name=EMPRESA%20CUBANA&test=1');
-		Stripe::setApiKey($this->container->getParameter('secret_key'));
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
+
+        $brain = $this->get('braintree');
+        $clientToken = $brain->setToken($user);
+        $clientToken = $brain->getToken();
+
+
+//		$answer = $client->request('GET', 'https://easyofac.com/api/sdnSearch?api_key=OTU5YTNkMzM5Mzg2ZjhlMmRkNTNhNWVj&ofac_sdn_name=EMPRESA%20CUBANA&test=1');
+//		Stripe::setApiKey($this->container->getParameter('secret_key'));
+
         $details = NULL;
 
 		$start = new \DateTime();
@@ -234,7 +265,9 @@ class ProfileController extends Controller
 		}
 		return $this->render('AppBundle:Profile:subscribe.html.twig', array(
 			'currentYear' => $start->format('Y'),
-			'lastYear' => $end->format('Y')
+			'lastYear' => $end->format('Y'),
+            'clientToken' => $clientToken,
+            'planId' => $planId
 		));
 
 	}    

@@ -80,6 +80,7 @@ class RegistrationController extends Controller
                 $userDetails = new UserDetails();
                 $userDetails->setUser($user);
                 $userDetails->setPcount(0);
+                $userDetails->setCustomer('');
                 $userDetails->setType(0);
                 $userDetails->setCampaignId($campaign);
                 $userDetails->setRegisterDate(new \DateTime());

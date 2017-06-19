@@ -19,7 +19,7 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Finder\Finder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
-use Payum\Core\Model\Order;
+/*use Payum\Core\Model\Order;
 use Payum\Core\Model\Payment;
 use Payum\Core\Model\PaymentToken;
 use Payum\Core\Reply\HttpRedirect;
@@ -28,7 +28,7 @@ use Payum\Core\Request\Capture;
 use Payum\Core\PayumBuilder\GatewayFactory;
 use Payum\Core\Payum;
 use Payum\Core\Request\GetHumanStatus;
-
+*/
 use Payum\Core\Bridge\Symfony\Builder;
 use Payum\Core\PayumBuilder;
 
@@ -37,6 +37,12 @@ use Stripe\Subscription;
 use Payum\Core\Model\PaymentInterface;
 use Stripe\Stripe;
 use Stripe\Customer;
+
+use Braintree\Configuration;
+use Braintree\ClientToken;
+use Braintree\Plan as BPlan;
+use Braintree\Customer as BCustomer;
+
 
 //use Payum\Paypal\ExpressCheckout\Nvp\PaypalExpressCheckoutGatewayFactory;
 
@@ -47,7 +53,7 @@ class ProjectsController extends Controller
      */
     public function indexAction(Request $request)
     {
-        Stripe::setApiKey($this->container->getParameter('secret_key'));
+//        Stripe::setApiKey($this->container->getParameter('secret_key'));
         $user = NULL;        
         $userId = NULL;        
         $showCreateProject = FALSE;
@@ -110,7 +116,7 @@ class ProjectsController extends Controller
             'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..'),
             'projects' => $projects,
             'showCreateProject' => $showCreateProject,
-            'images' => $images
+            'images' => $images,
         ]);
     }
 
@@ -119,7 +125,7 @@ class ProjectsController extends Controller
      */
     public function addAction(Request $request)
     {
-        Stripe::setApiKey($this->container->getParameter('secret_key'));
+//        Stripe::setApiKey($this->container->getParameter('secret_key'));
         $user = NULL;
         $userId = NULL;
         $customer = NULL;
@@ -132,7 +138,11 @@ class ProjectsController extends Controller
             $userId = $user->getId();
         }
         $status = $user->getDetails()->getStatus();
-        if($status) {
+
+
+//        dump($sub);die;
+
+/*        if($status) {
             if($user->getDetails()->getType() != 1 && (int)$user->getDetails()->getPcount() > 1) {
                 return $this->redirectToRoute('projects', array());            
             }
@@ -155,7 +165,7 @@ class ProjectsController extends Controller
         } else {
             return $this->redirectToRoute('projects', array());            
         }
-
+*/
         $em = $this->getDoctrine()->getManager();
 
         $project = new Project();
@@ -240,7 +250,9 @@ class ProjectsController extends Controller
         $mailer->send($message);
 */
         $showCubemap = FALSE;
-        Stripe::setApiKey($this->container->getParameter('secret_key'));
+        $user = NULL;
+//        Stripe::setApiKey($this->container->getParameter('secret_key'));
+
         $userId = NULL;        
         if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_FULLY' ) )
         {
@@ -251,14 +263,19 @@ class ProjectsController extends Controller
         $status = $user->getDetails()->getStatus();
         if($status) {
             if($user->getDetails()->getType() == 1) {
-                $customer = Customer::retrieve($user->getDetails()->getCustomer());
-                if((int)$user->getDetails()->getActiveCubeCount() < (int)$customer->subscriptions->data[0]->plan->metadata->cubemap_count) {
+                $brain = $this->get('braintree');
+                $clientToken = $brain->setToken($user);
+                $plan = $brain->getActivePlan($user->getDetails()->getCustomer());
+
+                $cubemaps = $brain->planData($plan, 'cubemap_count');
+
+                //$customer = Customer::retrieve($user->getDetails()->getCustomer());
+                if((int)$user->getDetails()->getActiveCubeCount() < $cubemaps) {
                     $showCubemap = TRUE;
                 } else {
                     $showCubemap = FALSE;
                 }
             } elseif($user->getDetails()->getType() != 1 && (int)$user->getDetails()->getActiveCubeCount() < 2) {
-//                dump((int)$user->getDetails()->getActiveCubeCount());die;
                 $showCubemap = TRUE;
             }
         } else {

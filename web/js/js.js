@@ -5,6 +5,39 @@ $(function() {
 	var _URL = window.URL || window.webkitURL;
 //	$('.caption-col').children().css( "visibility", "visible" );
 
+    var pay = document.querySelector('#pay');
+    braintree.dropin.create({
+      authorization: $('#token').val(),
+      selector: '#payment'
+    }, function (createErr, instance) {
+      pay.addEventListener('click', function (e) {
+    	e.preventDefault();
+        instance.requestPaymentMethod(function (err, payload) {
+        	plan = $('#plan').val();
+			$.post( "../../subscribe", {plan : plan, data : payload}).done(function( data ) {
+			    console.log(data);
+
+			});
+
+
+          // Submit payload.nonce to your server
+        });
+      });
+    });
+/*    var button = document.querySelector('#submit-button');
+
+    braintree.dropin.create({
+      authorization: 'CLIENT_AUTHORIZATION',
+      selector: '#dropin-container'
+    }, function (createErr, instance) {
+      button.addEventListener('click', function () {
+        instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
+          // Submit payload.nonce to your server
+        });
+      });
+    });
+*/
+
 	$('.caption-col').mouseenter(function(e) {
 		$(this).children().css( "visibility", "visible" );
 		console.log('a');
