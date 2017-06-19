@@ -37,6 +37,9 @@ class Braintree {
 	}
 
 	public function getActivePlan($customer) {
+		if(!$customer) {
+			return false;
+		}
 		$activeSubscription = false; 
 		if($result = Customer::find($customer)) {
 			if(is_array($result->paymentMethods)) {
@@ -57,6 +60,9 @@ class Braintree {
 	}
 
 	public function getActiveSubscription($customer) {
+		if(!$customer) {
+			return false;
+		}
 		$activeSubscription = false; 
 		if($result = Customer::find($customer)) {
 			if(is_array($result->paymentMethods)) {
