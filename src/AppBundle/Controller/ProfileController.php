@@ -66,7 +66,7 @@ class ProfileController extends Controller
         $brain = $this->get('braintree');
         $clientToken = $brain->setToken($user);
 
-		$plans = BPlan::all();        
+		$plans = BPlan::all();
 		$currentPlan = $brain->getActivePlan($user->getDetails()->getCustomer());
 
 //		Stripe::setApiKey($this->container->getParameter('secret_key'));
@@ -84,7 +84,7 @@ class ProfileController extends Controller
 */
 //		$plans = Plan::all(NULL, $this->container->getParameter('secret_key'));
 		return $this->render('AppBundle:Profile:plans.html.twig', array(
-			'currentPlan' => $currentPlan->id,
+			'currentPlan' => $currentPlan,
 //			'plans' => $plans,
 			'plans' => $plans
 		));

@@ -12,7 +12,7 @@
       <p class="white-text">{{ plan.description | split('--')[0] }}</p>
       <p class="white-text">Price: {{plan.price}}&#36;/month</p>
       <p class="white-text">Number of Cubemaps: {{ plan.description | split(':')[1] }}</p>
-        {%if(currentPlan == plan.id)%}
+        {%if(currentPlan and currentPlan.id == plan.id)%}
           <p class="navbar-btn btn-info btn"><a href="{{path('profile_unsubscribe')}}">Unsubscribe</a></p>
         {%else%}
           <p><a href="{{path('profile_subscribe', {'planId':plan.id})}}" class="navbar-btn btn-primary btn">Subscribe</a></p>
