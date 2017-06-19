@@ -15,7 +15,10 @@ $(function() {
         instance.requestPaymentMethod(function (err, payload) {
         	plan = $('#plan').val();
 			$.post( "../../subscribe", {plan : plan, data : payload}).done(function( data ) {
-			    console.log(data);
+				if(data == 1) {
+					window.location.href = '../../projects';
+				}
+//			    console.log(data);
 
 			});
 

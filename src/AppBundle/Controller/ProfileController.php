@@ -102,6 +102,7 @@ class ProfileController extends Controller
         $clientToken = $brain->setToken($user);
         if($result = $brain->unsubscribe($user)) {
 	        $user->getDetails()->setType(0);
+	        $user->getDetails()->setCustomer('');
 	        $em->persist($user);
 			$em->flush();
 	
@@ -157,8 +158,8 @@ class ProfileController extends Controller
 
 		if($request->getMethod() == 'POST') {
 			$name   = $request->request->get('card-holder-name');
-//			dump(urldecode($name));die;
-			$client = new Client(['headers' => ['apiKey' => $this->container->getParameter('ofac_key') ]]);
+
+/*			$client = new Client(['headers' => ['apiKey' => $this->container->getParameter('ofac_key') ]]);
 			$answer = $client->request('GET', 'http://search.ofac-api.com/api/v1?name='.urldecode($name).'&minScore=100');
 			$answer = json_decode($answer->getBody())->matches;
 			if(!empty($answer)) {
@@ -166,16 +167,16 @@ class ProfileController extends Controller
 
 	            return $this->redirectToRoute('projects');
 			}
-
+*/
 	        $em = $this->getDoctrine()->getManager();
-			$country = $em->getRepository('AppBundle:IpCountry')->getCountry($request->getClientIp());
+/*			$country = $em->getRepository('AppBundle:IpCountry')->getCountry($request->getClientIp());
 			if($country && in_array($country, $this->container->getParameter('restricted'))) {
 	            $this->get('session')->getFlashBag()->add('restricted', 'OFAC sanctions prohibit tranasctions with people located in your country, feel to contact us in case your wondering what this is about.' );
 
 	            return $this->redirectToRoute('projects');
 
 			}
-
+*/
 			$number = $request->request->get('card-number');
 			$expiryMonth = $request->request->get('expiry-month');
 			$expiryYear  = $request->request->get('expiry-year');

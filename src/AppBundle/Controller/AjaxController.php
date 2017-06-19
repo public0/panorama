@@ -39,13 +39,12 @@ class AjaxController extends Controller
 	   	if($customer = $brain->subscribe($plan, $user, $nonce)) {
 	  		$userDetails = $user->getDetails();
 	  		$userDetails->setCustomer($customer);
-			$userDetails->setPcount(0);
 	        $userDetails->setType(1);
 	        $em->persist($userDetails);
 	   	}
 
 		$em->flush();
-		return new Response('');
+		return new Response(1);
 	}
 
 	private function toDelete() {

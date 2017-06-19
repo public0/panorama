@@ -174,6 +174,16 @@ class ProjectsController extends Controller
         $form->remove('exporter');
         $form->handleRequest($request);
 
+
+        $brain = $this->get('braintree');
+        $brain->setToken($user);
+        if($customer = $user->getDetails()->getCustomer() && $brain->getActiveSubscription($user->getDetails()->getCustomer())) {
+            $type = 1;
+            $prepend = '';
+        } elseif((int)$user->getDetails()->getPcount() >= 1) {
+            return $this->redirectToRoute('projects', array());
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
 
             $user = $this->getDoctrine()
@@ -203,6 +213,7 @@ class ProjectsController extends Controller
             $project->setAndroid(1);
             $project->setReviewed(0);
             $project->setType($type);
+            $project->setFace('');
             $project->setCode($prepend.$base65Code);
 
             $user->getDetails()->incPcount();
