@@ -186,6 +186,11 @@ class Braintree {
 				]);
 
 				return $customer->customer->id;
+			} else {
+				foreach($customer->errors->deepAll() as $error) {
+//					echo ($error->message);die;
+					return [$error->message];
+				}
 			}
 
 			return FALSE;

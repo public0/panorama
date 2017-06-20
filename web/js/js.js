@@ -15,10 +15,10 @@ $(function() {
         instance.requestPaymentMethod(function (err, payload) {
         	plan = $('#plan').val();
 			$.post( "../../subscribe", {plan : plan, data : payload}).done(function( data ) {
-				if(data == 1) {
-					window.location.href = '../../projects';
-				}
-//			    console.log(data);
+			    if(data != 1) {
+			    	$('.hidden-error').removeClass('hidden').show();
+			    	$('.error').text(data);
+			    }
 
 			});
 

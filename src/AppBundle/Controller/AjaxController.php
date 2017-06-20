@@ -36,15 +36,18 @@ class AjaxController extends Controller
     	$nonce = $request->request->get('data');
     	$plan = $request->request->get('plan');
 
-	   	if($customer = $brain->subscribe($plan, $user, $nonce)) {
-	  		$userDetails = $user->getDetails();
-	  		$userDetails->setCustomer($customer);
-	        $userDetails->setType(1);
-	        $em->persist($userDetails);
-	   	}
+	   	$customer = $brain->subscribe($plan, $user, $nonce);
+			if(!is_array($customer)) {
+		  		$userDetails = $user->getDetails();
+		  		$userDetails->setCustomer($customer);
+		        $userDetails->setType(1);
+		        $em->persist($userDetails);
+				$em->flush();
+				return new Response(1);
+			} else {
+				return new Response($customer[0]);
+			}
 
-		$em->flush();
-		return new Response(1);
 	}
 
 	private function toDelete() {
