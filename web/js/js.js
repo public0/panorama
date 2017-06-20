@@ -18,6 +18,8 @@ $(function() {
 			    if(data != 1) {
 			    	$('.hidden-error').removeClass('hidden').show();
 			    	$('.error').text(data);
+			    } else {
+			    	window.location.href = '../../projects';
 			    }
 
 			});
