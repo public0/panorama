@@ -98,6 +98,7 @@ class Braintree {
   		if($customer = $user->getDetails()->getCustomer()) {
   			if($sub = $this->getActiveSubscription($customer)) {
 				$result = Subscription::cancel($sub->id);
+				return TRUE;
   			} else {
   				return FALSE;
   			}

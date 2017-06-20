@@ -102,17 +102,16 @@ class ProfileController extends Controller
         $clientToken = $brain->setToken($user);
         if($result = $brain->unsubscribe($user)) {
 	        $user->getDetails()->setType(0);
-	        $user->getDetails()->setCustomer('');
+//	        $user->getDetails()->setCustomer('');
 	        $em->persist($user);
-			$em->flush();
-	
+			$em->flush();	
         }
+        return $this->redirectToRoute('profile_plans', array());					
 
 
-		Stripe::setApiKey($this->container->getParameter('secret_key'));
+/*		Stripe::setApiKey($this->container->getParameter('secret_key'));
 		if($details = $user->getDetails()) {
 			$cusotmer = $details->getCustomer();
-//			$sub = \Stripe\Subscription::retrieve("sub_ADb6nr2yloPXrx");
 			if($customer = Customer::retrieve($cusotmer)) {
 				if($data = $customer->subscriptions->data) {
 			        $em = $this->getDoctrine()->getManager();
@@ -122,17 +121,17 @@ class ProfileController extends Controller
 			        $em->persist($user);
 					$em->flush();
 
-/*					$user->getDetails()->remove();					
+					$user->getDetails()->remove();					
 		            $em->persist($user);
 		            $em->flush();
-*/
+
 		            return $this->redirectToRoute('profile_plans', array());					
 				}
 			}
 //			$sub->cancel();
 		}
         return $this->redirectToRoute('profile_plans', array());					
-
+*/
     }
 
     /**

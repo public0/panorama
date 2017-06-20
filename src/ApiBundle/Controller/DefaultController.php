@@ -14,28 +14,24 @@ class DefaultController extends Controller
      */
     public function indexAction($code)
     {
-/*        $projects = $this->getDoctrine()
-            ->getRepository('AppBundle:Project')
-            ->findBy([$code], ['code' => 'DESC']);
-*/
-		$repository = $this->getDoctrine()->getRepository('AppBundle:Project');
-		$project = $repository->findOneByCode($code);
-		$user = $project->getUser();
-//		$path = $this->get('kernel')->getRootDir().'/../web/uploads/'.$user->getId().'/'.$project->getId().'/bundles/android/bundle';
-		$path = $this->get('kernel')->getRootDir().'/../web/uploads/'.$user->getId().'/'.$project->getId().'/sources.zip';
-/*
-		echo $path;die;
-		chmod($path, 0755);
-*/
-		$path = realpath($path);
-//		$path = realpath($this->get('kernel')->getRootDir().'/../web/uploads/'.$user->getId().'/'.$project->getId().'/bundle/'.$project->getId());
-//dump($path);die;
 		$response = new Response();
-		$response->headers->set('Content-type', 'application/octet-stream');
-		$response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', 'bundle.zip'));
-		$response->setContent(file_get_contents($path));
+        if($user->getDetails()->getType()) {
+			$repository = $this->getDoctrine()->getRepository('AppBundle:Project');
+			$project = $repository->findOneByCode($code);
+			$user = $project->getUser();
 
-		return $response;        
+			$path = $this->get('kernel')->getRootDir().'/../web/uploads/'.$user->getId().'/'.$project->getId().'/sources.zip';
+			$path = realpath($path);
+
+			$response->headers->set('Content-type', 'application/octet-stream');
+			$response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', 'bundle.zip'));
+			$response->setContent(file_get_contents($path));
+
+        } else {
+	        throw $this->createNotFoundException('Project not found');
+        }
+
+			return $response;
 
 //        return $this->render('ApiBundle:Default:index.html.twig');
     }

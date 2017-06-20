@@ -11,6 +11,14 @@ use Stripe\Stripe;
 class WebhooksController extends Controller
 {
     /**
+     * @Route("/bounce")
+     */
+    public function bounceAction() 
+    {
+    	return new Response('');
+    }
+
+    /**
      * @Route("/paymentbounce")
      */
     public function paymentBounceAction()

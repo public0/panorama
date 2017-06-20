@@ -58,6 +58,7 @@ class ProjectsController extends Controller
         $userId = NULL;        
         $showCreateProject = FALSE;
         $customer = NULL;
+
         if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_REMEMBERED' ) )
         {
             $user = $this->container->get('security.token_storage')->getToken()->getUser();
