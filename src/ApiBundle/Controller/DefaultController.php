@@ -15,10 +15,10 @@ class DefaultController extends Controller
     public function indexAction($code)
     {
 		$response = new Response();
+		$repository = $this->getDoctrine()->getRepository('AppBundle:Project');
+		$project = $repository->findOneByCode($code);
+		$user = $project->getUser();
         if($user->getDetails()->getType()) {
-			$repository = $this->getDoctrine()->getRepository('AppBundle:Project');
-			$project = $repository->findOneByCode($code);
-			$user = $project->getUser();
 
 			$path = $this->get('kernel')->getRootDir().'/../web/uploads/'.$user->getId().'/'.$project->getId().'/sources.zip';
 			$path = realpath($path);
