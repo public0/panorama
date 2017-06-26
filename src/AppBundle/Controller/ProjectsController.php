@@ -400,7 +400,7 @@ class ProjectsController extends Controller
                     $image->setCreated(new \DateTime());
                     $image->setStatus(1);
                     $image->setPlan(++$imageCount);
-                    $image->setTitle('');
+                    $image->setTitle($form['title']->getData());
 
                     $em->persist($image);
 

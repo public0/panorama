@@ -266,9 +266,9 @@
 			{% set i = 0 %}
 			{%for image in images %}
 			{%if i == 0 %}
-				<li data-id="{{image.id}}" class="image current">{{image.name}}</li>
+				<li data-id="{{image.id}}" data-type="{{ image.exporter.id }}" class="image current">{{image.name}}</li>
 			{% else %}
-				<li data-id="{{image.id}}" class="image">{{image.name}}</li>
+				<li data-id="{{image.id}}" data-type="{{ image.exporter.id }}" class="image">{{image.name}}</li>
 			{% endif %}
 				{% set i = i+1 %}
 			{%endfor%}
@@ -360,6 +360,8 @@
 			var container, stats;
 			var camera, scene, renderer, raycaster, mouse;
 			var markTexture, markMaterial, markPlane, plane;
+			var sphereMesh, boxMesh;
+
 /*
 			document.addEventListener("keydown", function(e) {
 				switch(e.keyCode) {
@@ -390,6 +392,107 @@
 				animate();
 			}
 			restart($( "li.current" ).text());
+
+			function addEnvironment(cubeMap, file, type) {
+				var e = document.getElementsByClassName('image current');
+
+				switch(parseInt(e[0].getAttribute('data-type'))) {
+					case 1: {
+						if(sphereMesh) {
+							scene.remove( sphereMesh );
+						}
+
+						var loader = new THREE.ImageLoader();
+
+						loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+file, function ( image ) {
+							document.addEventListener( 'wheel', onDocumentMouseWheel, false );
+							document.addEventListener( 'mousemove', onMouseMove, false );
+							var getSide = function ( x, y ) {
+								var size = image.height;
+								var canvas = document.createElement( 'canvas' );
+								canvas.width = size;
+								canvas.height = size;
+								var context = canvas.getContext( '2d' );
+		//						context.drawImage( image, - x * size, - y * size );
+								context.drawImage( image, - x * size, 0 );
+								return canvas;
+							};
+
+
+							cubeMap.images[ 0 ] = getSide( 0, 1 ); // px
+							cubeMap.images[ 1 ] = getSide( 1, 1 ); // px
+							cubeMap.images[ 2 ] = getSide( 2, 1 ); // px
+							cubeMap.images[ 3 ] = getSide( 3, 4 ); // px
+							cubeMap.images[ 4 ] = getSide( 4, 1 ); // px
+							cubeMap.images[ 5 ] = getSide( 5, 6 ); // px
+
+							cubeMap.needsUpdate = true;
+						} );
+
+						var cubeShader = THREE.ShaderLib[ 'cube' ];
+						cubeShader.uniforms[ 'tCube' ].value = cubeMap;
+						var skyBoxMaterial = new THREE.ShaderMaterial( {
+							fragmentShader: cubeShader.fragmentShader,
+							vertexShader: cubeShader.vertexShader,
+							uniforms: cubeShader.uniforms,
+							depthWrite: false,
+							side: THREE.BackSide,
+							overdraw:0
+						} );
+						boxMesh = new THREE.Mesh(
+							new THREE.BoxGeometry( 1000000, 1000000, 1000000 ),
+							skyBoxMaterial
+						);
+						scene.add( boxMesh );
+						var geometry = new THREE.IcosahedronGeometry( 400, 4 );
+						for ( var i = 0, j = geometry.faces.length; i < j; i ++ ) {
+							geometry.faces[ i ].color.setHex( Math.random() * 0xffffff );
+						}
+						var material = new THREE.MeshPhongMaterial( {
+							vertexColors: THREE.FaceColors,
+							shininess: 100,
+							envMap: cubeMap
+						} );
+
+
+						break;
+					}
+
+					case 2: {
+
+						var geometry = new THREE.SphereGeometry( 500, 60, 40 );
+						geometry.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
+
+						var loader = new THREE.TextureLoader();
+
+						loader.load(
+							// resource URL
+							'{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+file,
+							// Function when resource is loaded
+							function ( texture ) {
+								// do something with the texture
+								var material = new THREE.MeshBasicMaterial( {
+									map: texture
+								 } );
+								
+								sphereMesh = new THREE.Mesh( geometry, material );
+								
+								scene.add( sphereMesh );
+							},
+							// Function called when download progresses
+							function ( xhr ) {
+								console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+							},
+							// Function called when download errors
+							function ( xhr ) {
+								console.log( 'An error happened' );
+							}
+						);				
+
+						break;
+					}
+				}
+			}
 //			init(0);
 //			animate();
 			function init(i) {
@@ -403,7 +506,7 @@
 				container.appendChild( renderer.domElement );
 				scene = new THREE.Scene();
 				mouse = new THREE.Vector2();
-				camera = new THREE.PerspectiveCamera( 65, window.innerWidth / window.innerHeight, 0.5, 3000000 );
+				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.5, 3000000 );
 
 
 				/*Mark*/
@@ -424,13 +527,13 @@
 
 
 				raycaster = new THREE.Raycaster();
-				camera.position.set( 2000, 750, 2000 );
+//				camera.position.set( 2000, 750, 2000 );
 				controls = new THREE.OrbitControls( camera, renderer.domElement );
 				controls.enablePan = false;
-				controls.minDistance = 1000.0;
-				controls.maxDistance = 5000.0;
+				//controls.minDistance = 1000.0;
+				//controls.maxDistance = 5000.0;
 //				controls.maxPolarAngle = Math.PI * 0.9;
-				controls.target.set( 0, 500, 0 );
+				controls.target.set( 0, 0, -1 );
 				scene.add( new THREE.AmbientLight( 0x444444 ) );
 
 				var light = new THREE.DirectionalLight( 0xffffbb, 1 );
@@ -448,11 +551,11 @@
 
 //				cubeMap.magFilter = THREE.NearestFilter;
 
-				var loader = new THREE.ImageLoader();
 				document.addEventListener( 'wheel', onDocumentMouseWheel, false );
 				document.addEventListener( 'mousemove', onMouseMove, false );
-
-				loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+i, function ( image ) {
+				addEnvironment(cubeMap, i);
+				var loader = new THREE.ImageLoader();
+/*				loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+i, function ( image ) {
 					document.addEventListener( 'wheel', onDocumentMouseWheel, false );
 					document.addEventListener( 'mousemove', onMouseMove, false );
 					var getSide = function ( x, y ) {
@@ -476,14 +579,19 @@
 
 					cubeMap.needsUpdate = true;
 				} );
-
+*/
 				$('.items').click(function() {
 					$( "#loading" ).toggleClass( "hidden" );
 					var val = $(this).attr('data-image');
+					var type = $(this).attr('data-type');
 					var image = $('.current').removeClass('current');
 					var change = $('.image[data-id="'+$(this).attr('data-id')+'"');
 					change.addClass('current');
-					loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+val, function ( image ) {
+
+					addEnvironment(cubeMap, val, type)
+					$( "#loading" ).toggleClass( "hidden" );
+
+/*					loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+val, function ( image ) {
 						document.addEventListener( 'wheel', onDocumentMouseWheel, false );
 						document.addEventListener( 'mousemove', onMouseMove, false );
 						var getSide = function ( x, y ) {
@@ -508,7 +616,7 @@
 						$( "#loading" ).toggleClass( "hidden" );
 
 					} );
-				});
+*/				});
 
 				document.addEventListener("keydown", function(e) {
 					var reload = false;
@@ -536,7 +644,9 @@
 
 					if(reload) {
 						$( "#loading" ).toggleClass( "hidden" );
-
+						addEnvironment(cubeMap, newImage.text(), newImage.attr('data-type'));
+						$( "#loading" ).toggleClass( "hidden" );
+/*
 						loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+newImage.text(), function ( image ) {
 							document.addEventListener( 'wheel', onDocumentMouseWheel, false );
 							document.addEventListener( 'mousemove', onMouseMove, false );
@@ -562,7 +672,7 @@
 							$( "#loading" ).toggleClass( "hidden" );
 
 						} );						
-					}
+*/					}
 					
 				}, false);
 
@@ -577,8 +687,10 @@
 					}
 					if(reload) {
 						$( "#loading" ).toggleClass( "hidden" );
+						addEnvironment(cubeMap, newImage.text(), newImage.attr('data-type'));
+						$( "#loading" ).toggleClass( "hidden" );
 
-						loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+newImage.text(), function ( image ) {
+/*						loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+newImage.text(), function ( image ) {
 							document.addEventListener( 'wheel', onDocumentMouseWheel, false );
 							document.addEventListener( 'mousemove', onMouseMove, false );
 							var getSide = function ( x, y ) {
@@ -601,8 +713,8 @@
 
 							cubeMap.needsUpdate = true;
 							$( "#loading" ).toggleClass( "hidden" );
-						} );						
-					}
+						} );
+*/					}
 				})
 
 				$('#next').click(function() {
@@ -616,7 +728,9 @@
 					}
 					if(reload) {
 						$( "#loading" ).toggleClass( "hidden" );
-						loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+newImage.text(), function ( image ) {
+						addEnvironment(cubeMap, newImage.text(), newImage.attr('data-type'));
+						$( "#loading" ).toggleClass( "hidden" );
+/*						loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+newImage.text(), function ( image ) {
 							document.addEventListener( 'wheel', onDocumentMouseWheel, false );
 							document.addEventListener( 'mousemove', onMouseMove, false );
 							var getSide = function ( x, y ) {
@@ -641,34 +755,10 @@
 							$( "#loading" ).toggleClass( "hidden" );
 
 						} );						
-					}
+*/					}
 				})
 
 
-				var cubeShader = THREE.ShaderLib[ 'cube' ];
-				cubeShader.uniforms[ 'tCube' ].value = cubeMap;
-				var skyBoxMaterial = new THREE.ShaderMaterial( {
-					fragmentShader: cubeShader.fragmentShader,
-					vertexShader: cubeShader.vertexShader,
-					uniforms: cubeShader.uniforms,
-					depthWrite: false,
-					side: THREE.BackSide,
-					overdraw:0
-				} );
-				var skyBox = new THREE.Mesh(
-					new THREE.BoxGeometry( 1000000, 1000000, 1000000 ),
-					skyBoxMaterial
-				);
-				scene.add( skyBox );
-				var geometry = new THREE.IcosahedronGeometry( 400, 4 );
-				for ( var i = 0, j = geometry.faces.length; i < j; i ++ ) {
-					geometry.faces[ i ].color.setHex( Math.random() * 0xffffff );
-				}
-				var material = new THREE.MeshPhongMaterial( {
-					vertexColors: THREE.FaceColors,
-					shininess: 100,
-					envMap: cubeMap
-				} );
 			}
 
 			function onMouseMove(event) {

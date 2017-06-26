@@ -18,7 +18,7 @@ class ServiceController extends Controller
 		$project = $repository->findOneByCode($code);
 
 		$images = $this->getDoctrine()->getRepository('AppBundle:Images');
-		$images = $images->findBy(['project' => $project->getId(), 'status' => 1]);
+		$images = $images->findBy(['project' => $project->getId(), 'status' => 1], ['plan' => 'ASC']);
         $baseurl = $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
 
         return $this->render('AppBundle:Service:show.html.twig', array(
