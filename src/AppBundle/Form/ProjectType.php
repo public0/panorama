@@ -36,7 +36,7 @@ class ProjectType extends AbstractType
             )
             ->add('face', FileType::class, array('label' => 'Thumbnail', 'required' => false, 'data_class' => null, 'attr' => ['class' => 'hidden']))
 //            ->add('android')
-            ->add('images', FileType::class, array('mapped'=>false, 'required' => false, 'label' => 'Upload image', 'attr' => ['class' => 'hidden']))
+            ->add('images', FileType::class, array('mapped'=>false, 'required' => false, 'label' => 'Image', 'attr' => ['class' => 'hidden']))
             ->add('title', TextType::class, array('mapped'=>false, 'required' => false, 'label' => 'Title', 'attr' => ['class' => '']))
             ->add('width', HiddenType::class, array('mapped'=>false, 'required' => false))
             ->add('height', HiddenType::class, array('mapped'=>false, 'required' => false))
@@ -48,7 +48,7 @@ class ProjectType extends AbstractType
                 },
                 'mapped'=>false,
                 'choice_label' => 'name',
-                'label' => 'Image Format'
+                'label' => 'Format'
             ));
 //            ->add('save', SubmitType::class, array('attr' => array('class' => 'btn btn-default')));
 //            ->add('file', FileType::class, array('label' => 'Image'))
