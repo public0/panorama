@@ -126,15 +126,13 @@
 <br>
   <div class="container text-center">
     <div class="row">
-      {%for plan in plans.data%}
+      {%for plan in plans %}
         <div class="col-sm-4">
-          <h3><span style="color:red;">{{plan.name | capitalize}}</span></h3>
-          <p>{{plan.statement_descriptor | capitalize}}</p>
-          <p>Price: {{(plan.amount/100)|number_format(2, '.', ',')}}&#36;/{{plan.interval}}</p>
-          <p>Trial: {{plan.trial_period_days}} days</p>
-          {% if plan.metadata.project_count is defined %}
-            <p>Cubemaps: {{ plan.metadata.cubemap_count }}</p>
-          {% endif %}
+        <h3><a>{{plan.name}}</a></h3>
+        <p class="white-text">{{ plan.description | split('--')[0] }}</p>
+        <p class="white-text">Price: {{plan.price}}&#36;/month</p>
+        <p class="white-text">Number of Cubemaps: {{ plan.description | split(':')[1] }}</p>
+        <p><a href="{{path('profile_subscribe', {'planId':plan.id})}}" class="navbar-btn btn-primary btn">Subscribe</a></p>
         </div>
       {% endfor %}
     </div>

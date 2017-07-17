@@ -20,12 +20,14 @@ class Braintree {
 		$this->params = $params;
 	}
 
-	public function setToken($user) {
+	public function setToken($user = NULL) {
         Configuration::environment($this->params['env']);
         Configuration::merchantId($this->params['merchant']);
         Configuration::publicKey($this->params['public']);
         Configuration::privateKey($this->params['private']);
-        $this->token = ClientToken::generate(['customerId' => $user->getDetails()->getCustomer()]);
+        if(isset($user)) {
+	        $this->token = ClientToken::generate(['customerId' => $user->getDetails()->getCustomer()]);    	
+        }
 	}
 
 	public function getToken() {

@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Stripe\Plan;
 use Stripe\Stripe;
 use Payum\Stripe\Request\Api\CreateCustomer;
@@ -12,16 +13,29 @@ use AppBundle\Entity\Trial;
 use AppBundle\Form\TrialType;
 use AppBundle\Form\ContactType;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Braintree\Plan as BPlan;
 
 class DefaultController extends Controller
 {
+    /**
+     * @Route("googlea4a2a626b1e56f21.html", name="gtools")
+     */
+    public function googleToolsAction(Request $request)
+    {
+        return new Response('google-site-verification: googlea4a2a626b1e56f21.html');
+    }
+
     /**
      * @Route("/", name="homepage")
      */
     public function indexAction(Request $request)
     {
 //            $d = $this->get('payum')->getGateway('stripe_checkout');
-        $plans = Plan::all(NULL, $this->container->getParameter('secret_key'));
+//        $plans = Plan::all(NULL, $this->container->getParameter('secret_key'));
+        $brain = $this->get('braintree');
+        $clientToken = $brain->setToken();
+
+        $plans = BPlan::all();
 
 //     dump($plans->data[0]->metadata);die;
 //        $user = $this->container->get('security.context')->getToken()->getUser();
