@@ -2,6 +2,8 @@
 <html>
     <head>
         <meta charset="UTF-8" />
+        {% block meta %}{% endblock %}
+
         <title>{% block title %}VRViewerPro{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('images/favicon.ico') }}" />
