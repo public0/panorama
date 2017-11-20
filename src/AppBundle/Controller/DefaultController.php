@@ -36,7 +36,7 @@ class DefaultController extends Controller
         $clientToken = $brain->setToken();
 
         $plans = BPlan::all();
-
+//        var_dump($plans[0]->discounts);die;
 //     dump($plans->data[0]->metadata);die;
 //        $user = $this->container->get('security.context')->getToken()->getUser();
 //        dump($this->getUser()->getRoles());die;

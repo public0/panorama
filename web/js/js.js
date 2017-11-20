@@ -42,6 +42,15 @@ $(function() {
       });
     });
 */
+	$('.copy').click(function(event) {
+		var $temp = $("<input>");
+		toCopy = $(this).next('span');
+		$("body").append($temp);
+		toCopy.css('color','lavender');
+		$temp.val(toCopy.text()).select();
+		document.execCommand("copy");
+		$temp.remove();
+	});
 
 	$('.caption-col').mouseenter(function(e) {
 		$(this).children().css( "visibility", "visible" );

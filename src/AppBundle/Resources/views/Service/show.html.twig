@@ -224,6 +224,7 @@
 		</style>
 	</head>
 	<body>
+	<span id="pid"></span>
 	<div class="overlay overlay-genie" data-steps="m 701.56545,809.01175 35.16718,0 0,19.68384 -35.16718,0 z;m 698.9986,728.03569 41.23353,0 -3.41953,77.8735 -34.98557,0 z;m 687.08153,513.78234 53.1506,0 C 738.0505,683.9161 737.86917,503.34193 737.27015,806 l -35.90067,0 c -7.82727,-276.34892 -2.06916,-72.79261 -14.28795,-292.21766 z;m 403.87105,257.94772 566.31246,2.93091 C 923.38284,513.78233 738.73561,372.23931 737.27015,806 l -35.90067,0 C 701.32034,404.49318 455.17312,480.07689 403.87105,257.94772 z;M 51.871052,165.94772 1362.1835,168.87863 C 1171.3828,653.78233 738.73561,372.23931 737.27015,806 l -35.90067,0 C 701.32034,404.49318 31.173122,513.78234 51.871052,165.94772 z;m 52,26 1364,4 c -12.8007,666.9037 -273.2644,483.78234 -322.7299,776 l -633.90062,0 C 359.32034,432.49318 -6.6979288,733.83462 52,26 z;m 0,0 1439.999975,0 0,805.99999 -1439.999975,0 z">
 		<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1440 806" preserveAspectRatio="none">
 			<path class="overlay-path" d="m 701.56545,809.01175 35.16718,0 0,19.68384 -35.16718,0 z"/>
@@ -291,6 +292,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script>
 			(function() {
+
 				var triggerBttn = document.getElementById( 'trigger-overlay' ),
 					overlay = document.querySelector( 'div.overlay' ),
 					closeBttn = overlay.querySelector( 'a.overlay-close' );
@@ -361,6 +363,10 @@
 			var camera, scene, renderer, raycaster, mouse;
 			var markTexture, markMaterial, markPlane, plane;
 			var sphereMesh, boxMesh;
+			
+			var lon = 0, onMouseDownLon = 0,
+			lat = 0, onMouseDownLat = 0,
+			phi = 0, theta = 0;
 
 /*
 			document.addEventListener("keydown", function(e) {
@@ -496,6 +502,7 @@
 //			init(0);
 //			animate();
 			function init(i) {
+
 				$('#main').remove();
 				container = document.createElement( 'div' );
 				container.setAttribute('id', 'main');
@@ -507,6 +514,7 @@
 				scene = new THREE.Scene();
 				mouse = new THREE.Vector2();
 				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.5, 3000000 );
+				camera.target = new THREE.Vector3( 0, 0, 0 );
 
 
 				/*Mark*/
@@ -530,6 +538,8 @@
 //				camera.position.set( 2000, 750, 2000 );
 				controls = new THREE.OrbitControls( camera, renderer.domElement );
 				controls.enablePan = false;
+//				controls.autoRotate = true;
+
 				//controls.minDistance = 1000.0;
 				//controls.maxDistance = 5000.0;
 //				controls.maxPolarAngle = Math.PI * 0.9;
@@ -775,6 +785,26 @@
 			//
 			function animate() {
 				requestAnimationFrame( animate );
+/*				isUserInteracting = false;
+
+				if ( isUserInteracting === false ) {
+
+					lon +=0.1;
+
+				}
+
+				lat = Math.max( - 85, Math.min( 85, lat ) );
+				phi = THREE.Math.degToRad( 90 - lat );
+				theta = THREE.Math.degToRad( lon );
+
+				camera.target.x = 500 * Math.sin( phi ) * Math.cos( theta );
+				camera.target.y = 500 * Math.cos( phi );
+				camera.target.z = 500 * Math.sin( phi ) * Math.sin( theta );
+				controls.target = camera.target;
+				document.getElementById('pid').innerHTML = camera.target;
+*/
+//				camera.lookAt( camera.target );
+
 				render();
 			}
 			function render() {
@@ -785,6 +815,7 @@
 //					intersects[i].object.material.color.set(0xFF0000);
 				}
 				var time = performance.now() * 0.001;
+
 				controls.update();
 				//camera.position.copy( camera.target ).negate();
 				renderer.render( scene, camera );

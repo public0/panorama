@@ -9,9 +9,6 @@
         <span class="text-info"><a href="{{path('contact')}}">Contact</a></span>
     {% endfor %}
   {% endif %}
-    <br>
-    <br>
-
     {% if(showCreateProject) %}
     <a href="project/add">
       <button type="button" class="btn btn-default">Create new project</button>
@@ -34,22 +31,20 @@
     {%endif%}
     {%set i = 0%}
     {% for project in projects %}
-    <a class="projects_links" href="{{path('edit_project', {'projectId':project.id})}}">
+    <span href="{{path('edit_project', {'projectId':project.id})}}">
       {% if project.getFace() %}
         <div class="square" data-image="{{face_dir~project.getFace()}}">
       {% else %}
         <div class="square">
       {%endif%}
-            <h3>{{ project.name|capitalize }}</h3>
+            <h3><a class="projects_links" href="{{path('edit_project', {'projectId':project.id})}}">{{ project.name|capitalize }}</a></h3>
             <br>
             <br>
             <br>
             <br>
-            <br>
-            <br>
-            <br>
+            <h4 class="code-row"><span class="copy">Copy:</span> <span class="code">{{ project.code }}</span><h4>
       </div>
-    </a>
+    </span>
     {% set i = i + 1 %} 
     {% endfor %}
   </div>

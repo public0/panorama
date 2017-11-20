@@ -200,6 +200,8 @@ class ProjectsController extends Controller
                 );
 
                 $project->setFace($fileName);
+            } else {
+                $project->setFace('');
             }
 
             $time = $this->getDoctrine()
@@ -214,7 +216,6 @@ class ProjectsController extends Controller
             $project->setAndroid(1);
             $project->setReviewed(0);
             $project->setType($type);
-            $project->setFace('');
             $project->setCode($prepend.$base65Code);
 
             $user->getDetails()->incPcount();
@@ -365,7 +366,7 @@ class ProjectsController extends Controller
         }
         $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm(ProjectType::class, $project);
+        $form = $this->createForm(ProjectType::class);
         $form->handleRequest($request);
         $dir = 'uploads/'.$userId.'/'.$projectId;
 
@@ -479,7 +480,7 @@ class ProjectsController extends Controller
             return $this->redirectToRoute('edit_project', array('projectId' => $project->getId()));
 
         }
-        return $this->render('projects/project_edit.html.twig', [
+        return $this->render('projects/project_edit_2.html.twig', [
             'form' => $form->createView(),
             //'files' => $finder,
             'images' => $images,
@@ -522,7 +523,8 @@ class ProjectsController extends Controller
      * @Route("/project/preview/{id}/{project_id}/{image_id}", name="preview_project")
      */
     public function previewAction(Request $request, $id, $project_id, $image_id) {
-        $userId = NULL;        
+        $userId = NULL;
+
         if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_FULLY' ) )
         {
             $user = $this->container->get('security.token_storage')->getToken()->getUser();

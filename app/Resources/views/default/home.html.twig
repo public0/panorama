@@ -9,7 +9,7 @@
 <div class="homebody">
   <div class="embed-responsive embed-responsive-16by9 absolute">
   
-    <video loop id="vid" autoplay="" class="embed-responsive-item" name="media"><source src="{{video}}With circle.mp4" type="video/mp4"></video>
+    <video loop id="vid" autoplay="" class="embed-responsive-item" name="media"><source src="{{video}}villa.mp4" type="video/mp4"></video>
 
     <div class="text-center white-text on-top">
       <br>
@@ -20,7 +20,7 @@
       <br>
       <br>
       <br>
-      <h3><strong>VR tours for your property in less than 10 minutes<strong></h3>
+      <h3 class="black-text"><strong>VR tours for your property in less than 10 minutes<strong></h3>
       <br>
       <br>
       <br>
@@ -28,7 +28,7 @@
       <br>
       <br>
       <br>
-      <button style="border-radius: 25px; background:red; border:none; padding: 10px 20px 10px 20px;">
+      <button style="border-radius: 25px; background:rgb(120, 120, 120); border:none; padding: 10px 20px 10px 20px;">
       <a class="sign-up" href="{{ path('fos_user_registration_register') }}"><b>Sign Up</b></a>
       </button>        
     </div>
@@ -49,8 +49,8 @@
     </p>
     <br>
   </div>
-  <div class="row black-bg">
-      <h1><strong>Where can you use it<strong></h1 >
+  <div class="row gray-bg">
+      <h1 class="black-text"><strong>Where can you use it<strong></h1 >
       <br>
       <div class="thumbnail text-center white-text">
           <img class="img-responsive" src="{{ asset('images/4-images.jpg') }}" />
@@ -128,16 +128,27 @@
 <br>
 <br>
   <div class="container text-center">
-    <div class="row">
-      {%for plan in plans %}
-        <div class="col-sm-4">
-        <h3><a>{{plan.name}}</a></h3>
-        <p class="white-text">{{ plan.description | split('--')[0] }}</p>
-        <p class="white-text">Price: {{plan.price}}&#36;/month</p>
-        <p class="white-text">Number of Cubemaps: {{ plan.description | split(':')[1] }}</p>
-        <p><a href="{{path('profile_subscribe', {'planId':plan.id})}}" class="navbar-btn btn-primary btn">Subscribe</a></p>
-        </div>
-      {% endfor %}
+  <div class="row pricing-table-row">
+    {%for plan in plans %}
+      <div class="col-sm-3">
+      <h3><a>{{plan.name}}</a></h3>
+      <p class="black-text">{{ plan.description | split('--')[0] }}</p>
+      <p class="black-text">Price: {{plan.price}}&#36;/month</p>
+      <p class="black-text">Number of Cubemaps: {{ plan.description | split(':')[1] }}</p>
+      <p><a href="{{path('profile_subscribe', {'planId':plan.id})}}" class="navbar-btn btn-primary btn">Subscribe</a></p>
+      </div>
+    {% endfor %}
+  </div>
+  <br>
+  <div class="row free-table-row">
+    <div class="col-sm-3 col-sm-offset-0 col-free">
+      <h3 class="gradient-green-text"><a>Free</a></h3>
+      <p class="black-text">Great way to test your VR experience. </p>
+      <p class="black-text">Price: Free</p>
+      <p class="black-text">Number of Cubemaps: 2</p>
+      <p><a href="{{path('projects')}}" class="navbar-btn btn-success btn">Subscribe</a></p>
+    </div>
+  </div>
     </div>
   </div>
 </div>

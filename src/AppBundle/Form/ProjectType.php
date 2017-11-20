@@ -22,10 +22,10 @@ class ProjectType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-//        dump($builder);die;
         $builder
+/*        
             ->add('name', TextType::class, ['required' => true, 'label' => 'Project Name'])
-            //->add('active', CheckboxType::class, ['label' => 'Active', 'required' => false])
+            ->add('active', CheckboxType::class, ['label' => 'Active', 'required' => false])
             ->add('status', ChoiceType::class, [
                 'choices'  => array(
                     'Private' => 0,
@@ -36,6 +36,7 @@ class ProjectType extends AbstractType
             )
             ->add('face', FileType::class, array('label' => 'Thumbnail', 'required' => false, 'data_class' => null, 'attr' => ['class' => 'hidden']))
 //            ->add('android')
+*/
             ->add('images', FileType::class, array('mapped'=>false, 'required' => false, 'label' => 'Image', 'attr' => ['class' => 'hidden']))
             ->add('title', TextType::class, array('mapped'=>false, 'required' => true, 'label' => 'Title', 'attr' => ['class' => '']))
             ->add('width', HiddenType::class, array('mapped'=>false, 'required' => false))

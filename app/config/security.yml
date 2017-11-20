@@ -47,4 +47,5 @@ security:
         - { path: ^/admin/, role: ROLE_ADMIN }
         - { path: ^/home$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/project/, role: [ROLE_USER, ROLE_ADMIN] }        
-        - { path: ^/profile/, role: [ROLE_USER, ROLE_ADMIN] }                
+        - { path: ^/profile/, role: [ROLE_USER, ROLE_ADMIN] }
+        - { path: ^/projects, role: [ROLE_USER, ROLE_ADMIN] }

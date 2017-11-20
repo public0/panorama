@@ -5,13 +5,14 @@
 {% block body %}
 
 <div class="container">
-  <div class="row">
+<br>
+  <div class="row pricing-table-row">
     {%for plan in plans %}
-      <div class="col-sm-4">
+      <div class="col-sm-3">
       <h3><a>{{plan.name}}</a></h3>
-      <p class="white-text">{{ plan.description | split('--')[0] }}</p>
-      <p class="white-text">Price: {{plan.price}}&#36;/month</p>
-      <p class="white-text">Number of Cubemaps: {{ plan.description | split(':')[1] }}</p>
+      <p class="black-text">{{ plan.description | split('--')[0] }}</p>
+      <p class="black-text">Price: {{plan.price}}&#36;/month</p>
+      <p class="black-text">Number of Cubemaps: {{ plan.description | split(':')[1] }}</p>
         {%if(currentPlan and currentPlan.id == plan.id)%}
           <p class="navbar-btn btn-info btn"><a href="{{path('profile_unsubscribe')}}">Unsubscribe</a></p>
         {%else%}
@@ -20,5 +21,14 @@
       </div>
     {% endfor %}
   </div>
-
+  <br>
+  <div class="row free-table-row">
+    <div class="col-sm-3 col-sm-offset-0 col-free">
+      <h3 class="gradient-green-text"><a>Free</a></h3>
+      <p class="black-text">Great way to test your VR experience. </p>
+      <p class="black-text">Price: Free</p>
+      <p class="black-text">Number of Cubemaps: 2</p>
+      <p><a href="{{path('projects')}}" class="navbar-btn btn-success btn">Subscribe</a></p>
+    </div>
+  </div>
 {% endblock %}
