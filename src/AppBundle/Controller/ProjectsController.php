@@ -413,7 +413,7 @@ class ProjectsController extends Controller
                 $user->getDetails()->incCubeCount();
                 $user->getDetails()->incActiveCubeCount();
 
-                $file = $project->getFace();
+/*                $file = $project->getFace();
                 if($file) {
                     $fileName = md5(uniqid()).'.'.$file->guessExtension();
                     $file->move(
@@ -423,7 +423,7 @@ class ProjectsController extends Controller
 
                     $project->setFace($fileName);
                 }
-
+*/
                 $project->setUser($user);
                 $project->setReviewed(0);
                 $project->setType($user->getDetails()->getType());
