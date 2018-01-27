@@ -38,8 +38,6 @@ class ProjectType extends AbstractType
 //            ->add('android')
 */
             ->add('images', FileType::class, array('mapped'=>false, 'required' => false, 'label' => 'Image', 'attr' => ['class' => 'hidden']))
-            ->add('material', FileType::class, array('mapped'=>false, 'required' => false, 'label' => 'Material', 'attr' => ['class' => 'hidden']))
-            ->add('texture', FileType::class, array('mapped'=>false, 'required' => false, 'label' => 'Texture', 'attr' => ['class' => 'hidden', 'multiple' => 'multiple']))
             ->add('title', TextType::class, array('mapped'=>false, 'required' => true, 'label' => 'Title', 'attr' => ['class' => '']))
             ->add('width', HiddenType::class, array('mapped'=>false, 'required' => false))
             ->add('height', HiddenType::class, array('mapped'=>false, 'required' => false))

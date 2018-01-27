@@ -65,7 +65,7 @@ $(function() {
 			case '4':{
 				//$('<input')
 				console.log('4');
-				form.append('input');
+//				form.append('input');
 				break;
 			}
 		}
@@ -96,24 +96,23 @@ $(function() {
 
 	$("#project_images").change(function(e) {
 	    var file, img;
+	    let allowed = ['application/x-tgif'];
+	    if ((file = this.files[0])) {	
+	    	if($.inArray(file.type, allowed) !== -1) {
 
+	    	} else {
+		        img = new Image();
+		        img.onload = function() {
+		        	$('#project_width').val(this.width);
+		        	$('#project_height').val(Math.floor(this.width / 6));
+		        	$('#project_save').val('Upload');
 
-	    if ((file = this.files[0])) {
-	        img = new Image();
-	        img.onload = function() {
-	        	$('#project_width').val(this.width);
-	        	$('#project_height').val(Math.floor(this.width / 6));
-	        	$('#project_save').val('Upload');
-//	        	console.log(Math.floor(this.width / 6));
-
-//	            alert(this.width + " " + this.height);
-	        };
-	        img.onerror = function() {
-	            alert( "not a valid file: " + file.type);
-	        };
-	        img.src = _URL.createObjectURL(file);
-
-
+		        };
+		        img.onerror = function() {
+		            alert( "Invalid file: " + file.type);
+		        };
+		        img.src = _URL.createObjectURL(file);
+	    	}
 	    }
 
 	});
