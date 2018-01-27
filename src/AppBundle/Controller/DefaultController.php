@@ -30,21 +30,18 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+/*
         $clientManager = $this->container->get('fos_oauth_server.client_manager.default');
         $client = $clientManager->findClientBy(['id' => 2]);
         $client->setRedirectUris(array('http://www.example.com'));
         $client->setAllowedGrantTypes(array('token', 'authorization_code', 'refresh_token'));
         $clientManager->updateClient($client);
-//            $d = $this->get('payum')->getGateway('stripe_checkout');
-//        $plans = Plan::all(NULL, $this->container->getParameter('secret_key'));
+*/
         $brain = $this->get('braintree');
         $clientToken = $brain->setToken();
 
         $plans = BPlan::all();
-//        var_dump($plans[0]->discounts);die;
-//     dump($plans->data[0]->metadata);die;
-//        $user = $this->container->get('security.context')->getToken()->getUser();
-//        dump($this->getUser()->getRoles());die;
+
         // replace this example code with whatever you need
         return $this->render('default/home.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..'),
