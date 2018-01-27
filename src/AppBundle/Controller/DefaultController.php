@@ -30,6 +30,11 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $clientManager = $this->container->get('fos_oauth_server.client_manager.default');
+        $client = $clientManager->findClientBy(['id' => 2]);
+        $client->setRedirectUris(array('http://www.example.com'));
+        $client->setAllowedGrantTypes(array('token', 'authorization_code', 'refresh_token'));
+        $clientManager->updateClient($client);
 //            $d = $this->get('payum')->getGateway('stripe_checkout');
 //        $plans = Plan::all(NULL, $this->container->getParameter('secret_key'));
         $brain = $this->get('braintree');

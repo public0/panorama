@@ -1,12 +1,13 @@
 <?php
 // src/Acme/ApiBundle/Entity/AuthCode.php
 
-namespace Acme\ApiBundle\Entity;
+namespace ApiBundle\Entity;
 
 use FOS\OAuthServerBundle\Entity\AuthCode as BaseAuthCode;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table("oauth2_auth_codes")
  * @ORM\Entity
  */
 class AuthCode extends BaseAuthCode
@@ -25,7 +26,7 @@ class AuthCode extends BaseAuthCode
     protected $client;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Your\Own\Entity\User")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      */
     protected $user;
 }

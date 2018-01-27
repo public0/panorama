@@ -1,12 +1,12 @@
 <?php
-// src/Acme/ApiBundle/Entity/AccessToken.php
 
-namespace Acme\ApiBundle\Entity;
+namespace ApiBundle\Entity;
 
 use FOS\OAuthServerBundle\Entity\AccessToken as BaseAccessToken;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table("oauth2_access_tokens")
  * @ORM\Entity
  */
 class AccessToken extends BaseAccessToken
@@ -25,7 +25,7 @@ class AccessToken extends BaseAccessToken
     protected $client;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Your\Own\Entity\User")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      */
     protected $user;
 }

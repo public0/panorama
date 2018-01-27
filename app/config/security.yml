@@ -17,6 +17,26 @@ security:
 
 
     firewalls:
+        oauth_token:
+            pattern:    ^/oauth/v2/token
+            security:   false
+
+        oauth_authorize:
+            pattern:    ^/oauth/v2/auth
+            form_login:
+                provider: fos_userbundle
+                check_path: vp_global_login_check
+                login_path: vp_global_login
+            anonymous: true
+            context: test_connect            
+            # Add your favorite authentication process here
+
+        api:
+            pattern:    ^/api
+            fos_oauth:  true
+            stateless:  true
+            anonymous:  true # can be omitted as its default value
+
         # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -49,3 +69,4 @@ security:
         - { path: ^/project/, role: [ROLE_USER, ROLE_ADMIN] }        
         - { path: ^/profile/, role: [ROLE_USER, ROLE_ADMIN] }
         - { path: ^/projects, role: [ROLE_USER, ROLE_ADMIN] }
+        - { path: ^/api, roles: [ IS_AUTHENTICATED_FULLY ] }

@@ -1,12 +1,11 @@
 <?php
-// src/Acme/ApiBundle/Entity/Client.php
-
-namespace Acme\ApiBundle\Entity;
+namespace ApiBundle\Entity;
 
 use FOS\OAuthServerBundle\Entity\Client as BaseClient;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table("oauth2_clients")
  * @ORM\Entity
  */
 class Client extends BaseClient
@@ -21,6 +20,5 @@ class Client extends BaseClient
     public function __construct()
     {
         parent::__construct();
-        // your own logic
     }
 }

@@ -382,7 +382,7 @@ class ProjectsController extends Controller
         $imageCount = count($images);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+var_dump($form['exporter']->getData()->getId());die;
             $data = $form->getData();
 
             try {
@@ -405,7 +405,15 @@ class ProjectsController extends Controller
 
                     $em->persist($image);
 
-                    $form['images']->getData()->move($dir.'/images', $newName);                    
+                    $form['images']->getData()->move($dir.'/images', $newName);
+
+                    if($form['exporter']->getData()->getId() == 4) {
+                        $fs->mkdir($dir.'/images/material');
+                        $fs->mkdir($dir.'/images/textures');
+
+//                        $form['material']->getData()->move($dir.'/images/material', $form['material']->getData()->getClientOriginalName());
+
+                    }
                 }
                 $user = $this->getDoctrine()
                 ->getRepository('AppBundle:User')

@@ -1,12 +1,13 @@
 <?php
 // src/Acme/ApiBundle/Entity/RefreshToken.php
 
-namespace Acme\ApiBundle\Entity;
+namespace ApiBundle\Entity;
 
 use FOS\OAuthServerBundle\Entity\RefreshToken as BaseRefreshToken;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table("oauth2_refresh_tokens")
  * @ORM\Entity
  */
 class RefreshToken extends BaseRefreshToken
@@ -25,7 +26,7 @@ class RefreshToken extends BaseRefreshToken
     protected $client;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Your\Own\Entity\User")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      */
     protected $user;
 }

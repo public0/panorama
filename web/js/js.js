@@ -6,29 +6,31 @@ $(function() {
 //	$('.caption-col').children().css( "visibility", "visible" );
 
     var pay = document.querySelector('#pay');
-    braintree.dropin.create({
-      authorization: $('#token').val(),
-      selector: '#payment'
-    }, function (createErr, instance) {
-      pay.addEventListener('click', function (e) {
-    	e.preventDefault();
-        instance.requestPaymentMethod(function (err, payload) {
-        	plan = $('#plan').val();
-			$.post( "../../subscribe", {plan : plan, data : payload}).done(function( data ) {
-			    if(data != 1) {
-			    	$('.hidden-error').removeClass('hidden').show();
-			    	$('.error').text(data);
-			    } else {
-			    	window.location.href = '../../projects';
-			    }
+    if(pay) {
+	    braintree.dropin.create({
+	      authorization: $('#token').val(),
+	      selector: '#payment'
+	    }, function (createErr, instance) {
+	      pay.addEventListener('click', function (e) {
+	    	e.preventDefault();
+	        instance.requestPaymentMethod(function (err, payload) {
+	        	plan = $('#plan').val();
+				$.post( "../../subscribe", {plan : plan, data : payload}).done(function( data ) {
+				    if(data != 1) {
+				    	$('.hidden-error').removeClass('hidden').show();
+				    	$('.error').text(data);
+				    } else {
+				    	window.location.href = '../../projects';
+				    }
 
-			});
+				});
 
 
-          // Submit payload.nonce to your server
-        });
-      });
-    });
+	          // Submit payload.nonce to your server
+	        });
+	      });
+	    });    	
+    }
 /*    var button = document.querySelector('#submit-button');
 
     braintree.dropin.create({
@@ -42,6 +44,34 @@ $(function() {
       });
     });
 */
+	$( "#project_exporter" ).change(function() {
+		exporter = $('#project_exporter').find(":selected");
+		var val = exporter.val();
+		var form = exporter.closest('form');
+
+		switch(val) {
+			case '1': {
+				console.log('1');
+				break;
+			}
+			case '2': {
+				console.log('2');
+				break;
+			}
+			case '3': {
+				console.log('3');
+				break;
+			}
+			case '4':{
+				//$('<input')
+				console.log('4');
+				form.append('input');
+				break;
+			}
+		}
+	});
+
+
 	$('.copy').click(function(event) {
 		var $temp = $("<input>");
 		toCopy = $(this).next('span');

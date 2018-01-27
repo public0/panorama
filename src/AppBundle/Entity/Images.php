@@ -82,7 +82,6 @@ class Images
      */
     private $exporter;
 
-
     /**
      * Get id
      *
