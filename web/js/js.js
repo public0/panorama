@@ -96,8 +96,8 @@ $(function() {
 
 	$("#project_images").change(function(e) {
 	    var file, img;
-	    let allowed = ['application/x-tgif'];
-	    console.log(this.files[0]);
+	    let allowed = ['application/x-tgif',''];
+
 	    if ((file = this.files[0])) {	
 	    	if($.inArray(file.type, allowed) !== -1) {
 
@@ -107,7 +107,6 @@ $(function() {
 		        	$('#project_width').val(this.width);
 		        	$('#project_height').val(Math.floor(this.width / 6));
 		        	$('#project_save').val('Upload');
-
 		        };
 		        img.onerror = function() {
 		            alert( "Invalid file: " + file.type);
