@@ -389,8 +389,18 @@ class ProjectsController extends Controller
                 if($form['images']->getData()) {
                     $fs->mkdir($dir.'/images');
                     $fs->mkdir($dir.'/backups');
-                    $newName = md5($form['images']->getData()->getClientOriginalName().time()).'.'.
-                    $form['images']->getData()->getClientOriginalExtension();
+
+                    switch ($form['exporter']->getData()->getId()) {
+                        case 4:
+                                $newName = md5($form['images']->getData()->getClientOriginalName().time()).'.txt';
+                            break;
+                        
+                        default:
+                                $newName = md5($form['images']->getData()->getClientOriginalName().time()).'.'.
+                                $form['images']->getData()->getClientOriginalExtension();
+                            break;
+                    }
+
 
                     $image = new Images();
                     $image->setName($newName);
