@@ -97,6 +97,7 @@ $(function() {
 	$("#project_images").change(function(e) {
 	    var file, img;
 	    let allowed = ['application/x-tgif'];
+	    console.log(this.files[0]);
 	    if ((file = this.files[0])) {	
 	    	if($.inArray(file.type, allowed) !== -1) {
 
