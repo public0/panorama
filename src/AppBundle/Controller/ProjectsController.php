@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity\Project;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Images;
+use AppBundle\Entity\Materials;
+use AppBundle\Entity\Textures;
 use AppBundle\Entity\Timebase;
 use AppBundle\Form\AddProjectType;
 use AppBundle\Form\ProjectType;
@@ -401,7 +403,6 @@ class ProjectsController extends Controller
                             break;
                     }
 
-
                     $image = new Images();
                     $image->setName($newName);
                     $image->setWidth(null !== ($form['width']->getData())?$form['width']->getData():0);
@@ -417,6 +418,26 @@ class ProjectsController extends Controller
 
                     $form['images']->getData()->move($dir.'/images', $newName);
 
+                    if($form['exporter']->getData()->getId() == 4 && $form['material']->getData()) {
+                        $fs->mkdir($dir.'/images/'.$form['title']->getData());
+                        $newMtlName = pathinfo($form['material']->getData()->getClientOriginalName(), PATHINFO_FILENAME).'.txt';
+                        $mtl = new Materials();
+                        $mtl->setPath($newMtlName);
+                        $mtl->setImage($image);
+                        $em->persist($mtl);
+                        $form['material']->getData()->move($dir.'/images/'.$form['title']->getData(), $newMtlName);
+
+                        if($form['textures']->getData()) {
+                            foreach ($form['textures']->getData() as $tex) {
+                                $texture = new Textures();
+                                $texture->setPath($tex->getClientOriginalName());
+                                $texture->setImage($image);
+                                $em->persist($texture);
+                                $tex->move($dir.'/images/'.$form['title']->getData(), $tex->getClientOriginalName());
+                            }
+
+                        }
+                    }
                 }
                 $user = $this->getDoctrine()
                 ->getRepository('AppBundle:User')

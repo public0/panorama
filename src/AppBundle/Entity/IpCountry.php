@@ -32,7 +32,7 @@ class IpCountry
     /**
      * @var string
      *
-     * @ORM\Column(name="country_code", type="string", length=2, options={"collation" : "utf8_unicode_ci", "charset" : "utf8"})
+     * @ORM\Column(name="country_code", type="string", length=2)
      */
     private $countryCode;
 

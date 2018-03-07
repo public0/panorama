@@ -291,6 +291,20 @@ class AjaxController extends Controller
                $options = array('add_path' => 'sources/', 'remove_path' => $dir.'/images');
 				foreach ($images as $image) {
 					$zip->addFile($dir.'/images/'.$image->getName(), 'sources/'.$image->getName());
+					$mDir = $dir.'/images/'.$image->getTitle();
+					if(is_dir($mDir)) {
+						$zip->addEmptyDir('sources/'.$image->getTitle());
+						$files = new \RecursiveIteratorIterator(
+						    new \RecursiveDirectoryIterator($mDir),
+						    \RecursiveIteratorIterator::LEAVES_ONLY|\RecursiveDirectoryIterator::SKIP_DOTS
+						);
+
+						foreach($files as $file) {
+//							echo $file->getRealPath().'--'.$file->getFilename().'<br>';
+							if(is_file($file->getRealPath()))
+								$zip->addFile($file->getRealPath(), 'sources/'.$image->getTitle().'/'.$file->getFilename());
+						}
+					}
 				}
 				$zip->addFile($dir.'/images/data.csv', 'sources/data.csv');
 

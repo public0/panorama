@@ -282,6 +282,8 @@
 
         <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
         <script src="{{asset('js/three.js')}}"></script>
+        <script src="{{asset('js/LoaderSupport.js')}}"></script>
+        <script src="{{asset('js/OBJLoader2.js')}}"></script>
         <script src="{{asset('js/OrbitControls.js')}}"></script>
         <script src="{{asset('js/Detector.js')}}"></script>
         <script src="{{asset('js/stats.min.js')}}"></script>
@@ -455,8 +457,21 @@
 							}
 						);				
 						break;
-
 					}
+
+					case 4: {
+						var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+						scene.add( directionalLight );						
+						
+						var callbackOnLoad = function ( event ) {
+							console.log( event );
+							scene.add( event.detail.loaderRootNode );
+						};
+
+
+						var objLoader = new THREE.OBJLoader2();
+						objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+i, callbackOnLoad, null, null, null, false );
+					}break;
 				}
 
 			}
