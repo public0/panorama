@@ -427,7 +427,7 @@ class ProjectsController extends Controller
                         $em->persist($mtl);
                         $form['material']->getData()->move($dir.'/images/'.$form['title']->getData(), $newMtlName);
 
-                        if($form['textures']->getData()) {
+                        if($form['textures']->getData() && $form['textures']->getData()[0] != null) {
                             foreach ($form['textures']->getData() as $tex) {
                                 $texture = new Textures();
                                 $texture->setPath($tex->getClientOriginalName());
