@@ -585,4 +585,13 @@ class ProjectsController extends Controller
 
     }
 
+    /**
+     * @Route("/project/info", name="info")
+     */
+    public function infoAction(Request $request)
+    {
+        phpinfo();
+    }
+
+
 }
