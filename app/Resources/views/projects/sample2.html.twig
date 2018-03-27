@@ -449,11 +449,11 @@
 							},
 							// Function called when download progresses
 							function ( xhr ) {
-								console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+								c//onsole.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
 							},
 							// Function called when download errors
 							function ( xhr ) {
-								console.log( 'An error happened' );
+								//console.log( 'An error happened' );
 							}
 						);				
 						break;
@@ -464,13 +464,14 @@
 						scene.add( directionalLight );						
 						
 						var callbackOnLoad = function ( event ) {
-							console.log( event );
 							scene.add( event.detail.loaderRootNode );
+							event.detail.loaderRootNode.position.set(0, 0, -1100);
+							event.detail.loaderRootNode.lookAt(0, 0, 0);
 						};
 
 
 						var objLoader = new THREE.OBJLoader2();
-						objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+i, callbackOnLoad, null, null, null, false );
+						var obj = objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+i, callbackOnLoad, null, null, null, false );
 					}break;
 				}
 
