@@ -570,17 +570,21 @@ class ProjectsController extends Controller
                 ->getRepository('AppBundle:Images')
                 ->findBy(['id' => $image_id]);
 
-        $dir = 'uploads/'.$userId;
+        $dir = 'uploads/'.$userId.'/'.$project_id.'/images/'.$image[0]->getTitle();
         $finder = new Finder();
-        $finder->files()->in($dir);
+        $finder->files()->in($dir)->name('*.mtl');
+        $iterator = $finder->getIterator();
+        $iterator->rewind();
+        $mtlName = $iterator->current()->getFilename();
         $baseurl = $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
 
         return $this->render('projects/sample2.html.twig', [
             'baseurl' => $baseurl,
-            'images' => $image,
-            'userId' => $userId,
+            'images'  => $image,
+            'userId'  => $userId,
             'project' => $project,
-            'files' => $finder
+            'files'   => $finder,
+            'mtlName' => $mtlName
         ]);
 
     }

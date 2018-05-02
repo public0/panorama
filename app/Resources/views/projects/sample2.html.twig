@@ -284,6 +284,7 @@
         <script src="{{asset('js/three.js')}}"></script>
         <script src="{{asset('js/LoaderSupport.js')}}"></script>
         <script src="{{asset('js/OBJLoader2.js')}}"></script>
+        <script src="{{asset('js/MTLLoader.js')}}"></script>
         <script src="{{asset('js/OrbitControls.js')}}"></script>
         <script src="{{asset('js/Detector.js')}}"></script>
         <script src="{{asset('js/stats.min.js')}}"></script>
@@ -297,6 +298,7 @@
 				document.getElementById( 'container' ).innerHTML = "";
 			}
 			var container, stats;
+			var houseMesh;
 			var camera, scene, renderer, raycaster, mouse;
 /*
 			document.addEventListener("keydown", function(e) {
@@ -460,18 +462,52 @@
 					}
 
 					case 4: {
-						var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-						scene.add( directionalLight );						
+						var axes = new THREE.AxisHelper(100);
+						axes.position.set(-300, -50, -300);
+						scene.add( axes );
+						var helper = new THREE.GridHelper( 1200, 60, 0x000000, 0x002200 );
+						helper.position.set(0, -100, 0);
+						scene.add( helper );
+
+
+						var imagePrefix = '{{ baseurl~"/images/sky/" }}';
+						//var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
+						var directions  = ["RT", "LF", "UP", "DN", "BK", "FR"];
+						var imageSuffix = ".jpg";
+						var skyGeometry = new THREE.CubeGeometry( 5000, 5000, 5000 );	
 						
+						var materialArray = [];
+						for (var n = 0; n < 6; n++)
+							materialArray.push( new THREE.MeshBasicMaterial({
+								map: THREE.ImageUtils.loadTexture( imagePrefix + directions[n] + imageSuffix ),
+								side: THREE.BackSide
+							}));
+						var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
+						var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+						scene.add( skyBox );						
+
+
+						var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+						scene.add( directionalLight );
 						var callbackOnLoad = function ( event ) {
-							scene.add( event.detail.loaderRootNode );
-							event.detail.loaderRootNode.position.set(0, 0, -20);
-							event.detail.loaderRootNode.lookAt(0, 0, 0);
+							houseMesh = event.detail.loaderRootNode;
+							scene.add( houseMesh );
+							houseMesh.position.set(0, 0, -100);
+							houseMesh.scale.set(0.1, 0.1, 0.1);
+							//event.detail.loaderRootNode.lookAt(0, 0, 0);
 						};
 
-
 						var objLoader = new THREE.OBJLoader2();
-						var obj = objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+i, callbackOnLoad, null, null, null, false );
+
+						var onLoadMtl = function ( materials ) {
+							objLoader.setModelName( '{{images[0].title}}' );
+							objLoader.setMaterials( materials );
+							objLoader.setLogging( true, true );
+
+							objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}' + i, callbackOnLoad, null, null, null, false );
+						};
+						objLoader.loadMtl( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"~images[0].title~"/"~mtlName}}', null, onLoadMtl );
+
 					}break;
 				}
 
@@ -494,6 +530,9 @@
 				render();
 			}
 			function render() {
+
+				if(houseMesh)
+					houseMesh.rotation.y -= 0.01 * 1;
 
 				raycaster.setFromCamera(mouse, camera);
 				var intersects = raycaster.intersectObjects(scene.children);
