@@ -462,6 +462,7 @@
 					}
 
 					case 4: {
+						mtlName = '{{ mtlName }}';
 						var axes = new THREE.AxisHelper(100);
 						axes.position.set(-300, -50, -300);
 						scene.add( axes );
@@ -506,7 +507,10 @@
 
 							objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}' + i, callbackOnLoad, null, null, null, false );
 						};
-						objLoader.loadMtl( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"~images[0].title~"/"~mtlName}}', null, onLoadMtl );
+						if(mtlName == '')
+							objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}' + i, callbackOnLoad, null, null, null, false );
+						else
+							objLoader.loadMtl( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"~images[0].title~"/"~mtlName}}', null, onLoadMtl );
 
 					}break;
 				}

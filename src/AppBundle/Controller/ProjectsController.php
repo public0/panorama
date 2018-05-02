@@ -556,7 +556,8 @@ class ProjectsController extends Controller
      */
     public function previewAction(Request $request, $id, $project_id, $image_id) {
         $userId = NULL;
-
+        $mtlName = '';
+        
         if( $this->container->get( 'security.authorization_checker' )->isGranted( 'IS_AUTHENTICATED_FULLY' ) )
         {
             $user = $this->container->get('security.token_storage')->getToken()->getUser();
@@ -572,10 +573,12 @@ class ProjectsController extends Controller
 
         $dir = 'uploads/'.$userId.'/'.$project_id.'/images/'.$image[0]->getTitle();
         $finder = new Finder();
-        $finder->files()->in($dir)->name('*.mtl');
-        $iterator = $finder->getIterator();
-        $iterator->rewind();
-        $mtlName = $iterator->current()->getFilename();
+        if(is_dir($dir)) {            
+            $finder->files()->in($dir)->name('*.mtl');
+            $iterator = $finder->getIterator();
+            $iterator->rewind();
+            $mtlName = $iterator->current()->getFilename();
+        }
         $baseurl = $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
 
         return $this->render('projects/sample2.html.twig', [
