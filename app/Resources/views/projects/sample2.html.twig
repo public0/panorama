@@ -463,15 +463,26 @@
 
 					case 4: {
 						mtlName = '{{ mtlName }}';
-						var box = new THREE.Box3();
+						var cubeBound  = new THREE.Box3();
+						var houseBound = new THREE.Box3();
 						var axes = new THREE.AxisHelper(100);
+
+						var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+						var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+						var cube = new THREE.Mesh( geometry, material );
+						cube.scale.set(5, 5, 5);
+						cubeBound.setFromObject( cube );
+//						scene.add( cube );
+
+
+/*
 						axes.position.set(-300, -50, -300);
 						scene.add( axes );
 						var helper = new THREE.GridHelper( 1200, 60, 0x000000, 0x002200 );
 						helper.position.set(0, -100, 0);
 						scene.add( helper );
 
-
+*/
 						var imagePrefix = '{{ baseurl~"/images/sky/" }}';
 						//var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
 						var directions  = ["RT", "LF", "UP", "DN", "BK", "FR"];
@@ -489,15 +500,24 @@
 						scene.add( skyBox );						
 
 
-						var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+						var directionalLight = new THREE.DirectionalLight( 0xAAAAAA, 1.0 );
+						directionalLight.position.set(0,1,1);
 						scene.add( directionalLight );
 						var callbackOnLoad = function ( event ) {
+							let obj = {
+								max : {x:325, y:190},
+								min : {}
+							}
 							houseMesh = event.detail.loaderRootNode;
+							houseBound.setFromObject( houseMesh );
+							let scalar = ScaleToSize(cubeBound, houseBound, 0)
+//							console.log(box.getSize());
 							scene.add( houseMesh );
-							houseMesh.position.set(0, 0, -100);
-							box.setFromObject( houseMesh );
-							console.log(box);
-//							houseMesh.scale.set(0.1, 0.1, 0.1);
+
+							houseMesh.position.set(0, -0.5, -5);
+							camera.lookAt(houseMesh);
+							houseMesh.scale.set(1*scalar, 1*scalar, 1*scalar);
+//							console.log();
 							//event.detail.loaderRootNode.lookAt(0, 0, 0);
 						};
 
@@ -507,7 +527,6 @@
 							objLoader.setModelName( '{{images[0].title}}' );
 							objLoader.setMaterials( materials );
 							objLoader.setLogging( true, true );
-
 							objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}' + i, callbackOnLoad, null, null, null, false );
 						};
 						if(mtlName == '')
@@ -520,9 +539,44 @@
 
 			}
 
+		    function ScaleToSize(fitBounds, toFitBounds, diff)
+		    {
+		        let largestSizeToFit = 0;
+		        let largestSizeFit   = 0;
+
+	            if (toFitBounds.getSize().x > largestSizeToFit)
+            		largestSizeToFit = toFitBounds.getSize().x;
+	            if (fitBounds.getSize().x > largestSizeFit)
+	                largestSizeFit = fitBounds.getSize().x;
+
+	            if (toFitBounds.getSize().y > largestSizeToFit)
+            		largestSizeToFit = toFitBounds.getSize().y;
+	            if (fitBounds.getSize().y > largestSizeFit)
+	                largestSizeFit = fitBounds.getSize().y;
+
+	            if (toFitBounds.getSize().z > largestSizeToFit)
+            		largestSizeToFit = toFitBounds.getSize().z;
+	            if (fitBounds.getSize().z > largestSizeFit)
+	                largestSizeFit = fitBounds.getSize().z;
+
+/*		        for (i = 0; i < 3; i++)
+		        {
+    	            if (toFitBounds.size[i] > largestSizeToFit)
+                		largestSizeToFit = toFitBounds.size[i];
+		            
+		            if (fitBounds.size[i] > largestSizeFit)
+		                largestSizeFit = fitBounds.size[i];
+
+		        }
+*/
+		        scalar = largestSizeFit / (largestSizeToFit+diff);
+		        return scalar;
+		    }
+
 			function onMouseMove(event) {
 				mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-				mouse.xy = (event.clientY / window.innerHeight) * 2 + 1;
+				mouse.y = (event.clientY / window.innerHeight) * 2 + 1;
+//				mouse.xy = (event.clientY / window.innerHeight) * 2 + 1;
 			}
 
 			function onDocumentMouseWheel( event ) {
@@ -539,7 +593,7 @@
 			function render() {
 
 				if(houseMesh)
-					houseMesh.rotation.y -= 0.01 * 1;
+					houseMesh.rotation.y -= 0.003 * 1;
 
 				raycaster.setFromCamera(mouse, camera);
 				var intersects = raycaster.intersectObjects(scene.children);
