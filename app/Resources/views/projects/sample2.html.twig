@@ -465,7 +465,7 @@
 						mtlName = '{{ mtlName }}';
 						var cubeBound  = new THREE.Box3();
 						var houseBound = new THREE.Box3();
-						var axes = new THREE.AxisHelper(100);
+						var axes = new THREE.AxesHelper(100);
 
 						var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 						var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
@@ -529,6 +529,7 @@
 							objLoader.setLogging( true, true );
 							objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}' + i, callbackOnLoad, null, null, null, false );
 						};
+						console.error('{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}' + i);
 						if(mtlName == '')
 							objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}' + i, callbackOnLoad, null, null, null, false );
 						else
@@ -559,16 +560,6 @@
 	            if (fitBounds.getSize().z > largestSizeFit)
 	                largestSizeFit = fitBounds.getSize().z;
 
-/*		        for (i = 0; i < 3; i++)
-		        {
-    	            if (toFitBounds.size[i] > largestSizeToFit)
-                		largestSizeToFit = toFitBounds.size[i];
-		            
-		            if (fitBounds.size[i] > largestSizeFit)
-		                largestSizeFit = fitBounds.size[i];
-
-		        }
-*/
 		        scalar = largestSizeFit / (largestSizeToFit+diff);
 		        return scalar;
 		    }

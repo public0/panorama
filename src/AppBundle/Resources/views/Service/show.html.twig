@@ -244,9 +244,9 @@
 						{% set i = 0 %}
 						{%for image in images %}
 							{%if image.title %}
-							<li class="items" data-id="{{image.id}}" data-image="{{image.name}}">{{image.title}}</li>
+							<li class="items" data-id="{{image.id}}" data-mtl="{{ image.mtl }}" data-title="{{ image.title }}" data-image="{{image.name}}">{{image.title}}</li>
 							{% else %}
-							<li class="items" data-id="{{image.id}}" data-image="{{image.name}}">{{image.name}}</li>
+							<li class="items" data-id="{{image.id}}" data-mtl="{{ image.mtl }}" data-title="{{ image.title }}" data-image="{{image.name}}">{{image.name}}</li>
 							{% endif %}
 							{% set i = i+1 %}
 							{% if i is divisible by(20) %}
@@ -267,9 +267,25 @@
 			{% set i = 0 %}
 			{%for image in images %}
 			{%if i == 0 %}
-				<li data-id="{{image.id}}" data-type="{{ image.exporter.id }}" class="image current">{{image.name}}</li>
+				<li 
+					data-id="{{image.id}}" 
+					data-mtl="{{ image.mtl }}" 
+					data-title="{{ image.title }}" 
+					data-type="{{ image.exporter.id }}" 
+					data-image="{{image.name}}" 
+					class="image current">
+					{{image.name}}
+				</li>
 			{% else %}
-				<li data-id="{{image.id}}" data-type="{{ image.exporter.id }}" class="image">{{image.name}}</li>
+				<li 
+					data-id="{{image.id}}" 
+					data-mtl="{{ image.mtl }}" 
+					data-title="{{ image.title }}" 
+					data-type="{{ image.exporter.id }}" 
+					data-image="{{image.name}}" 
+					class="image">
+					{{image.name}}
+				</li>
 			{% endif %}
 				{% set i = i+1 %}
 			{%endfor%}
@@ -283,6 +299,9 @@
 
         <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
         <script src="{{asset('js/three.js')}}"></script>
+        <script src="{{asset('js/LoaderSupport.js')}}"></script>
+        <script src="{{asset('js/OBJLoader2.js')}}"></script>
+        <script src="{{asset('js/MTLLoader.js')}}"></script>
         <script src="{{asset('js/OrbitControls.js')}}"></script>
         <script src="{{asset('js/Detector.js')}}"></script>
         <script src="{{asset('js/stats.min.js')}}"></script>
@@ -400,6 +419,7 @@
 			restart($( "li.current" ).text());
 
 			function addEnvironment(cubeMap, file, type) {
+				clear();
 				var e = document.getElementsByClassName('image current');
 
 				switch(parseInt(e[0].getAttribute('data-type'))) {
@@ -449,6 +469,7 @@
 							new THREE.BoxGeometry( 1000000, 1000000, 1000000 ),
 							skyBoxMaterial
 						);
+						boxMesh.name="boxMesh";
 						scene.add( boxMesh );
 						var geometry = new THREE.IcosahedronGeometry( 400, 4 );
 						for ( var i = 0, j = geometry.faces.length; i < j; i ++ ) {
@@ -483,6 +504,7 @@
 								
 								sphereMesh = new THREE.Mesh( geometry, material );
 								
+								sphereMesh.name="boxMesh";
 								scene.add( sphereMesh );
 							},
 							// Function called when download progresses
@@ -497,8 +519,125 @@
 
 						break;
 					}
+
+					case 4: {
+						imageTitle = e[0].getAttribute('data-title');
+						imageFile = e[0].getAttribute('data-image');
+						imageMtl  = e[0].getAttribute('data-mtl');
+						var cubeBound  = new THREE.Box3();
+						var houseBound = new THREE.Box3();
+						var axes = new THREE.AxesHelper(100);
+
+						var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+						var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+						var cube = new THREE.Mesh( geometry, material );
+						cube.scale.set(5, 5, 5);
+						cubeBound.setFromObject( cube );
+						var imagePrefix = '{{ baseurl~"/images/sky/" }}';
+						var directions  = ["RT", "LF", "UP", "DN", "BK", "FR"];
+						var imageSuffix = ".jpg";
+						var skyGeometry = new THREE.CubeGeometry( 5000, 5000, 5000 );	
+						
+						var materialArray = [];
+						for (var n = 0; n < 6; n++)
+							materialArray.push( new THREE.MeshBasicMaterial({
+								map: THREE.ImageUtils.loadTexture( imagePrefix + directions[n] + imageSuffix ),
+								side: THREE.BackSide
+							}));
+//						var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
+						var skyBox = scene.getObjectByName( "house" );
+						if(!skyBox)
+						{
+							skyBox = new THREE.Mesh( skyGeometry, materialArray );
+							skyBox.name = 'skybox';
+							scene.add( skyBox );							
+						}
+
+
+						var callbackOnLoad = function ( event ) {
+							let obj = {
+								max : {x:325, y:190},
+								min : {}
+							}
+							houseMesh = event.detail.loaderRootNode;
+							houseMesh.name = 'house';
+							houseBound.setFromObject( houseMesh );
+							let scalar = ScaleToSize(cubeBound, houseBound, 0)
+							scene.add( houseMesh );
+
+							houseMesh.position.set(0, -0.5, -5);
+							camera.lookAt(houseMesh);
+							houseMesh.scale.set(1*scalar, 1*scalar, 1*scalar);
+						};
+
+						var objLoader = new THREE.OBJLoader2();
+
+						var onLoadMtl = function ( materials ) {
+							objLoader.setModelName( '{{images[0].title}}' );
+							objLoader.setMaterials( materials );
+							objLoader.setLogging( true, true );
+							objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}' + imageFile, callbackOnLoad, null, null, null, false );
+						};
+						if(imageTitle == '')
+							objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}' + imageFile, callbackOnLoad, null, null, null, false );
+						else
+							objLoader.loadMtl( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+imageTitle+"/"+imageMtl, null, onLoadMtl );
+
+					}break;
+
 				}
+//				console.error(scene.children);
+
 			}
+
+			function clear() 
+			{
+//				console.error(scene.children);
+				var house = scene.getObjectByName( "house" );
+				var skybox = scene.getObjectByName( "skybox" );
+				var boxMesh = scene.getObjectByName( "boxMesh" );
+				var sphereMesh = scene.getObjectByName( "sphereMesh" );
+				if(house)
+				{
+/*					house.geometry.dispose();
+					house.material.dispose();
+					skybox.geometry.dispose();
+					skybox.material.dispose();
+*/					scene.remove(house);
+					scene.remove(skybox);					
+				}
+
+				if(boxMesh)
+					scene.remove(boxMesh);
+
+				if(sphereMesh)
+					scene.remove(sphereMesh);
+			}
+
+		    function ScaleToSize(fitBounds, toFitBounds, diff)
+		    {
+		        let largestSizeToFit = 0;
+		        let largestSizeFit   = 0;
+
+	            if (toFitBounds.getSize().x > largestSizeToFit)
+            		largestSizeToFit = toFitBounds.getSize().x;
+	            if (fitBounds.getSize().x > largestSizeFit)
+	                largestSizeFit = fitBounds.getSize().x;
+
+	            if (toFitBounds.getSize().y > largestSizeToFit)
+            		largestSizeToFit = toFitBounds.getSize().y;
+	            if (fitBounds.getSize().y > largestSizeFit)
+	                largestSizeFit = fitBounds.getSize().y;
+
+	            if (toFitBounds.getSize().z > largestSizeToFit)
+            		largestSizeToFit = toFitBounds.getSize().z;
+	            if (fitBounds.getSize().z > largestSizeFit)
+	                largestSizeFit = fitBounds.getSize().z;
+
+		        scalar = largestSizeFit / (largestSizeToFit+diff);
+		        return scalar;
+		    }
+
 //			init(0);
 //			animate();
 			function init(i) {
@@ -519,7 +658,6 @@
 
 				/*Mark*/
 				{%if projectType == 0 %}
-					console.log('{{projectType}}');
 					markTexture = new THREE.TextureLoader();
 					markTexture = markTexture.load("{{baseurl~"/images/"}}"+'logo2.png', function(texture) {
 
@@ -546,9 +684,10 @@
 				controls.target.set( 0, 0, -1 );
 				scene.add( new THREE.AmbientLight( 0x444444 ) );
 
-				var light = new THREE.DirectionalLight( 0xffffbb, 1 );
-				light.position.set( - 1, 1, - 1 );
-				scene.add( light );
+				var directionalLight = new THREE.DirectionalLight( 0xAAAAAA, 1.0 );
+				scene.add( directionalLight );
+				directionalLight.position.set(0,1,1);
+
 //				console.log(plane);
 //				waterNormals = new THREE.TextureLoader().load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+i );
 //				waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
@@ -565,31 +704,6 @@
 				document.addEventListener( 'mousemove', onMouseMove, false );
 				addEnvironment(cubeMap, i);
 				var loader = new THREE.ImageLoader();
-/*				loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+i, function ( image ) {
-					document.addEventListener( 'wheel', onDocumentMouseWheel, false );
-					document.addEventListener( 'mousemove', onMouseMove, false );
-					var getSide = function ( x, y ) {
-						var size = image.height;
-						var canvas = document.createElement( 'canvas' );
-						canvas.width = size;
-						canvas.height = size;
-						var context = canvas.getContext( '2d' );
-//						context.drawImage( image, - x * size, - y * size );
-						context.drawImage( image, - x * size, 0 );
-						return canvas;
-					};
-
-
-					cubeMap.images[ 0 ] = getSide( 0, 1 ); // px
-					cubeMap.images[ 1 ] = getSide( 1, 1 ); // px
-					cubeMap.images[ 2 ] = getSide( 2, 1 ); // px
-					cubeMap.images[ 3 ] = getSide( 3, 4 ); // px
-					cubeMap.images[ 4 ] = getSide( 4, 1 ); // px
-					cubeMap.images[ 5 ] = getSide( 5, 6 ); // px
-
-					cubeMap.needsUpdate = true;
-				} );
-*/
 				$('.items').click(function() {
 					$( "#loading" ).toggleClass( "hidden" );
 					var val = $(this).attr('data-image');
@@ -601,32 +715,7 @@
 					addEnvironment(cubeMap, val, type)
 					$( "#loading" ).toggleClass( "hidden" );
 
-/*					loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+val, function ( image ) {
-						document.addEventListener( 'wheel', onDocumentMouseWheel, false );
-						document.addEventListener( 'mousemove', onMouseMove, false );
-						var getSide = function ( x, y ) {
-							var size = image.height;
-							var canvas = document.createElement( 'canvas' );
-							canvas.width = size;
-							canvas.height = size;
-							var context = canvas.getContext( '2d' );
-							context.drawImage( image, - x * size, 0 );
-							return canvas;
-						};
-
-
-						cubeMap.images[ 0 ] = getSide( 0, 1 ); // px
-						cubeMap.images[ 1 ] = getSide( 1, 1 ); // px
-						cubeMap.images[ 2 ] = getSide( 2, 1 ); // px
-						cubeMap.images[ 3 ] = getSide( 3, 4 ); // px
-						cubeMap.images[ 4 ] = getSide( 4, 1 ); // px
-						cubeMap.images[ 5 ] = getSide( 5, 6 ); // px
-
-						cubeMap.needsUpdate = true;
-						$( "#loading" ).toggleClass( "hidden" );
-
-					} );
-*/				});
+				});
 
 				document.addEventListener("keydown", function(e) {
 					var reload = false;
@@ -656,33 +745,7 @@
 						$( "#loading" ).toggleClass( "hidden" );
 						addEnvironment(cubeMap, newImage.text(), newImage.attr('data-type'));
 						$( "#loading" ).toggleClass( "hidden" );
-/*
-						loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+newImage.text(), function ( image ) {
-							document.addEventListener( 'wheel', onDocumentMouseWheel, false );
-							document.addEventListener( 'mousemove', onMouseMove, false );
-							var getSide = function ( x, y ) {
-								var size = image.height;
-								var canvas = document.createElement( 'canvas' );
-								canvas.width = size;
-								canvas.height = size;
-								var context = canvas.getContext( '2d' );
-								context.drawImage( image, - x * size, 0 );
-								return canvas;
-							};
-
-
-							cubeMap.images[ 0 ] = getSide( 0, 1 ); // px
-							cubeMap.images[ 1 ] = getSide( 1, 1 ); // px
-							cubeMap.images[ 2 ] = getSide( 2, 1 ); // px
-							cubeMap.images[ 3 ] = getSide( 3, 4 ); // px
-							cubeMap.images[ 4 ] = getSide( 4, 1 ); // px
-							cubeMap.images[ 5 ] = getSide( 5, 6 ); // px
-
-							cubeMap.needsUpdate = true;
-							$( "#loading" ).toggleClass( "hidden" );
-
-						} );						
-*/					}
+					}
 					
 				}, false);
 
@@ -699,32 +762,7 @@
 						$( "#loading" ).toggleClass( "hidden" );
 						addEnvironment(cubeMap, newImage.text(), newImage.attr('data-type'));
 						$( "#loading" ).toggleClass( "hidden" );
-
-/*						loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+newImage.text(), function ( image ) {
-							document.addEventListener( 'wheel', onDocumentMouseWheel, false );
-							document.addEventListener( 'mousemove', onMouseMove, false );
-							var getSide = function ( x, y ) {
-								var size = image.height;
-								var canvas = document.createElement( 'canvas' );
-								canvas.width = size;
-								canvas.height = size;
-								var context = canvas.getContext( '2d' );
-								context.drawImage( image, - x * size, 0 );
-								return canvas;
-							};
-
-
-							cubeMap.images[ 0 ] = getSide( 0, 1 ); // px
-							cubeMap.images[ 1 ] = getSide( 1, 1 ); // px
-							cubeMap.images[ 2 ] = getSide( 2, 1 ); // px
-							cubeMap.images[ 3 ] = getSide( 3, 4 ); // px
-							cubeMap.images[ 4 ] = getSide( 4, 1 ); // px
-							cubeMap.images[ 5 ] = getSide( 5, 6 ); // px
-
-							cubeMap.needsUpdate = true;
-							$( "#loading" ).toggleClass( "hidden" );
-						} );
-*/					}
+					}
 				})
 
 				$('#next').click(function() {
@@ -740,34 +778,8 @@
 						$( "#loading" ).toggleClass( "hidden" );
 						addEnvironment(cubeMap, newImage.text(), newImage.attr('data-type'));
 						$( "#loading" ).toggleClass( "hidden" );
-/*						loader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+newImage.text(), function ( image ) {
-							document.addEventListener( 'wheel', onDocumentMouseWheel, false );
-							document.addEventListener( 'mousemove', onMouseMove, false );
-							var getSide = function ( x, y ) {
-								var size = image.height;
-								var canvas = document.createElement( 'canvas' );
-								canvas.width = size;
-								canvas.height = size;
-								var context = canvas.getContext( '2d' );
-								context.drawImage( image, - x * size, 0 );
-								return canvas;
-							};
-
-
-							cubeMap.images[ 0 ] = getSide( 0, 1 ); // px
-							cubeMap.images[ 1 ] = getSide( 1, 1 ); // px
-							cubeMap.images[ 2 ] = getSide( 2, 1 ); // px
-							cubeMap.images[ 3 ] = getSide( 3, 4 ); // px
-							cubeMap.images[ 4 ] = getSide( 4, 1 ); // px
-							cubeMap.images[ 5 ] = getSide( 5, 6 ); // px
-
-							cubeMap.needsUpdate = true;
-							$( "#loading" ).toggleClass( "hidden" );
-
-						} );						
-*/					}
+					}
 				})
-
 
 			}
 
@@ -808,6 +820,11 @@
 				render();
 			}
 			function render() {
+				house = scene.getObjectByName( "house" );
+				if(house)
+					houseMesh.rotation.y -= 0.003 * 1;
+
+
 				raycaster.setFromCamera(mouse, camera);
 				var intersects = raycaster.intersectObjects(scene.children);
 //				console.log(intersects[0].object);
