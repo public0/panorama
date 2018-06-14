@@ -169,7 +169,7 @@
 				cursor: pointer;
 				font-family: 'Pacifico', serif;
 				text-shadow: -1px 0 lightgray, 0 1px lightgray, 1px 0 lightgray, 0 -1px lightgray;
-				font-size: 1.5vw;
+				font-size: 3.5vmin;
 			}
 
 			.overlay-content li {
@@ -200,6 +200,7 @@
 				margin-left: 3%;
 				margin-right: 3%;
 				width: 4%;
+				min-width: 35px
 			}
 
 			.arrows {
@@ -308,6 +309,7 @@
         <script src="{{asset('js/snap.svg-min.js')}}"></script>
         <script src="{{asset('js/classie.js')}}"></script>        
         <script src="{{asset('js/modernizr.custom.js')}}"></script>
+        <script src="{{asset('js/PointerLockControls.js')}}"></script>        
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script>
 			(function() {
@@ -382,6 +384,7 @@
 			var camera, scene, renderer, raycaster, mouse;
 			var markTexture, markMaterial, markPlane, plane;
 			var sphereMesh, boxMesh;
+			var objects = [];
 			
 			var lon = 0, onMouseDownLon = 0,
 			lat = 0, onMouseDownLat = 0,
