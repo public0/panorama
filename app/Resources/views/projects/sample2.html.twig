@@ -497,7 +497,7 @@
 							}));
 						var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
 						var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
-						scene.add( skyBox );						
+						scene.add( skyBox );
 
 
 						var directionalLight = new THREE.DirectionalLight( 0xAAAAAA, 1.0 );
@@ -511,7 +511,6 @@
 							houseMesh = event.detail.loaderRootNode;
 							houseBound.setFromObject( houseMesh );
 							let scalar = ScaleToSize(cubeBound, houseBound, 0)
-//							console.log(box.getSize());
 							scene.add( houseMesh );
 
 							houseMesh.position.set(0, -0.5, -5);
@@ -529,7 +528,7 @@
 							objLoader.setLogging( true, true );
 							objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}' + i, callbackOnLoad, null, null, null, false );
 						};
-						console.error('{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}' + i);
+
 						if(mtlName == '')
 							objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}' + i, callbackOnLoad, null, null, null, false );
 						else
