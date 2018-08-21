@@ -390,7 +390,7 @@
 			var lon = 0, onMouseDownLon = 0,
 			lat = 0, onMouseDownLat = 0,
 			phi = 0, theta = 0;
-			var pLight = new THREE.PointLight( 0xff0000, 1, 100 );
+			var pLight = new THREE.PointLight( 0x00FF00, 1, 100 );
 
 
 /* PointerLock */
@@ -985,7 +985,7 @@
 				if ( controlsEnabled === true ) {
 
 					raycaster.ray.origin.copy( controls.getObject().position );
-					//raycaster.ray.origin.y -= 10;
+					raycaster.ray.origin.y -= 20;
 
 					intersections = raycaster.intersectObjects( scene.children, true );
 
@@ -1009,7 +1009,7 @@
 					if ( onObject === true ) {
 
 						velocity.y = Math.max( 0, velocity.y );
-						controls.getObject().position.y = intersections[0].point.y + 10;
+						controls.getObject().position.y = intersections[0].point.y + 25;
 						canJump = true;
 
 					}
@@ -1018,9 +1018,9 @@
 					controls.getObject().translateY( velocity.y * delta );
 					controls.getObject().translateZ( velocity.z * delta );
 
-					if ( controls.getObject().position.y < 10 ) {
+					if ( controls.getObject().position.y < 25 ) {
 						velocity.y = 0;
-						controls.getObject().position.y = 10;
+						controls.getObject().position.y = 25;
 
 						canJump = true;
 
