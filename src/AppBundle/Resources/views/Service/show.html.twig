@@ -6,10 +6,15 @@
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css"
-          href="https://fonts.googleapis.com/css?family=Pacifico">
+          href="https://fonts.googleapis.com/css?family=Acme">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
 		<style>
+			* {
+				font-family: 'Acme', serif;
+				/*font-family: "Times New Roman", Times, serif;*/
+			}
+
 			body {
 				color: #000;
 				font-size:18px;
@@ -222,9 +227,134 @@
 				height: 100px;
 				opacity: .5;
 			}
+
+/*Model*/
+/* The Modal (background) */
+
+.modal > .modal-content > .content > .txt {
+	background-color: rgba(128,128,128, .2);
+	border: 3px solid gray;
+	margin: 0 auto;
+	width: 100%;
+	color: white;
+	resize: none;
+	font-size: small;
+	padding: 5px;
+}
+.modal > .modal-content > p {
+	color: skyblue;
+	text-align: center;
+	font-size: bolder;
+} 
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    -webkit-animation-name: fadeIn; /* Fade in the background */
+    -webkit-animation-duration: 0.4s;
+    animation-name: fadeIn;
+    animation-duration: 0.4s
+}
+
+
+/* Modal Content */
+.modal-content {
+    position: fixed;
+    bottom: 600;
+    background:rgba(0,0,0,0);
+
+    width: 250px;
+    height: 300px;
+
+    left:0; right:0;
+    top:0; bottom:0;
+    margin:auto;
+
+    max-width:100%;
+    max-height:100%;
+    overflow:auto;
+
+    -webkit-animation-name: slideIn;
+    -webkit-animation-duration: 0.4s;
+    animation-name: slideIn;
+    animation-duration: 0.4s
+}
+
+/* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+}
+
+.modal-body {padding: 2px 16px;}
+
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+}
+
+/* Add Animation */
+@-webkit-keyframes slideIn {
+    from {bottom: -300px; opacity: 0} 
+    to {bottom: 600; opacity: 1}
+}
+
+@keyframes slideIn {
+    from {bottom: -300px; opacity: 0}
+    to {bottom: 600; opacity: 1}
+}
+
+@-webkit-keyframes fadeIn {
+    from {opacity: 0} 
+    to {opacity: 1}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0} 
+    to {opacity: 1}
+}
+
+/*Modal*/
 		</style>
 	</head>
 	<body>
+	<div id="iModal" class="modal">
+	  <div class="modal-content">
+	    <a class="close" href="#">x</a>
+	    <p class="title">Command</p>
+	    <div class="content">
+        	<textarea id="txt" class="txt" name="txt"></textarea>
+	    </div>
+	    <p class="title">Response</p>
+	    <div class="content">
+        	<textarea id="event" class="txt" name="event"></textarea>
+	    </div>
+	  </div>
+	</div>
+
 	<span id="pid"></span>
 	<div class="overlay overlay-genie" data-steps="m 701.56545,809.01175 35.16718,0 0,19.68384 -35.16718,0 z;m 698.9986,728.03569 41.23353,0 -3.41953,77.8735 -34.98557,0 z;m 687.08153,513.78234 53.1506,0 C 738.0505,683.9161 737.86917,503.34193 737.27015,806 l -35.90067,0 c -7.82727,-276.34892 -2.06916,-72.79261 -14.28795,-292.21766 z;m 403.87105,257.94772 566.31246,2.93091 C 923.38284,513.78233 738.73561,372.23931 737.27015,806 l -35.90067,0 C 701.32034,404.49318 455.17312,480.07689 403.87105,257.94772 z;M 51.871052,165.94772 1362.1835,168.87863 C 1171.3828,653.78233 738.73561,372.23931 737.27015,806 l -35.90067,0 C 701.32034,404.49318 31.173122,513.78234 51.871052,165.94772 z;m 52,26 1364,4 c -12.8007,666.9037 -273.2644,483.78234 -322.7299,776 l -633.90062,0 C 359.32034,432.49318 -6.6979288,733.83462 52,26 z;m 0,0 1439.999975,0 0,805.99999 -1439.999975,0 z">
 		<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1440 806" preserveAspectRatio="none">
@@ -312,6 +442,12 @@
         <script src="{{asset('js/PointerLockControls.js')}}"></script>        
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script>
+			$(window).keydown(function(event) {
+				if(event.ctrlKey) {
+					event.preventDefault();
+				}
+			});
+
 			(function() {
 
 				var triggerBttn = document.getElementById( 'trigger-overlay' ),
@@ -370,8 +506,12 @@
 				triggerBttn.addEventListener( 'click', toggleOverlay );
 				closeBttn.addEventListener( 'click', toggleOverlay );
 				$(document).keyup(function(e) {
+
 				     if (e.keyCode == 27) {
-				     	toggleOverlay();
+					    modal.style.display = "none";
+					    element.requestPointerLock();
+
+/*				     	toggleOverlay();*/
 				    }
 				});				
 			})();
@@ -381,28 +521,52 @@
 				document.getElementById( 'container' ).innerHTML = "";
 			}
 
+			var project = {{ project.id }};
 			var container, stats;
-			var camera, scene, renderer, raycaster, mouse;
+			var camera, scene, renderer, raycaster, mouse, skyBox;
 			var markTexture, markMaterial, markPlane, plane;
 			var sphereMesh, boxMesh;
+			var character, characterCollider;
 			var objects = [];
 			var controls = null;
 			var lon = 0, onMouseDownLon = 0,
 			lat = 0, onMouseDownLat = 0,
 			phi = 0, theta = 0;
+			var positions = [];
 			var pLight = new THREE.PointLight( 0x00FF00, 1, 100 );
 
+/*Modal*/
+			var modal = document.getElementById('iModal');
 
+			// Get the <span> element that closes the modal
+			var span = document.getElementsByClassName("close")[0];
+
+			// When the user clicks on <span> (x), close the modal
+			span.onclick = function() {
+			    modal.style.display = "none";
+			    element.requestPointerLock();
+			}
+			// When the user clicks anywhere outside of the modal, close it
+			window.onclick = function(event) {
+			    if (event.target == modal) {
+			        modal.style.display = "none";
+			        element.requestPointerLock();
+			    }
+			}
+/*Modal*/
 /* PointerLock */
 
 			var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 			var controlsEnabled = true;
 			var intersections = [];
+			var characterHeight = 150;
 
 			var moveForward = false;
 			var moveBackward = false;
 			var moveLeft = false;
 			var moveRight = false;
+			var moveUp = false;
+			var moveDown = false;
 			var canJump = false;
 
 			var prevTime = performance.now();
@@ -481,7 +645,9 @@
 				clear();
 				var e = document.getElementsByClassName('image current');
 				var canvas = document.createElement( 'canvas' );
-
+				/* Start with pointer locked */
+				element.requestPointerLock();
+				/* Start with pointer locked */
 				switch(parseInt(e[0].getAttribute('data-type'))) {
 					case 1: {
 						if(sphereMesh) {
@@ -581,6 +747,7 @@
 
 					case 4: {
 						imageTitle = e[0].getAttribute('data-title');
+						imageId = e[0].getAttribute('data-id');
 						imageFile = e[0].getAttribute('data-image');
 						imageMtl  = e[0].getAttribute('data-mtl');
 						var cubeBound  = new THREE.Box3();
@@ -590,28 +757,51 @@
 						var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 						var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
 						var cube = new THREE.Mesh( geometry, material );
-						cube.scale.set(5, 5, 5);
+						cube.scale.set(30, 30, 30);
+						cube.position.set(0, 30, 0);
 						cubeBound.setFromObject( cube );
 						var imagePrefix = '{{ baseurl~"/images/sky/" }}';
 						var directions  = ["RT", "LF", "UP", "DN", "BK", "FR"];
 						var imageSuffix = ".jpg";
-						var skyGeometry = new THREE.CubeGeometry( 5000, 5000, 5000 );	
+						var skyGeometry = new THREE.BoxGeometry( 10000, 10000, 10000 );	
 						
 						var materialArray = [];
+
+						$.get("../positions", { 
+							'image' : imageId
+						}
+						).done(function(data) {
+							getPositions = JSON.parse(data);
+							for (var i = 0; i < getPositions.length; i++) {
+								let geometry = new THREE.SphereGeometry( 20, 32, 32 );
+								let material = new THREE.MeshLambertMaterial({color: 0x00FF00, transparent: true, opacity: 0.3});
+								let sphere = new THREE.Mesh( geometry, material );
+								sphere.position.set(
+									getPositions[i].vector.x, 
+									getPositions[i].vector.y, 
+									getPositions[i].vector.z
+								)
+								sphere.scale.set(4, 4, 4);
+								scene.add( sphere );
+								positions.push(sphere);
+							}
+						});
+
+
 						for (var n = 0; n < 6; n++)
 							materialArray.push( new THREE.MeshBasicMaterial({
 								map: THREE.ImageUtils.loadTexture( imagePrefix + directions[n] + imageSuffix ),
 								side: THREE.BackSide
 							}));
 //						var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
-						var skyBox = scene.getObjectByName( "house" );
-						if(!skyBox)
-						{
-							skyBox = new THREE.Mesh( skyGeometry, materialArray );
-							skyBox.name = 'skybox';
-							scene.add( skyBox );							
-						}
+						this.skyBox = scene.getObjectByName( "skybox" );
 
+						if(!this.skyBox)
+						{
+							this.skyBox = new THREE.Mesh( skyGeometry, materialArray );
+							this.skyBox.name = 'skybox';
+							scene.add( this.skyBox );
+						}
 
 						var callbackOnLoad = function ( event ) {
 							let obj = {
@@ -622,8 +812,8 @@
 							houseMesh.name = 'house';
 							houseBound.setFromObject( houseMesh );
 							let newHouseBounds = ScaleToSize(cubeBound, houseBound, 0)
-							houseMesh.position.set(0, -10, -600);
-							hScale = 300;
+							//houseMesh.position.set(0, -10, -600);
+							hScale = 200;
 							houseMesh.scale.set(hScale*newHouseBounds.scalar, hScale*newHouseBounds.scalar, hScale*newHouseBounds.scalar);
 							scene.add( houseMesh );
 
@@ -635,7 +825,7 @@
 						var onLoadMtl = function ( materials ) {
 							objLoader.setModelName( '{{images[0].title}}' );
 							objLoader.setMaterials( materials );
-							objLoader.setLogging( true, true );
+							//objLoader.setLogging( true, true );
 							objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}' + imageFile, callbackOnLoad, null, null, null, false );
 						};
 						if(imageTitle == '')
@@ -693,7 +883,6 @@
 	                largestSizeFit = fitBounds.getSize().z;
 
 		        scalar = largestSizeFit / (largestSizeToFit+diff);
-
 		        newObj.scalar = scalar;
 		        newObj.size   = largestSizeFit;
 		        return newObj;
@@ -721,7 +910,7 @@
 
 // floor
 
-				var floorGeometry = new THREE.PlaneBufferGeometry( 5000, 5000, 100, 100 );
+				var floorGeometry = new THREE.PlaneBufferGeometry( 10000, 10000, 1, 1 );
 				floorGeometry.rotateX( - Math.PI / 2 );
 
 				// vertex displacement
@@ -782,73 +971,95 @@
 				controls = new THREE.PointerLockControls( camera );
 				controls.getObject().position.set(0,0,0);
 				pLight.position = controls.getObject().position;
+				
+				character = new THREE.SphereGeometry( 5, 32, 32 );
+				character.computeBoundingSphere();
+				scene.add(character);
 
+
+
+//				console.error(character.boundingSphere);
 				scene.add( controls.getObject() );
 
 //				controls.enablePan = false;
 //				controls.autoRotate = true;
 
 				var onKeyDown = function ( event ) {
+					if(document.pointerLockElement) {
+						switch ( event.keyCode ) {
 
-					switch ( event.keyCode ) {
+							case 32: // up
+								moveUp = true;
+								break;
 
-						case 38: // up
-						case 87: // w
-							moveForward = true;
-							break;
+							case 87: // w
+								moveForward = true;
 
-						case 37: // left
-						case 65: // a
-							moveLeft = true; break;
+								break;
 
-						case 40: // down
-						case 83: // s
-							moveBackward = true;
-							break;
+							case 37: // left
+							case 65: // a
+								moveLeft = true; break;
 
-						case 39: // right
-						case 68: // d
-							moveRight = true;
-							break;
+							case 16: // down
+								moveDown = true;
+								break;
+							case 83: // s
+								moveBackward = true;
+								break;
 
-						case 32: // space
-							if ( canJump === true ) {
-								console.error('Jump: '+velocity.y);
-								velocity.y += 350;
-								canJump = false;
-							}
-							break;
+							case 39: // right
+							case 68: // d
+								moveRight = true;
+								break;
+
+							case 32: // space
+	/*							if ( canJump === true ) {
+									console.error('Jump: '+velocity.y);
+									velocity.y += 350;
+									canJump = false;
+								}
+	*/							break;
+
+						}
 
 					}
 
 				};
 
 				var onKeyUp = function ( event ) {
+					if(document.pointerLockElement) {
 
-					switch( event.keyCode ) {
+						switch( event.keyCode ) {
 
-						case 38: // up
-						case 87: // w
-							moveForward = false;
-							break;
+							case 32: // up
+								moveUp = false;
+								break;
 
-						case 37: // left
-						case 65: // a
-							moveLeft = false;
-							break;
+							case 87: // w
+								moveForward = false;
+								break;
 
-						case 40: // down
-						case 83: // s
-							moveBackward = false;
-							break;
+							case 37: // left
+							case 65: // a
+								moveLeft = false;
+								break;
 
-						case 39: // right
-						case 68: // d
-							moveRight = false;
-							break;
+							case 16: // down
+								moveDown = false;
+								break;
 
+							case 83: // s
+								moveBackward = false;
+								break;
+
+							case 39: // right
+							case 68: // d
+								moveRight = false;
+								break;
+
+						}
 					}
-
 				};
 
 				document.addEventListener( 'keydown', onKeyDown, false );
@@ -858,7 +1069,7 @@
 				//controls.maxDistance = 5000.0;
 //				controls.maxPolarAngle = Math.PI * 0.9;
 //				controls.target.set( 0, 0, -1 );
-				scene.add( new THREE.AmbientLight( 0x444444 ) );
+				scene.add( new THREE.AmbientLight( 0x404040 ) );
 				scene.add(pLight);
 				var directionalLight = new THREE.DirectionalLight( 0xFFFFFF, 1.0 );
 				scene.add( directionalLight );
@@ -892,11 +1103,54 @@
 					$( "#loading" ).toggleClass( "hidden" );
 
 				});
-
 				document.addEventListener("keydown", function(e) {
 					var reload = false;
 					switch(e.keyCode) {
-						case 9: 
+						case 13:
+						    text = document.getElementById('txt');
+						    newTxt = text.value;
+							text.value = '';
+						    eText = document.getElementById('event');
+						    eTxt = eText.value;
+							eText.value = '';
+						    if(modal.style.display == 'block')
+						    {
+								let geometry = new THREE.SphereGeometry( 10, 32, 32 );
+								let material = new THREE.MeshLambertMaterial({color: 0x00FF00, transparent: true, opacity: 0.3});
+								let sphere = new THREE.Mesh( geometry, material );
+								sphere.position.set(
+									controls.getObject().position.x, 
+									controls.getObject().position.y, 
+									controls.getObject().position.z
+								)
+								sphere.scale.set(4, 4, 4);
+
+								scene.add( sphere );
+								positions.push(sphere);
+								element.requestPointerLock();
+
+								$.post( "../position", { 
+									'sphere' : JSON.stringify(sphere.position), 
+									'project' : project,
+									'text' : newTxt,
+									'event' : eTxt,
+									'image' : imageId
+								}
+								).done(function(data) {
+									console.error(data);
+								});
+
+								modal.style.display = "none";
+							} else {
+								document.exitPointerLock();
+							    modal.style.display = "block";	
+							    text.focus();
+							}
+						    e.preventDefault();
+
+
+						break;
+						case 192: 
 						e.preventDefault();
 						element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
 						if(document.pointerLockElement)
@@ -981,6 +1235,7 @@
 			}
 
 			function animate() {
+
 				requestAnimationFrame( animate );
 				if ( controlsEnabled === true ) {
 
@@ -992,35 +1247,42 @@
 					var onObject = intersections.length > 0;
 
 					var time = performance.now();
-					var delta = ( time - prevTime ) / 1000;
+					// delta controls speed and slip effect
+					var delta = ( time - prevTime ) / 400;
 
-					velocity.x -= velocity.x * 5.0 * delta;
-					velocity.z -= velocity.z * 5.0 * delta;
+					velocity.x -= velocity.x * 1.0 * delta;
+					velocity.z -= velocity.z * 1.0 * delta;
+					velocity.y -= velocity.y * 1.0 * delta;
 
-					velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+//					velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
 
 					direction.z = Number( moveForward ) - Number( moveBackward );
 					direction.x = Number( moveLeft ) - Number( moveRight );
+					direction.y = Number( moveUp ) - Number( moveDown );
+
 					direction.normalize(); // this ensures consistent movements in all directions
+					this.skyBox.position.set(controls.getObject().position.x, 
+						controls.getObject().position.y, 
+						controls.getObject().position.z
+					);
+					if ( moveForward || moveBackward ) velocity.z -= direction.z * 450.0 * delta;
+					if ( moveLeft || moveRight ) velocity.x -= direction.x * 450.0 * delta;
+					if ( moveUp || moveDown ) velocity.y += direction.y * 450.0 * delta;
 
-					if ( moveForward || moveBackward ) velocity.z -= direction.z * 250.0 * delta;
-					if ( moveLeft || moveRight ) velocity.x -= direction.x * 250.0 * delta;
-
-					if ( onObject === true ) {
+/*					if ( onObject === true ) {
 
 						velocity.y = Math.max( 0, velocity.y );
-						controls.getObject().position.y = intersections[0].point.y + 25;
+						controls.getObject().position.y = intersections[0].point.y + characterHeight;
 						canJump = true;
 
 					}
-
+*/
 					controls.getObject().translateX( velocity.x * delta );
 					controls.getObject().translateY( velocity.y * delta );
 					controls.getObject().translateZ( velocity.z * delta );
-
-					if ( controls.getObject().position.y < 25 ) {
+					if ( controls.getObject().position.y < characterHeight ) {
 						velocity.y = 0;
-						controls.getObject().position.y = 25;
+						controls.getObject().position.y = characterHeight;
 
 						canJump = true;
 

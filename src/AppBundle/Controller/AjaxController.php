@@ -6,9 +6,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Filesystem\Filesystem;
 use Stripe\Stripe;
 use Stripe\Customer;
+use AppBundle\Entity\TextToSpeech;
 
 use Braintree\Configuration;
 use Braintree\Customer as BCustomer;
@@ -18,6 +20,57 @@ use Braintree\Subscription;
 	
 class AjaxController extends Controller
 {
+    /**
+     * @Route("positions")
+     */
+
+    public function positionsAction(Request $request)
+    {
+		$serializer = $this->get('jms_serializer');
+    	$image = $request->query->get('image');
+        $positions = $this->getDoctrine()
+            ->getRepository('AppBundle:TextToSpeech')
+            ->findBy(['image'=>$image]);
+		$response = $serializer->serialize($positions,'json');
+		return new Response($response);
+
+    }
+
+    /**
+     * @Route("position")
+     */
+
+    public function positionAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+    	$sphere  = json_decode($request->request->get('sphere'));
+    	$sphere->x = round($sphere->x, 2);
+    	$sphere->y = round($sphere->y, 2);
+    	$sphere->z = round($sphere->z, 2);
+    	$event   = $request->request->get('event');
+    	$project = $request->request->get('project');
+    	$text = $request->request->get('text');
+    	$image = $request->request->get('image');
+
+        $project = $this->getDoctrine()
+            ->getRepository('AppBundle:Project')
+            ->findOneBy(['id'=>$project]);
+
+        $image = $this->getDoctrine()
+            ->getRepository('AppBundle:Images')
+            ->findOneBy(['id'=>$image]);
+
+    	$tts = new TextToSpeech();
+    	$tts->setProject($project);
+    	$tts->setVector($sphere);
+    	$tts->setText($text);
+    	$tts->setEvent($event);
+    	$tts->setImage($image);
+        $em->persist($tts);
+        $em->flush();
+
+		return new Response();
+    }
 
     /**
      * @Route("/subscribe")
@@ -263,15 +316,35 @@ class AjaxController extends Controller
 	            ->findBy(['project' => $_POST['project_id'], 'status' => 1], ['plan' => 'ASC']);
 
             $f = fopen($dir.'/images/data.csv', 'w');
-
             foreach ($images as $image) {
+
+		        $imageTexts = $this->getDoctrine()
+		            ->getRepository('AppBundle:TextToSpeech')
+		            ->findBy(['image' => $image]);
+		        $imgFileName = mb_substr($image->getName(), 0, -4).'.csv';
+	            $imgFile = fopen($dir.'/images/'.$imgFileName, 'w');
+
+	            foreach ($imageTexts as $imageText) {
+
+	                fputcsv($imgFile, [
+		                	$imageText->getImage()->getId(),
+		                	$imageText->getEvent(),
+		                	$imageText->getText(),
+		                	$imageText->getVector(),
+	                	]
+	                );
+
+				}
+				fclose($imgFile);
+
                 fputcsv($f, [
 	                	$image->getPlan(),
 	                	$image->getExporter()->getId(),
 	                	$image->getName(),
 	                	$image->getTitle(),
 	                	$image->getWidth(),
-	                	$image->getHeight()
+	                	$image->getHeight(),
+	                	$imgFileName
                 	]
                 );
 /*				$stat = fstat($f);
@@ -291,6 +364,9 @@ class AjaxController extends Controller
                $options = array('add_path' => 'sources/', 'remove_path' => $dir.'/images');
 				foreach ($images as $image) {
 					$zip->addFile($dir.'/images/'.$image->getName(), 'sources/'.$image->getName());
+					$imageTexts = $dir.'/images/'.mb_substr($image->getName(), 0, -4).'.csv';
+	            	$zip->addFile($imageTexts, 'sources/'.mb_substr($image->getName(), 0, -4).'.csv');
+
 					$mDir = $dir.'/images/'.$image->getTitle();
 					if(is_dir($mDir)) {
 						$zip->addEmptyDir('sources/'.$image->getTitle());
@@ -305,6 +381,7 @@ class AjaxController extends Controller
 								$zip->addFile($file->getRealPath(), 'sources/'.$image->getTitle().'/'.$file->getFilename());
 						}
 					}
+
 				}
 				$zip->addFile($dir.'/images/data.csv', 'sources/data.csv');
 
