@@ -328,8 +328,8 @@ class AjaxController extends Controller
 
 	                fputcsv($imgFile, [
 		                	$imageText->getImage()->getId(),
-		                	$imageText->getEvent(),
-		                	$imageText->getText(),
+		                	strtolower($imageText->getEvent()),
+		                	strtolower($imageText->getText()),
 		                	$imageText->getVector(),
 	                	]
 	                );
