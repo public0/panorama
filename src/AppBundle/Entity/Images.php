@@ -83,6 +83,12 @@ class Images
     private $exporter;
 
     /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Settings")
+     * @ORM\JoinColumn(name="settings_id", referencedColumnName="id")
+     */
+    private $settings;
+
+    /**
      * Get id
      *
      * @return int
@@ -222,6 +228,32 @@ class Images
     {
         return $this->name;
     }
+
+    /**
+     * Get id
+     *
+     * @return settings
+     */
+
+    public function getSettings()
+    {
+        return $this->settings;
+    }
+
+    /**
+     * Set settings
+     *
+     * @param int $id
+     *
+     * @return Settings
+     */
+
+    public function setSettings($id)
+    {
+        $this->settings = $id;
+
+        return $this;
+    }    
 
     /**
      * Get id

@@ -78,10 +78,12 @@
 				</select>
 			</td>
 			<td>
-				<a href="{{path('preview_project', {'id':project.user.id, 'project_id': project.id, 'image_id': image.id})}}">
-					<button type="button" class="btn btn-success">Preview</button>
-					{# <img src="{{download}}{{project.user.id}}/{{project.id}}/images/{{image.name}}" width="150"> #}
-				</a>
+				<button 
+				type="button" 
+				data-toggle="modal" 
+				data-target="#exampleModal"
+				data-img="{{image.id}}"
+				class="btn btn-success">Settings</button>
 
 				{%if(image.status)%}
 					<input type="hidden" name="delete[]" class="delete" value="0">
@@ -108,5 +110,75 @@
 		</div>
 	</form>
 </div>
-
+<!-- MODAL -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form action="../../settings" method="POST">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Settings</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		<input type="hidden" name="pid" value="{{project.id}}" />
+		<input type="hidden" name="iid" id="iid">
+		<input type="hidden" name="sid" id="sid">
+        <table class="setting-table">
+        	<thead>
+	        	<tr>
+	        		<th>Name</th>
+	        		<th style="margin-left:15px;">Setting</th>
+	        	</tr>
+	        </thead>
+        	<tr>
+        		<td>Character height</td>
+        		<td><input type="number" 
+        		placeholder="1" 
+        		name="h"
+        		style="text-align:center; width:64px;"
+        		min="1" max="3"
+        		value="1"></td>
+        	</tr>
+        	<tr style="">
+        		<td>Translate(XYZ)</td>
+        		<td><input type="number" name="tx" placeholder="X" style="text-align:center; width:64px;" value="0"></td>
+        		<td><input type="number" name="ty" placeholder="Y" style="text-align:center; width:64px;" value="0"></td>
+        		<td><input type="number" name="tz" placeholder="Z" style="text-align:center; width:64px;" value="0"></td>
+        	</tr>
+        	<tr>
+        		<td>Scale(XYZ)</td>
+        		<td><input type="number" name="sx" placeholder="X" style="text-align:center" min="0" max="360" value="1"></td>
+        		<td><input type="number" name="sy" placeholder="Y" style="text-align:center" min="0" max="360" value="1"></td>
+        		<td><input type="number" name="sz" placeholder="Z" style="text-align:center" min="0" max="360" value="1"></td>
+        	</tr>
+        	<tr>
+        		<td>Rotate(XYZ)</td>
+        		<td><input type="number" name="rx" placeholder="X" style="text-align:center" min="0" max="360" value="0"></td>
+        		<td><input type="number" name="ry" placeholder="Y" style="text-align:center" min="0" max="360" value="0"></td>
+        		<td><input type="number" name="rz" placeholder="Z" style="text-align:center" min="0" max="360" value="0"></td>
+        	</tr>
+        	<tr>
+        		<td>Overview</td>
+        		<td><input type="checkbox" data-toggle="toggle" data-size="small" name="ov"></td>
+        	</tr>
+        	<tr>
+        		<td>Overview height</td>
+        		<td><input type="number" placeholder="1" name="ovh" style="text-align:center; width:64px; min="0" value="0"></td>
+        	</tr>
+        	<tr>
+        		<td>Background music</td>
+        		<td><input type="checkbox" data-toggle="toggle" data-size="small" name="s"></td>
+        	</tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <input id="saveSettings" type="submit" class="btn btn-primary" value="Save settings">
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

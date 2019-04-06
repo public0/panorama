@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -11,6 +12,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Stripe\Stripe;
 use Stripe\Customer;
 use AppBundle\Entity\TextToSpeech;
+use AppBundle\Entity\Settings;
 
 use Braintree\Configuration;
 use Braintree\Customer as BCustomer;
@@ -191,7 +193,57 @@ class AjaxController extends Controller
 
 		return new Response(0);
     }
+    /**
+     * @Route("/settings")
+     * @Method({"GET"})
+     */
+    public function getSettingsAction(Request $request)
+	{
+		$data = $request->query->get('data');
+        $image = $this->getDoctrine()
+            ->getRepository('AppBundle:Images')
+            ->findOneBy(['id'=>$data]);
 
+        $settings = !is_null($image->getSettings())?$image->getSettings()->getSettings():0;
+
+    	return new JsonResponse($settings);
+	}
+    /**
+     * @Route("/settings")
+     * @Method({"POST"})
+     */
+    public function settingsAction(Request $request)
+    {
+    	$data = $request->request->get('data');
+        $em = $this->getDoctrine()->getManager();
+
+        $project = $this->getDoctrine()
+            ->getRepository('AppBundle:Project')
+            ->findOneBy(['id'=>$data[0]['value']]);
+
+        $image = $this->getDoctrine()
+            ->getRepository('AppBundle:Images')
+            ->findOneBy(['id'=>$data[1]['value']]);
+
+        $settings = $image->getSettings();
+
+        if (!$settings) {
+        	$settings = new Settings();
+        }
+    	$settings->setProject($project);
+    	$settings->setImage($image);
+    	$settings->setSettings(json_encode($data));
+        $em->persist($settings);
+
+        $image->setSettings($settings);
+        $em->persist($image);
+
+        $em->flush();
+
+        $settings = $image->getSettings();
+
+    	return new Response($settings->getSettings());
+    }
 
     /**
      * @Route("/imageSave")
@@ -246,6 +298,7 @@ class AjaxController extends Controller
 		        $image = $this->getDoctrine()
 		            ->getRepository('AppBundle:Images')
 		            ->find($_POST['image_id'][$i]);
+
 		        if($_POST['delete'][$i]) {
 		        	$inactiveCubemaps++;
 		        	$image->setStatus(0);
@@ -291,7 +344,7 @@ class AjaxController extends Controller
 	            	$response = new Response();
 	            	$response->setContent('Active cubemap count exceeded');
 	            	return $response;
-	            }	        	
+	            }
 	        }
 
             $zip = new \ZipArchive();
@@ -323,6 +376,15 @@ class AjaxController extends Controller
 		            ->findBy(['image' => $image]);
 		        $imgFileName = mb_substr($image->getName(), 0, -4).'.csv';
 	            $imgFile = fopen($dir.'/images/'.$imgFileName, 'w');
+
+		        $settings = $image->getSettings();
+	                fputcsv($imgFile, [
+		                	$settings->getId(),
+		                	'settings',
+		                	'settings',
+		                	$settings->getSettings(),
+	                	]
+	                );
 
 	            foreach ($imageTexts as $imageText) {
 

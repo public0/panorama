@@ -71,6 +71,35 @@ $(function() {
 		}
 	});
 
+	$('#exampleModal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget);
+		var img = button.data('img');
+		var modal = $(this);
+		modal.find('.modal-body #iid').val(img);
+		$.getJSON( "../../settings", {data : img}).done(function( data ) {
+			dataObj = JSON.parse(JSON.parse(data));
+			$.each(dataObj, function(k, v) {
+				$('input[name='+v.name+']').val(v.value)
+			})
+		});
+
+	})
+
+	$('#saveSettings').click(function(event) {
+		let form = $(this).closest('form');
+		let valid = this.form.checkValidity();
+		if(valid)
+		{
+			event.preventDefault();
+			$.post( "../../settings", {data : form.serializeArray()}).done(function( data ) {
+				dataObj = JSON.parse(JSON.parse(data));
+				$('#sid').val(dataObj[3].value);
+			});
+		}
+
+	});
+
+
 
 	$('.copy').click(function(event) {
 		var $temp = $("<input>");

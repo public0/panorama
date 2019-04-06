@@ -9,6 +9,13 @@ a {
     color:gray;
 }
 
+.btn span.glyphicon {               
+    opacity: 0;             
+}
+.btn.active span.glyphicon {                
+    opacity: 1;             
+}
+
 a:hover {
     color:white;
     text-decoration: none;
@@ -209,10 +216,14 @@ projects_links:hover, a:focus {
     border: none;
 }
 .btn {
-    -webkit-border-radius: 50px;
+/*    -webkit-border-radius: 50px;
     -moz-border-radius: 50px;
     border-radius: 50px;
+*/
+}
 
+.setting-table td, th {
+    padding: 5px;
 }
 
 .separator {
