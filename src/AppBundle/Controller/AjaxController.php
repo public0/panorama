@@ -215,6 +215,7 @@ class AjaxController extends Controller
     public function settingsAction(Request $request)
     {
     	$data = $request->request->get('data');
+    	//return new Response(json_encode($data));
         $em = $this->getDoctrine()->getManager();
 
         $project = $this->getDoctrine()
@@ -232,7 +233,7 @@ class AjaxController extends Controller
         }
     	$settings->setProject($project);
     	$settings->setImage($image);
-    	$settings->setSettings(json_encode($data));
+    	$settings->setSettings($data);
         $em->persist($settings);
 
         $image->setSettings($settings);
