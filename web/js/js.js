@@ -77,8 +77,7 @@ $(function() {
 		var modal = $(this);
 		modal.find('.modal-body #iid').val(img);
 		$.getJSON( "../../settings", {data : img}).done(function( data ) {
-			dataObj = JSON.parse(JSON.parse(data));
-			$.each(dataObj, function(k, v) {
+			$.each(data, function(k, v) {
 				$('input[name='+v.name+']').val(v.value)
 			})
 		});
@@ -86,20 +85,23 @@ $(function() {
 	})
 
 	$('#saveSettings').click(function(event) {
+		$('#settings-save').addClass('hidden');
 		let form = $(this).closest('form');
 		let valid = this.form.checkValidity();
 		if(valid)
 		{
 			event.preventDefault();
 			$.post( "../../settings", {data : form.serializeArray()}).done(function( data ) {
-				dataObj = JSON.parse(JSON.parse(data));
-				$('#sid').val(dataObj[3].value);
+				$('#sid').val(data[3].value);
+			}).done(function() {
+				$('#settings-save').removeClass('hidden');
+
+			}).fail(function() {
+				
 			});
 		}
 
 	});
-
-
 
 	$('.copy').click(function(event) {
 		var $temp = $("<input>");

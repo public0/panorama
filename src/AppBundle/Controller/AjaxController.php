@@ -206,7 +206,7 @@ class AjaxController extends Controller
 
         $settings = !is_null($image->getSettings())?$image->getSettings()->getSettings():0;
 
-    	return new JsonResponse($settings);
+    	return new Response($settings);
 	}
     /**
      * @Route("/settings")
@@ -233,7 +233,7 @@ class AjaxController extends Controller
         }
     	$settings->setProject($project);
     	$settings->setImage($image);
-    	$settings->setSettings($data);
+    	$settings->setSettings(json_encode($data));
         $em->persist($settings);
 
         $image->setSettings($settings);
@@ -379,13 +379,19 @@ class AjaxController extends Controller
 	            $imgFile = fopen($dir.'/images/'.$imgFileName, 'w');
 
 		        $settings = $image->getSettings();
-	                fputcsv($imgFile, [
-		                	$settings->getId(),
-		                	'settings',
-		                	'settings',
-		                	$settings->getSettings(),
-	                	]
-	                );
+	            $formattedSettings = json_decode($settings->getSettings());
+	            $csvSettings = null;
+	            foreach ($formattedSettings as $key => $value) {
+	            	$csvSettings[$value->name] = $value->value;
+	            }
+
+                fputcsv($imgFile, [
+	                	$settings->getId(),
+	                	'settings',
+	                	'settings',
+	                	json_encode($csvSettings),
+                	]
+                );
 
 	            foreach ($imageTexts as $imageText) {
 

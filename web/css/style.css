@@ -29,7 +29,7 @@ a:hover {
 	color: white;
 }
 
-projects_links:hover, a:focus {
+.projects_links:hover, a:focus {
     text-decoration: none;
 	color: white;
 }
@@ -344,7 +344,7 @@ label {
 }
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
-    color: white;
+    color: red;
 /*    color: #F00;*/
 
 /*    text-shadow: 0 0 12px #FFFFFF,
@@ -407,15 +407,16 @@ label {
 }
 
 .dropdown-menu {
-    background-color: #000;
+    background-color: darkgray;
 }
 
 .dropdown-menu>li>a {
-    color: #FFF;
+    color: black;
 }
 
 .dropdown-menu>li>a:focus,
 .dropdown-menu>li>a:hover {
+    color:red;
     text-shadow: 0 0 12px #FFFFFF,
     0 0 12px #FFFFFF,
     0 0 12px #FFFFFF,

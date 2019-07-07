@@ -12,25 +12,12 @@
     <video loop id="vid" autoplay="" class="embed-responsive-item" name="media"><source src="{{video}}villa.mp4" type="video/mp4"></video>
 
     <div class="text-center white-text on-top">
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <h3 class="black-text"><strong>VR tours for your property in less than 10 minutes<strong></h3>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <button style="border-radius: 25px; background:rgb(120, 120, 120); border:none; padding: 10px 20px 10px 20px;">
-      <a class="sign-up" href="{{ path('fos_user_registration_register') }}"><b>Sign Up</b></a>
-      </button>        
+      <div style="margin-top:25%; z-index=-1;">
+        <h3 class="black-text"><strong>VR tours for your property in less than 10 minutes<strong></h3>
+        <button style="border-radius: 25px; background:rgba(255, 255, 255, .5); border:none; padding: 10px 20px 10px 20px;">
+        <a class="sign-up" href="{{ path('fos_user_registration_register') }}"><b style="color:#FF0000;">Sign Up</b></a>
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -50,7 +37,7 @@
     <br>
   </div>
   <div class="row gray-bg">
-      <h1 class="black-text"><strong>Where can you use it<strong></h1 >
+      <h1><strong class="black-text">Where can you use it<strong></h1 >
       <br>
       <div class="thumbnail text-center white-text">
           <img class="img-responsive" src="{{ asset('images/4-images.jpg') }}" />

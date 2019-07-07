@@ -38,7 +38,7 @@ class Settings
     /**
      * @var array
      *
-     * @ORM\Column(name="settings", type="json_array")
+     * @ORM\Column(name="settings", type="text")
      */
     private $settings;
 
@@ -126,7 +126,7 @@ class Settings
      */
     public function getSettings()
     {
-        return json_encode($this->settings);
+        return ($this->settings);
     }
 }
 
