@@ -828,10 +828,15 @@
 							//objLoader.setLogging( true, true );
 							objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}' + imageFile, callbackOnLoad, null, null, null, false );
 						};
-						if(imageTitle == '')
+
+						console.log(imageTitle == '');
+						console.log(imageMtl == '');
+						if(imageTitle == '' || imageMtl == '') {
 							objLoader.load( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}' + imageFile, callbackOnLoad, null, null, null, false );
-						else
+						}
+						else {
 							objLoader.loadMtl( '{{baseurl~"/uploads/"~userId~"/"~project.id~"/images/"}}'+imageTitle+"/"+imageMtl, null, onLoadMtl );
+						}
 
 					}break;
 
